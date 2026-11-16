@@ -1,0 +1,99 @@
+[
+  {
+    "id": "placeholder-1",
+    "placeholder": true,
+    "kind": "journal",
+    "src": "assets/images/placeholder.svg",
+    "w": 900,
+    "h": 1400,
+    "title": "Placeholder 1",
+    "detail": "journal page",
+    "year": null,
+    "alt": "Placeholder"
+  },
+  {
+    "id": "placeholder-2",
+    "placeholder": true,
+    "kind": "journal",
+    "src": "assets/images/placeholder.svg",
+    "w": 1200,
+    "h": 900,
+    "title": "Placeholder 2",
+    "detail": "journal page",
+    "year": null,
+    "alt": "Placeholder"
+  },
+  {
+    "id": "placeholder-3",
+    "placeholder": true,
+    "kind": "journal",
+    "src": "assets/images/placeholder.svg",
+    "w": 1600,
+    "h": 1400,
+    "size": "big",
+    "title": "Placeholder 3",
+    "detail": "journal spread",
+    "year": null,
+    "alt": "Placeholder"
+  },
+  {
+    "id": "placeholder-4",
+    "placeholder": true,
+    "kind": "journal",
+    "src": "assets/images/placeholder.svg",
+    "w": 1200,
+    "h": 900,
+    "title": "Placeholder 4",
+    "detail": "journal page",
+    "year": null,
+    "alt": "Placeholder"
+  },
+  {
+    "id": "placeholder-5",
+    "placeholder": true,
+    "kind": "photo",
+    "src": "assets/images/placeholder.svg",
+    "w": 1800,
+    "h": 900,
+    "title": "Placeholder 5",
+    "detail": "photograph",
+    "year": null,
+    "alt": "Placeholder"
+  },
+  {
+    "id": "placeholder-6",
+    "placeholder": true,
+    "kind": "photo",
+    "src": "assets/images/placeholder.svg",
+    "w": 1200,
+    "h": 900,
+    "title": "Placeholder 6",
+    "detail": "photograph",
+    "year": null,
+    "alt": "Placeholder"
+  },
+  {
+    "id": "placeholder-7",
+    "placeholder": true,
+    "kind": "photo",
+    "src": "assets/images/placeholder.svg",
+    "w": 900,
+    "h": 1400,
+    "title": "Placeholder 7",
+    "detail": "photograph",
+    "year": null,
+    "alt": "Placeholder"
+  },
+  {
+    "id": "placeholder-8",
+    "placeholder": true,
+    "kind": "photo",
+    "src": "assets/images/placeholder.svg",
+    "w": 1200,
+    "h": 900,
+    "title": "Placeholder 8",
+    "detail": "photograph",
+    "year": null,
+    "alt": "Placeholder"
+  }
+]

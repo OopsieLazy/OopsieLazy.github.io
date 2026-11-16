@@ -28,6 +28,11 @@ html {
   /* Makes #slideshow a container: the @container rules below ask how wide
      the SLIDESHOW is, not the whole window */
   container-type: inline-size;
+  /* Beside the ring, the popup floats (position: absolute), so it can't push the frame taller.
+     With the full picture in it, it can be taller than the ring: projcript.js (fitSheet) then
+     sets a min-height so the frame grows to hold it, and this eases the frame open and shut */
+  min-height: 0;
+  transition: min-height var(--popup-speed, 350ms) var(--popup-ease, ease);
 }
 
 /* The hidden attribute must win over display: flex above (otherwise the empty frame shows) */
@@ -302,6 +307,54 @@ html {
 #popup-link {
   display: inline-block;
   margin-bottom: var(--space-3);
+}
+
+/* The full picture under the header strip (owner, 2026-11-15). The ring's sheets crop each render
+   to a square (object-fit: cover); here it's shown WHOLE (contain) in a dashed viewport like the
+   sheets, on the paper colour, so nothing is cut off */
+.popup-art {
+  display: block;
+  margin-top: var(--space-3);
+  aspect-ratio: 4 / 3;
+  outline: 1px dashed var(--color-accent);
+  outline-offset: -1px;
+  padding: var(--space-2);             /* the picture stays inside the dashed line */
+  background: var(--color-surface);
+  overflow: hidden;                    /* the grow-in starts a little smaller, never bigger */
+}
+
+/* display: block above would beat the hidden attribute (a project with no picture) */
+.popup-art[hidden] {
+  display: none;
+}
+
+.popup-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  /* Grows in as the popup opens: scale + opacity only, so the browser needn't redo the layout.
+   The short delay lets the popup start moving first, so the picture seems to come out of it */
+  scale: 0.85;
+  opacity: 0;
+  transition: scale var(--popup-speed) var(--popup-ease) 80ms,
+              opacity var(--popup-speed) var(--popup-ease) 80ms;
+}
+
+#slideshow.is-open .popup-art img {
+  scale: 1;
+  opacity: 1;
+}
+
+.popup-art:focus-visible {
+  outline: 2px solid var(--color-accent);   /* a link: it needs a visible ring, not the colour change */
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .popup-art img,
+  #slideshow {
+    transition: none;                  /* the picture and the frame change size at once, without easing */
+  }
 }
 
 /* The ring glides when the layout around it changes */

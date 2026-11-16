@@ -10,6 +10,9 @@
         <link rel="stylesheet" href="css/styles.css">
         <link rel="stylesheet" href="css/artyles.css">
         <script src="js/script.js" defer></script>
+        <!-- datacript.js holds the shared JSON helpers, so it loads before artcript.js (defer keeps this order) -->
+        <script src="js/datacript.js" defer></script>
+        <script src="js/artcript.js" defer></script>
         <!-- No defer on purpose: it sets the saved theme before the page is drawn (no white flash) -->
         <script src="js/themcript.js"></script>
     </head>
@@ -112,199 +115,42 @@
 
             <!-- Landmarks: screen readers can jump straight to main or footer. The skip link targets #content -->
             <main id="content" class="site-main wrapper">
-                <!-- Browse Art (task 2.4, owner's pick): a "salon hang", framed pictures packed in
-                     mixed sizes, each a little crooked, with a straight label underneath. Plain HTML, no JS.
-                     TO ADD A PIECE: copy one <li> block and change the two image paths, the alt text,
-                     the label title and its detail (the <span>). Optional size class on the <li>:
-                     is-wide (landscape), is-tall (portrait) or is-big. The moulding and the tilt are
-                     picked automatically by its position (artyles.css), so the wall stays varied -->
+                <!-- Browse Art (task 2.4, R4, D42): a "salon hang", framed pictures packed in mixed sizes,
+                     each a little crooked, with a straight label underneath. Visitors can reorder the frames.
+                     The pieces come from data/art.json, built by js/artcript.js.
+                     TO ADD ART: drop the photos into assets/images/art/, run  python tools/art.py
+                     (it strips EXIF/GPS, shrinks them and lists them in art.json), then fix each new
+                     piece's title, detail and alt text in data/art.json. See README -->
                 <header class="art-head">
                     <h1>Browse Art</h1>
                     <!-- CONTENT: one line about your art journals and photography -->
                     <p>One line about your art journals and photography.</p>
+                    <!-- hidden until js/artcript.js has built the walls: without JS these buttons would do nothing -->
+                    <div class="art-tools" id="art-tools" hidden>
+                        <button type="button" id="art-shuffle">Shuffle</button>
+                        <button type="button" id="art-reset">Reset</button>
+                        <!-- One hint per kind of device (artyles.css, "hover" media feature) -->
+                        <span class="hint-pointer">Drag a frame to rearrange · Alt + arrow keys on a keyboard</span>
+                        <span class="hint-touch">Press and hold a frame, then drag it</span>
+                    </div>
+                    <!-- Read out after a move ("Placeholder 3, position 2 of 8"). role="status" = polite live region -->
+                    <p class="screen-reader-text" id="art-status" role="status"></p>
                 </header>
 
                 <section class="art-room" aria-labelledby="journals-title">
                     <h2 id="journals-title" class="art-label">Art journals</h2>
-                    <!-- CONTENT: your journal pages (photographed flat, metadata stripped) -->
-                    <ul class="salon" role="list">
-                        <li class="is-tall">
-                            <figure class="piece">
-                                <a class="frame" href="assets/images/placeholder.svg"><img src="assets/images/placeholder.svg" alt="Placeholder: Journal 1, page 4"></a>
-                                <figcaption>Journal 1 <span class="label-meta">page 4</span></figcaption>
-                            </figure>
-                        </li>
-                        <li>
-                            <figure class="piece">
-                                <a class="frame" href="assets/images/placeholder.svg"><img src="assets/images/placeholder.svg" alt="Placeholder: Journal 1, page 9"></a>
-                                <figcaption>Journal 1 <span class="label-meta">page 9</span></figcaption>
-                            </figure>
-                        </li>
-                        <li class="is-big">
-                            <figure class="piece">
-                                <a class="frame" href="assets/images/placeholder.svg"><img src="assets/images/placeholder.svg" alt="Placeholder: Journal 2, spread 2"></a>
-                                <figcaption>Journal 2 <span class="label-meta">spread 2</span></figcaption>
-                            </figure>
-                        </li>
-                        <li>
-                            <figure class="piece">
-                                <a class="frame" href="assets/images/placeholder.svg"><img src="assets/images/placeholder.svg" alt="Placeholder: Journal 2, page 7"></a>
-                                <figcaption>Journal 2 <span class="label-meta">page 7</span></figcaption>
-                            </figure>
-                        </li>
-                        <li class="is-wide">
-                            <figure class="piece">
-                                <a class="frame" href="assets/images/placeholder.svg"><img src="assets/images/placeholder.svg" alt="Placeholder: Journal 3, spread 1"></a>
-                                <figcaption>Journal 3 <span class="label-meta">spread 1</span></figcaption>
-                            </figure>
-                        </li>
-                        <li>
-                            <figure class="piece">
-                                <a class="frame" href="assets/images/placeholder.svg"><img src="assets/images/placeholder.svg" alt="Placeholder: Journal 3, page 5"></a>
-                                <figcaption>Journal 3 <span class="label-meta">page 5</span></figcaption>
-                            </figure>
-                        </li>
-                        <li>
-                            <figure class="piece">
-                                <a class="frame" href="assets/images/placeholder.svg"><img src="assets/images/placeholder.svg" alt="Placeholder: Journal 3, page 8"></a>
-                                <figcaption>Journal 3 <span class="label-meta">page 8</span></figcaption>
-                            </figure>
-                        </li>
-                        <li>
-                            <figure class="piece">
-                                <a class="frame" href="assets/images/placeholder.svg"><img src="assets/images/placeholder.svg" alt="Placeholder: Journal 3, page 11"></a>
-                                <figcaption>Journal 3 <span class="label-meta">page 11</span></figcaption>
-                            </figure>
-                        </li>
-                        <li>
-                            <figure class="piece">
-                                <a class="frame" href="assets/images/placeholder.svg"><img src="assets/images/placeholder.svg" alt="Placeholder: Journal 4, cover"></a>
-                                <figcaption>Journal 4 <span class="label-meta">cover</span></figcaption>
-                            </figure>
-                        </li>
-                        <li>
-                            <figure class="piece">
-                                <a class="frame" href="assets/images/placeholder.svg"><img src="assets/images/placeholder.svg" alt="Placeholder: Journal 4, page 2"></a>
-                                <figcaption>Journal 4 <span class="label-meta">page 2</span></figcaption>
-                            </figure>
-                        </li>
-                        <li>
-                            <figure class="piece">
-                                <a class="frame" href="assets/images/placeholder.svg"><img src="assets/images/placeholder.svg" alt="Placeholder: Journal 4, page 6"></a>
-                                <figcaption>Journal 4 <span class="label-meta">page 6</span></figcaption>
-                            </figure>
-                        </li>
-                        <li>
-                            <figure class="piece">
-                                <a class="frame" href="assets/images/placeholder.svg"><img src="assets/images/placeholder.svg" alt="Placeholder: Journal 5, cover"></a>
-                                <figcaption>Journal 5 <span class="label-meta">cover</span></figcaption>
-                            </figure>
-                        </li>
-                    </ul>
+                    <!-- list-style: none makes Safari drop the list meaning, so role="list" adds it back -->
+                    <ul class="salon" id="wall-journals" role="list"></ul>
                 </section>
 
                 <section class="art-room" aria-labelledby="photos-title">
                     <h2 id="photos-title" class="art-label">Photography</h2>
-                    <!-- CONTENT: your photos (strip EXIF/GPS first: phone photos carry your location) -->
-                    <ul class="salon" role="list">
-                        <li class="is-wide">
-                            <figure class="piece">
-                                <a class="frame" href="assets/images/placeholder.svg"><img src="assets/images/placeholder.svg" alt="Placeholder: Harbour, 2025"></a>
-                                <figcaption>Harbour <span class="label-meta">2025</span></figcaption>
-                            </figure>
-                        </li>
-                        <li>
-                            <figure class="piece">
-                                <a class="frame" href="assets/images/placeholder.svg"><img src="assets/images/placeholder.svg" alt="Placeholder: Rain, 2025"></a>
-                                <figcaption>Rain <span class="label-meta">2025</span></figcaption>
-                            </figure>
-                        </li>
-                        <li class="is-tall">
-                            <figure class="piece">
-                                <a class="frame" href="assets/images/placeholder.svg"><img src="assets/images/placeholder.svg" alt="Placeholder: Lantern street, 2024"></a>
-                                <figcaption>Lantern street <span class="label-meta">2024</span></figcaption>
-                            </figure>
-                        </li>
-                        <li>
-                            <figure class="piece">
-                                <a class="frame" href="assets/images/placeholder.svg"><img src="assets/images/placeholder.svg" alt="Placeholder: Market, 2024"></a>
-                                <figcaption>Market <span class="label-meta">2024</span></figcaption>
-                            </figure>
-                        </li>
-                        <li class="is-big">
-                            <figure class="piece">
-                                <a class="frame" href="assets/images/placeholder.svg"><img src="assets/images/placeholder.svg" alt="Placeholder: Studio, 2024"></a>
-                                <figcaption>Studio <span class="label-meta">2024</span></figcaption>
-                            </figure>
-                        </li>
-                        <li>
-                            <figure class="piece">
-                                <a class="frame" href="assets/images/placeholder.svg"><img src="assets/images/placeholder.svg" alt="Placeholder: Bridge, 2023"></a>
-                                <figcaption>Bridge <span class="label-meta">2023</span></figcaption>
-                            </figure>
-                        </li>
-                        <li class="is-wide">
-                            <figure class="piece">
-                                <a class="frame" href="assets/images/placeholder.svg"><img src="assets/images/placeholder.svg" alt="Placeholder: Coast, 2023"></a>
-                                <figcaption>Coast <span class="label-meta">2023</span></figcaption>
-                            </figure>
-                        </li>
-                        <li>
-                            <figure class="piece">
-                                <a class="frame" href="assets/images/placeholder.svg"><img src="assets/images/placeholder.svg" alt="Placeholder: Window, 2023"></a>
-                                <figcaption>Window <span class="label-meta">2023</span></figcaption>
-                            </figure>
-                        </li>
-                        <li>
-                            <figure class="piece">
-                                <a class="frame" href="assets/images/placeholder.svg"><img src="assets/images/placeholder.svg" alt="Placeholder: Stairs, 2022"></a>
-                                <figcaption>Stairs <span class="label-meta">2022</span></figcaption>
-                            </figure>
-                        </li>
-                        <li>
-                            <figure class="piece">
-                                <a class="frame" href="assets/images/placeholder.svg"><img src="assets/images/placeholder.svg" alt="Placeholder: Garden, 2022"></a>
-                                <figcaption>Garden <span class="label-meta">2022</span></figcaption>
-                            </figure>
-                        </li>
-                        <li class="is-wide">
-                            <figure class="piece">
-                                <a class="frame" href="assets/images/placeholder.svg"><img src="assets/images/placeholder.svg" alt="Placeholder: Night bus, 2022"></a>
-                                <figcaption>Night bus <span class="label-meta">2022</span></figcaption>
-                            </figure>
-                        </li>
-                        <li>
-                            <figure class="piece">
-                                <a class="frame" href="assets/images/placeholder.svg"><img src="assets/images/placeholder.svg" alt="Placeholder: Kettle, 2021"></a>
-                                <figcaption>Kettle <span class="label-meta">2021</span></figcaption>
-                            </figure>
-                        </li>
-                        <li>
-                            <figure class="piece">
-                                <a class="frame" href="assets/images/placeholder.svg"><img src="assets/images/placeholder.svg" alt="Placeholder: Moth, 2021"></a>
-                                <figcaption>Moth <span class="label-meta">2021</span></figcaption>
-                            </figure>
-                        </li>
-                        <li>
-                            <figure class="piece">
-                                <a class="frame" href="assets/images/placeholder.svg"><img src="assets/images/placeholder.svg" alt="Placeholder: Fern, 2021"></a>
-                                <figcaption>Fern <span class="label-meta">2021</span></figcaption>
-                            </figure>
-                        </li>
-                        <li>
-                            <figure class="piece">
-                                <a class="frame" href="assets/images/placeholder.svg"><img src="assets/images/placeholder.svg" alt="Placeholder: Lighthouse, 2021"></a>
-                                <figcaption>Lighthouse <span class="label-meta">2021</span></figcaption>
-                            </figure>
-                        </li>
-                        <li>
-                            <figure class="piece">
-                                <a class="frame" href="assets/images/placeholder.svg"><img src="assets/images/placeholder.svg" alt="Placeholder: Ferry, 2020"></a>
-                                <figcaption>Ferry <span class="label-meta">2020</span></figcaption>
-                            </figure>
-                        </li>
-                    </ul>
+                    <ul class="salon" id="wall-photos" role="list"></ul>
                 </section>
+
+                <noscript>
+                    <p>The pieces need JavaScript to load.</p>
+                </noscript>
             </main>
 
             <!-- The footer is the full-width pine band; .footer-inner keeps the content lined up with the page -->
