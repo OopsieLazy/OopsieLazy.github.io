@@ -80,9 +80,11 @@
   --frame-dark: #8A6526;
   --frame-width: 0.8rem;
   --mat-width: 0.6rem;
-  --tilt: 0deg;
-  --nudge: 0rem;
-  --lift: 0rem;
+  /* Tilt and offset: fractions stamped on each piece by js/artcript.js (--tilt-f etc.),
+     times the design tokens --salon-tilt / --salon-nudge in styles.css. 0 = hangs straight */
+  --tilt: calc(var(--salon-tilt) * var(--tilt-f, 0));
+  --nudge: calc(var(--salon-nudge) * var(--nudge-f, 0));
+  --lift: calc(var(--salon-nudge) * var(--lift-f, 0));
 
   display: block;
   height: 100%;
@@ -112,36 +114,28 @@
   box-shadow: 0 0 0 1px rgb(0 0 0 / 0.18);
 }
 
-/* Mouldings, on cycles of different lengths so they mix irregularly */
-.salon > li:nth-child(3n + 2) .frame {         /* walnut */
+/* Mouldings. js/artcript.js stamps data-wood on each piece from its number in art.json (cycles of
+   different lengths, so they mix irregularly). On the PIECE, not :nth-child(), so a frame keeps its
+   wood when a visitor drags it somewhere else */
+.salon > [data-wood="walnut"] .frame {
   --frame-light: #8C603E;
   --frame-mid: #6B4429;
   --frame-dark: #432815;
   --frame-width: 0.7rem;
 }
-.salon > li:nth-child(5n + 4) .frame {         /* light oak */
+.salon > [data-wood="oak"] .frame {          /* light oak */
   --frame-light: #DDBE88;
   --frame-mid: #BC935A;
   --frame-dark: #8C6739;
   --frame-width: 0.6rem;
 }
-.salon > li:nth-child(4n + 3) .frame {         /* thin black, wide mat: the modern one */
+.salon > [data-wood="black"] .frame {        /* thin black, wide mat: the modern one */
   --frame-light: #4A4A4A;
   --frame-mid: #2A2A2A;
   --frame-dark: #121212;
   --frame-width: 0.4rem;
   --mat-width: 1rem;
 }
-
-/* "Random" tilts without JS: rules with different cycle lengths (2, 3, 4, 5, 7) overlap.
-   For each property the last matching rule wins, and a rule that doesn't set a property
-   leaves the earlier value, so the combinations only repeat every 420 pieces.
-   The numbers are fractions of the tokens (-1 = the full amount the other way) */
-.salon > li:nth-child(2n) .frame     { --tilt: calc(var(--salon-tilt) * 0.5);   --lift: calc(var(--salon-nudge) * -0.6); }
-.salon > li:nth-child(3n) .frame     { --tilt: calc(var(--salon-tilt) * -0.8);  --nudge: calc(var(--salon-nudge) * 0.7); }
-.salon > li:nth-child(5n) .frame     { --tilt: calc(var(--salon-tilt) * 1);     --nudge: calc(var(--salon-nudge) * -1); --lift: calc(var(--salon-nudge) * 0.5); }
-.salon > li:nth-child(7n) .frame     { --tilt: calc(var(--salon-tilt) * -0.35); --lift: calc(var(--salon-nudge) * 1); }
-.salon > li:nth-child(4n + 1) .frame { --tilt: calc(var(--salon-tilt) * -0.6);  --nudge: calc(var(--salon-nudge) * -0.4); }
 
 /* Hover or keyboard focus: someone straightens the crooked frame */
 .salon > li:hover .frame,
@@ -158,6 +152,83 @@
   outline: 2px solid var(--color-accent);
   outline-offset: 4px;
   text-shadow: none;
+}
+
+/* =========================================================
+   REORDERING (R4, D42): drag a frame, or Alt + arrow keys, like sliding
+   tasks up and down a list. js/artcript.js moves the <li>; CSS only styles it
+   ========================================================= */
+.art-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  margin-top: var(--space-4);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--color-muted);
+}
+
+/* Same outline pill as Home's "Next card" button */
+/* Touch screens can't hover, so (hover: none) tells phones apart from mouse-and-keyboard
+   computers: each gets the hint for how IT rearranges */
+.hint-touch { display: none; }
+
+@media (hover: none) {
+  .hint-pointer { display: none; }
+  .hint-touch { display: inline; }
+}
+
+/* display: flex above would beat the hidden attribute's display: none, so hidden needs its own rule */
+.art-tools[hidden] {
+  display: none;
+}
+
+.art-tools button {
+  padding: var(--space-1) var(--space-4);
+  border: 1px solid var(--color-accent);
+  border-radius: 999px;
+  background: none;
+  color: var(--color-accent);
+  font: inherit;
+  cursor: pointer;
+}
+
+.art-tools button:hover,
+.art-tools button:focus-visible {
+  border-color: var(--color-highlight);
+  outline: none;
+  text-shadow: var(--faux-bold);
+}
+
+.salon > li {
+  cursor: grab;
+  -webkit-touch-callout: none;         /* iOS: no "save image" menu on a long press (that's how you pick a frame up) */
+}
+
+/* The frame being dragged: lifted above the rest, a bigger shadow, and invisible to the pointer,
+   so the script can see which frame is UNDER it (document.elementFromPoint) */
+.salon > li.is-dragging {
+  position: relative;
+  z-index: 10;
+  cursor: grabbing;
+  pointer-events: none;
+}
+
+.salon > li.is-dragging .frame {
+  rotate: 0deg;
+  scale: 1.06;
+  box-shadow:
+    inset 0 0 0 1px rgb(0 0 0 / 0.35),
+    0 0 0 1px rgb(0 0 0 / 0.4),
+    0 1.5rem 2rem -0.6rem rgb(0 0 0 / 0.5);
+}
+
+/* While sorting, the other frames don't straighten on hover: only the dragged one moves */
+.salon.is-sorting > li:not(.is-dragging):hover .frame {
+  rotate: var(--tilt);
+  translate: var(--nudge) var(--lift);
+  scale: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
