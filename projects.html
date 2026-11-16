@@ -149,6 +149,13 @@
                                 <p class="cad-kicker" id="popup-kicker"></p>
                                 <button type="button" class="sheet-button" id="close-sidebar">Close</button>
                               </div>
+                              <!-- The full picture, uncropped (the sheet in the ring crops it square), grown in as
+                                   the popup opens (owner, 2026-11-15). projcript.js swaps in the picked project's
+                                   picture; it starts on the placeholder because an empty src isn't valid HTML.
+                                   A link, so the picture also opens at full size -->
+                              <a class="popup-art" id="popup-art" href="assets/images/placeholder.svg">
+                                <img id="popup-image" src="assets/images/placeholder.svg" alt="" width="1600" height="1600">
+                              </a>
                               <h2 id="popup-title" class="cad-title" tabindex="-1"></h2>
                               <p class="cad-label" id="popup-meta"></p>
                               <p id="popup-desc"></p>

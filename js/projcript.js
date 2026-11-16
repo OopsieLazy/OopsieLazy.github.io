@@ -164,10 +164,26 @@ document.addEventListener("DOMContentLoaded", async () => {
         title: document.getElementById("popup-title"),
         meta: document.getElementById("popup-meta"),
         desc: document.getElementById("popup-desc"),
-        link: document.getElementById("popup-link")
+        link: document.getElementById("popup-link"),
+        art: document.getElementById("popup-art"),
+        image: document.getElementById("popup-image")
     };
 
+    // The full picture beside the summary (owner, 2026-11-15): the gallery's first picture, else the cover.
+    // SECURITY: it's also a link, and an href can run code ("javascript:…"), so only our own image folder is allowed
+    function fillPopupArt(project) {
+        const first = project.images?.[0];
+        const src = first?.src || project.image || "";
+        const ok = /^assets\/images\/[\w./-]+$/.test(src);
+        popup.art.hidden = !ok;              // no picture: the popup is text only, as before
+        if (!ok) return;
+        popup.image.src = src;
+        popup.image.alt = first?.alt || project.alt || "";
+        popup.art.href = src;                // click: the picture at full size
+    }
+
     function fillPopup({ project, number }) {
+        fillPopupArt(project);
         popup.kicker.textContent = number;   // CSS adds the "DWG" in front
         popup.title.textContent = project.name;
         // joinMeta (datacript.js) keeps a "·" from starting a line
@@ -214,9 +230,26 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
+    // Beside the ring the popup floats (position: absolute), so it can't make the frame taller.
+    // With the full picture it can be taller than the ring, so grow the frame to hold it:
+    // measure where the popup ends, add the frame's own bottom padding, and set that as min-height
+    // (the CSS eases it). Measured, not a fixed number, so a longer description still fits.
+    // Phones: the popup sits above the ring and already takes room, so nothing to do
+    function fitSheet(open) {
+        slideshow.style.minHeight = "";                     // back to the ring's own height first
+        if (!open || popupTakesRoom()) return;
+        const sheet = slideshow.getBoundingClientRect();
+        const needed = sidebar.getBoundingClientRect().bottom - sheet.top
+            + parseFloat(getComputedStyle(slideshow).paddingBottom);
+        if (needed > sheet.height) slideshow.style.minHeight = `${Math.ceil(needed)}px`;
+    }
+    // Resizing the window with the popup open: fit again (it may have moved beside or above the ring)
+    window.addEventListener("resize", () => fitSheet(Boolean(selectedFigure)));
+
     // Hide the details sidebar, forget the selection, and let the carousel spin again
     function closeSidebar() {
         recenterAfterClose();                    // measure first, while the popup is still open
+        fitSheet(false);                         // the frame eases back to the ring's height
         slideshow.classList.remove("is-open");   // the CSS animates the popup closed (projyles.css, POPUP)
         setExpanded(selectedFigure, false);
         selectedFigure = null;
@@ -243,6 +276,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             fillPopup(sheetInfo.get(fig));
 
             slideshow.classList.add("is-open");
+            fitSheet(true);                      // grow the frame if the popup (with its picture) needs it
             revealPopup();
 
             // Move focus to the popup's title, so a screen reader reads what opened and the
