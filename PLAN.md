@@ -57,16 +57,17 @@ Each change still goes **works → right** (layout, keyboard, phones) **→ nice
 
 ## ▶ Where we left off (update at the end of every session)
 
-*Last session: 2026-11-11*
-- **Branch:** `feat/sleek-catalogs` (the Sleek pass). Phase R (refinement) still comes before Phase L (launch). Collect 3–4 commits per PR (owner, 2026-11-09). Dice rolls are paused at the owner's request (2026-11-10) until they say to roll.
-- **Merged:** #33 R3 Code catalog (D40), the "you are here" nav marker, `--step--2`, Home stack fix.
-- **Built 2026-11-11 (uncommitted):** the Sleek pass, owner's picks after the dazprojects comparison: Home tiles (C), Code quiet paper (B), CAD tidy (B). Tested in Day and Night at 320 / 360 / 800 / 1000 / 1440, no JS errors, validator 0.
-- **Next:** owner commits and opens the PR. Then R4 Browse Art (audit first). `data/code.json` is still Claude's wording, with no `handWritten` set: owner to review when ready.
+*Last session: 2026-11-15*
+- **Branch:** `fix/night-colours`. Phase R (refinement) still comes before Phase L (launch). Collect 3–4 commits per PR (owner, 2026-11-09). Dice rolls are paused at the owner's request (2026-11-10) until they say to roll.
+- **Merged:** #34 Sleek pass (Home tiles, Code quiet paper, CAD tidy).
+- **Built 2026-11-15 (uncommitted; the owner commits after review):** the dimmer slide now moves the whole page (dusk blend) and the night footer is ai indigo, not lantern red (D41); `REFERENCES.md` (dazprojects + SPELUNKR notes); `TODO.md` and the `todo-list` skill; R4 Browse Art rebuilt from `data/art.json` with reorderable frames and `tools/art.py` (D42).
+- **Also built 2026-11-15:** R2f, the full picture in the CAD popup; the daz-style colour pass (D43): white header band with a hairline, greyscale night, stripes fade to grey at night, compact dimmer, white logo at night (replaces D41's indigo footer and blue-grey dusk).
+- **Next:** the owner adds real art with `tools/art.py`. Then R5 About Me (audit first). The branch name `fix/night-colours` now also holds R4: rename it before pushing (hand-off).
 - **Polish rule (owner, 2026-11-10):** each polish item gets a done definition first and at most two preview rounds.
 - **Recruiting readiness:** résumé and real email are live. Blocking: not hosted; End Stop Cap and Latch Hinge stats are made up; Art is 56 placeholders. Each R task lists its page's content.
 - **Owner habits:** end every PR with the full git command list (CLAUDE.md). After editing `contact.html` text, regenerate the contact-sheet PDF (README).
 - **Merged so far:** #1 hygiene, #2–#10 and #14–#15 Phase 1, #11–#21 Phase 2, #22 CAD sheets, #23–#25 R1, #26–#31 R2 prep, résumé, page-top, thumbwheel, gallery, #32 R2d/R2e carousel and popup.
-- **Design reference:** https://dazprojects.com/collections/all (white, hairlines, centered logo, catalog grid), with our own fonts (Cinzel, Instrument Sans). Reference photos live in the git-ignored `references/` folder. Delete the old backup bundle once happy.
+- **Design references:** notes in `REFERENCES.md` (dazprojects = the sleek benchmark, SPELUNKR = the retro-voice benchmark). Screenshots stay in the git-ignored `references/` folder. Delete the old backup bundle once happy.
 
 ## Phase 0: Foundation cleanup ✅
 
@@ -146,6 +147,7 @@ Goal (owner, 2026-11-07): go through the site page by page, from Home down, refi
       - P2 The slide animates `grid-template-rows`, which recalculates the layout every frame; `transition: all` on the figure images. Aim: `transform` + `opacity` only.
       - P3 Shows a title and one line, with no link to the project's full entry (or its R2b page later).
       - P4 Opening it doesn't move focus or tell a screen reader anything changed.
+    - [x] **R2f Full picture in the popup** (owner, 2026-11-15): the picked project's first gallery picture, uncropped (`contain`) in a dashed viewport at the top of the popup, grown in with it; a link to the full-size file. Beside the ring the frame grows to fit the taller popup (`fitSheet()`, measured, eased; instant with reduced motion). Partly reverses R2e's "picture only on the sheet": the sheet crops it square.
     - **Page:** ~~G1 tab title "Projects"~~ → "CAD Portfolio · Zach Nott". G2 the intro is 14 lines on a phone (**owner's text**). ~~G3 empty 4th index cell~~ (`auto-fit`). ~~G4 leftover comment after `</html>`~~.
   - **Owner content** (✱ blocks launch): ✱ real stats for End Stop Cap and Latch Hinge (made up 2026-11-05); ✱ the intro paragraph and tab title; ✱ one square render each (same angle, same background); photos (hero, in use, close-up, scale, iteration lineup), EXIF/GPS stripped; write-up notes (problem, what changed per version, print settings); files to share; MakerWorld links; references.
   - **Kit rules:** metadata stripped (STEP headers can hold your user name and folder paths, 3MF holds slicer profiles); each kit under ~20 MB, since git keeps every version forever; bigger models link to MakerWorld instead.
@@ -162,19 +164,26 @@ Goal (owner, 2026-11-07): go through the site page by page, from Home down, refi
     - [x] **K9** Featured row: bigger cards first (TTask, YouScape, GooeyThang, Voice Assistant and more, via `"featured": true`), optional "hand-written" stamp for projects from before AI (`"handWritten": true`).
     - [x] **K10** (owner, same day) Every card flips, Featured included (just bigger); a click anywhere on an open back flips it over again (links still work). **Paper look A** after previews A/B/C: cream card stock in both themes (`--color-cardstock`, `color-scheme: light` on the card), SVG grain, layered desk shadows, a slight tilt that straightens when opened. Two `@property` colours keep the punched hole and focus ring in the PAGE's colours. All values are tokens at the top of `codyles.css`.
   - **Owner content:** ✱ rewrite the intro and the drafted one-liners in your words; ✱ confirm each status; ✱ which projects are featured and which were written before AI; which projects to leave out; a README for AUDA; the Live link for this site after L3.
-- [ ] **R4 Browse Art** (`art.html`)
-  - Replace the 56 placeholder pieces with the owner's images (EXIF/GPS stripped).
-  - The intro line, and tune the tilt tokens.
-  - If the art isn't ready by launch, the page leaves the nav.
+- [ ] **R4 Browse Art** (`art.html`). Audited 2026-11-15 (Day and Night, 360 / 800 / 1440). Layout works at every width; the content is all stand-in:
+  - A1 ✱ 28 placeholder pieces (12 journal pages, 16 photos). Their titles and years ("Harbour 2025", "Lantern street 2024") are invented: made-up facts under the launch bar.
+  - A2 ✱ the intro line is a placeholder.
+  - A3 Images have no `width` / `height` or `loading="lazy"` (page done bar). Add them with the real files.
+  - A4 Each frame links to the raw image file, which leaves the site in the same tab. Fine for now; a lightbox was cut (3.4).
+  - A5 Look: gilded frames, tilt and grid-paper stand-ins are the most decorated page since the Sleek pass. The salon hang is the owner's pick (2.4), so it stays unless the owner says otherwise; real art will calm it down most.
+  - **Owner's call (2026-11-15):** keep the salon frames, make them reorderable "like sliding tasks up and down a to-do list" (not a pinboard: the cork/linen prototype was declined), and build the wall from the photos as they're added (D42):
+    - [x] **R4a** `data/art.json` + `js/artcript.js` build both walls; 8 labelled placeholders replace the 28 invented pieces (fixes A1's made-up facts, A3: `width`/`height`/`loading="lazy"` from the JSON). Each frame's wood and tilt are stamped from its number in the JSON, so they stay with the piece when moved.
+    - [x] **R4b** `tools/art.py` (Python + Pillow, local only): photos in `assets/images/art/` → EXIF/GPS stripped, upright, ≤ 2000 px, kebab-case names → listed in `art.json`, keeping the owner's titles. Tested on a fake GPS-tagged phone photo: 0 metadata left.
+    - [x] **R4c** Reordering: drag with mouse/pen, press-and-hold then drag on touch (a swipe still scrolls), Alt + arrow keys with a spoken position; Shuffle (Fisher-Yates) and Reset; the order is remembered per device (localStorage). FLIP animation, none with reduced motion.
+  - **Owner content:** ✱ photos of journal pages (flat, even light) and the photographs you want shown, EXIF/GPS stripped; a real title and year for each; one intro line.
 - [ ] **R5 About Me** (`aboutme.html`)
   - The card photo.
   - [x] City, Background, Education and tools from the résumé (2026-11-08). **Owner to confirm the tool years** (6/6/5 are estimates from résumé dates) and the CAD-since year (2019, while university began 2020).
-  - GitHub / LinkedIn.
+  - [x] GitHub (in the footer since R1a; no LinkedIn, owner 2026-11-07).
 - [ ] **R6 Contact & Résumé** (`contact.html`). The style stays (owner, 2026-11-06).
   - [x] The real email (owner, 2026-11-08, in `fix/contact-drag-png`).
   - [x] City (from the résumé). Status still to confirm: internships, or design and fabrication roles?
   - [x] The résumé (2026-11-08): `assets/docs/zachery-nott-resume.pdf`, a public copy rebuilt from the owner's master with no health detail, clickable links and clean metadata. The contact button downloads it (and drags out); the Home hero button opens it. **Owner:** make the same edits in the Google Doc master, so the next export matches.
-  - GitHub / LinkedIn.
+  - [x] GitHub (in the footer since R1a; no LinkedIn, owner 2026-11-07).
   - Regenerate the contact-sheet PNG and PDF after any text change (README).
 - [ ] **R7 How to add content** (was 2.8, README). How to add a project, a photo and an art piece, plus image size, naming and metadata rules. Written last, once the patterns are final.
 
@@ -191,7 +200,7 @@ Goal (owner, 2026-11-07): go through the site page by page, from Home down, refi
 
 **Launch bar** (all true before the link goes to anyone):
 - Phase R is done: every nav link leads to a refined page, or the link is gone until it does.
-- Real name, email, résumé, GitHub and LinkedIn. No made-up project facts.
+- Real name, email, résumé and GitHub (no LinkedIn, owner R1a). No made-up project facts.
 - L1 and L2 are merged. The validator shows 0 errors. Lighthouse accessibility and a real-phone test pass on the live URL.
 
 - [ ] **L1** `chore/launch-basics` (was 5.3):
@@ -261,6 +270,8 @@ Design doc first (art style, room ↔ section map, controls), then build in smal
 - **When.** Built in 2.0c as `setupStack(container)`; Phase 3 registers it as a display (`data-display="stack"`).
 - **Look.** Trading-card style (owner's references kept in the git-ignored `references/` folder; copyrighted, never committed): name banner, art window, CAD stat column (iterations, parts, print hours, difficulty), type line, text box, version badge, year. Our own frame design, no copied symbols or art.
 - **Featured = a JSON flag** (D26): projects with `"featured": true` become cards; the rest stay in the catalog, so the stack never overflows.
+
+**🌆 Dusk theme** (owner asked 2026-11-15, "dusk should be a middle ground"): a true middle colour can't carry today's text. On the halfway grey every text colour fails WCAG (ink 2.8, grey 1.2, links 1.7–2.8); only pure white or black pass (~4.5). A real Dusk would be a third theme with its own roles (all text white, no grey captions, underlined links), like Moss (D36). Parked: the dimmer is frozen until launch; D41 already goes as far toward the middle as contrast allows.
 
 **🔍 Code Lens**: a magnifying-glass toggle. A circular lens follows the cursor (or a finger on touch screens) and shows the page's *own source code* "underneath" the rendered page, as if seeing through it.
 - **Live, not screenshots.** The page fetches its own source (`fetch(location.href)`, plus its CSS/JS files), so the lens is always up to date. Screenshots would go stale after every change.
@@ -336,6 +347,9 @@ Design doc first (art style, room ↔ section map, controls), then build in smal
 | D38 | The thumbwheel is a smooth dimmer: its position is `--dim` (0 Day to 1 Night) on `<html>`. The stripes (toward their inverted colours, mixed `in oklch`), the stars, the footer and the white drum (at least a third of the screen wide) follow it; the page and header switch at halfway (D37). Tap: Auto, Day, Night; drag: any level; arrows: a tenth. Saved as `theme` plus `theme-level` | Owner's pick after mock-ups C and D: keep the wheel, not a stripe slider, but make it a real dimmer with interpolated colours. One CSS variable keeps every blend in the stylesheet; the script only sets a number. OKLCH keeps the stripes colourful halfway (sRGB went grey). The CSSOM `style.setProperty` stays allowed under a strict CSP |
 | D39 | The CAD carousel reads `projects.json` (3.2's data half, pulled forward) and is drawn as a drawing sheet like the entries: framed ring, small sheets with crop-marked viewports and DWG labels, blank paper backs, a light summary popup; the ring is pushed back by its radius so the front sheet shows at true size. Under 6 projects the list repeats (copies `aria-hidden`, out of the Tab order) | Owner, 2026-11-10: the carousel should match the projects below. One source of truth ends the placeholders and empty popups. Preview A (3 sheets) became a prism showing one sheet at a time and overflowed on phones; B keeps a ring (owner's pick). Frame and crop marks are shared selectors, not copies, so the two can't drift |
 | D40 | The Code page becomes a catalog built from `data/code.json` (like D26): every project a flip card that grows to two columns when opened (preview A), bigger ones in a featured row first, private repos shown without a Source link. The cards are cream card stock in both themes (paper preview A) | Owner, 2026-11-10: "load all of em". 20+ projects as hand-copied HTML would drift and break; one JSON entry per project is easy to review. Small fronts keep a long list short; growing on open leaves room for the full entry (B's same-size back was too cramped). A link to a private repo is a 404 for visitors. Replaces the plain-HTML pick from 2.3 |
+| D41 | (Colours superseded by D43; the dusk drift itself stays.) The dimmer moves the whole page: the background drifts toward dusk on each side of halfway (white to `#E6EBF0`, then `#1E2B36` to asphalt), mixed in OKLab; it still flips at halfway (D37). The night footer is ai indigo `#1F3F5F` (was akabeni red), mixed with pine in OKLCH | Owner, 2026-11-15: the page stood still while the stripes and footer moved, which read as broken. Each dusk colour is the furthest grey text still passes 4.5:1. OKLab because white has no hue, and an OKLCH mix drew it pink; OKLCH for the footer so pine to indigo goes through teal, not the sRGB mud. Indigo matches the starry night header (owner's pick C of three blues) |
+| D42 | Browse Art is built from `data/art.json` by `js/artcript.js`; a local script, `tools/art.py`, writes the JSON from the photos in `assets/images/art/` and strips their EXIF/GPS. Visitors can reorder the frames (drag, press-and-hold on touch, Alt + arrows), Shuffle and Reset; the order is kept per device. Frame wood and tilt belong to the piece, not the position | Owner, 2026-11-15: the wall should "build as photos are added", and frames move "like a to-do list". A static host can't list a folder, so something must write the list; a script run before committing also makes stripping location data automatic. Pointer Events cover mouse, pen and touch in one code path; a hold-to-pick-up on touch keeps scrolling. Looks stamped per piece so a dragged frame doesn't change its wood mid-move. A pinboard was prototyped and declined |
+| D43 | Daz-style colours (owner's pick A after comparing Today/A/B/C): Day keeps pine and the menu colours but the header band is white with a hairline (no sand); Night is a greyscale gallery (`#121212` page, white text and links, charcoal footer, no stars or glow) where only objects keep colour (cards, pictures, status dots). The stripes fade from colour to five greys as the dimmer turns. The dimmer is compact (`max(7rem, 12vw)`, was 45vw). The logo is near-white at night | Owner, 2026-11-15: "still not very professional". dazprojects gets its calm from black, white and grey, with colour only in the content. Pine stays as the one brand colour by day (owner: "the green is nice"). The stripes stay as the signature but quiet down at night (owner's idea). Supersedes D22's rainy-street night, D41's indigo footer and blue dusk tints. All text pairs measured: lowest 4.9 (grey on the day dusk tint) |
 | D17 | Skeleton and layout are separate PRs; keep the `#page` wrapper; the width cap is a reusable `.wrapper` class; two `rem` breakpoints | Smaller reviews; respects the owner's structure; a class can be reused, and the carousel can skip it when it needs more width; breakpoints give more control than fluid sizing alone |
 
 ## Open questions

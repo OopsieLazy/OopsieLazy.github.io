@@ -20,7 +20,8 @@ Use a local server rather than double-clicking the file, because JS modules (Pha
 |---|---|
 | `css/styles.css` | Shared header, footer, design tokens and base styles |
 | `css/cardyles.css` | The Blueprint trading card, shared by Home and About. Wrap each card in a `.card-holder` |
-| `art.html` + `css/artyles.css` | Browse Art as a salon wall of framed pictures with museum labels (copy an `<li>` to add a piece; `--salon-tilt` / `--salon-nudge` in `styles.css` set how crooked they hang) |
+| `art.html` + `css/artyles.css` + `js/artcript.js` | Browse Art as a salon wall of framed pictures with museum labels, built from `data/art.json`; visitors drag frames (or Alt + arrow keys) to reorder, Shuffle and Reset. `--salon-tilt` / `--salon-nudge` in `styles.css` set how crooked they hang |
+| `tools/art.py` | Run on your computer, not the site: lists the photos in `assets/images/art/` in `data/art.json` and strips their location data (see Add art) |
 | `code.html` + `css/codyles.css` + `js/codcript.js` | Code Portfolio: every project a library catalog card, built from `data/code.json` (add one entry to add a project; `"featured": true` puts it in the top row, `"handWritten": true` stamps it, `"source": null` marks a private repo). All the page's sizes are tokens at the top of `codyles.css` |
 | `contact.html` + `css/contyles.css` + `js/contcript.js` | Contact & Résumé as a drawing title block: email with a Copy button, résumé PDF download |
 | `aboutme.html` + `css/aboutyles.css` | About page, laid out like an encyclopedia biography (fill in the `<!-- CONTENT -->` slots) |
@@ -31,6 +32,8 @@ Use a local server rather than double-clicking the file, because JS modules (Pha
 | `assets/images/` | All images |
 | `thelab.html` | Laboratory experiment (notebook-on-desk design) |
 | `PLAN.md` | Roadmap, task breakdown, architecture decisions |
+| `TODO.md` | One-screen action list, rebuilt from PLAN.md by the `todo-list` skill (`.claude/skills/`) |
+| `REFERENCES.md` | Design reference notes (dazprojects, SPELUNKR): what we take and what we don't |
 | `CLAUDE.md` | Instructions for the AI assistant |
 
 ## Add a project
@@ -46,6 +49,15 @@ Add one object to `data/projects.json`: the home catalog builds its tile and the
 - Picture sizes: the frames are 4:3 (Home rows) and square (Home grid, CAD page, thumbnails), and pictures fill them with `object-fit: cover`, which crops evenly and never stretches. So export every render and photo **square, 1600 × 1600 px**, with the part centred inside the middle 75% (a 4:3 crop trims 12.5% off the top and bottom). Renders as PNG, ideally with a transparent background; photos as JPEG at about 80% quality, with location data stripped.
 
 JSON is strict: double quotes only, a comma between items but **not after the last one**, and no comments. If the catalog goes blank, the browser console (F12) says why.
+
+## Add art
+
+1. Put the photos in `assets/images/art/`. Name them like `journal-3-page-5.jpg` or `harbour-2025.jpg`: a name starting with `journal` goes on the Art journals wall, anything else on Photography, and a 4-digit year becomes the label's year.
+2. Run `python tools/art.py` (once before: `pip install Pillow`). It strips EXIF/GPS (phone photos carry the place they were taken), turns photos upright, shrinks anything over 2000 px, renames files to lowercase-kebab-case and adds each new photo to `data/art.json`. `--dry-run` shows what it would do.
+3. In `data/art.json`, fix each new piece's `title`, `detail` (e.g. `"page 5"`) and `alt` (search for `TODO`: alt text describes what's in the picture). Optional `"size": "big"` makes a piece span two cells; otherwise wide and tall come from the photo's shape.
+4. Commit the photos and `art.json` together. The placeholders disappear as soon as one real piece exists.
+
+The frame's wood and tilt come from the piece's place in the file, and stay with the piece when a visitor drags it.
 
 ## Contact sheet files
 
@@ -77,6 +89,7 @@ plan → build (by Claude or by me) → review → commit.
 As on a professional team, work happens on feature branches and reaches `main` only through a reviewed pull request.
 
 - `PLAN.md`: the roadmap, task breakdown, and why each architecture decision was made.
+- `TODO.md`: what to do next and who does it. Don't edit it by hand: change PLAN.md, then ask Claude to "rebuild the to-do list".
 - `CLAUDE.md`: the rules the AI follows in this project (teach as it goes, small tasks, I make all commits).
 
 ## License
