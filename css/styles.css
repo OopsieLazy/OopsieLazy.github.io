@@ -136,6 +136,13 @@
   --font-body: "Instrument Sans", system-ui, "Segoe UI", Roboto, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
   --font-pixel: "Silkscreen", "Courier New", monospace;
+  --tracking-caps: 0.08em;   /* letter spacing for the small mono CAPITALS labels: capitals set tight look cramped */
+
+  /* Motion: how long hovers and moves take. Every transition uses one of these,
+     so the whole site feels like it moves at one pace */
+  --speed-fast: 150ms;   /* small responses: a hover lift, a fade, the ▸ arrow turning */
+  --speed: 300ms;        /* most transitions: theme crossfade, picture zoom, frames settling */
+  --speed-slow: 450ms;   /* big moves: the home card stack shuffling */
 
   /* Fluid type scale: clamp(min, preferred, max) grows smoothly with screen width,
      so no media queries are needed just to resize text */
@@ -162,6 +169,8 @@
   --content-max: 72rem;    /* widest the page content gets (~1152px) */
   --gutter: clamp(var(--space-4), 5vw, var(--space-7));  /* side padding of .wrapper: 16px on phones, up to 48px */
   --radius: 4px;           /* small, crisp corners to keep it minimal */
+  --radius-soft: 6px;      /* photos and floating panels: About's pictures, the profile card popover */
+  --radius-pill: 999px;    /* fully round ends (the outline buttons): any value over half the height works */
   --logo-size: var(--space-7);  /* header logo height, 48px; its width follows the logo file's shape */
   --golden: 1.618;         /* φ, the golden ratio: used for spacing that should feel "just right" */
   /* The theme dimmer under the logo (THEME DIMMER below, D35, D38). Tune it here.
@@ -265,11 +274,17 @@ body {
 h1,
 h2,
 h3 {
-  font-family: var(--font-display);
   color: var(--color-accent);      /* pine headings: color in the page, not only in links */
   line-height: 1.2;               /* big text needs less line gap than body text */
   text-wrap: balance;              /* evens out line lengths in multi-line headings */
 }
+
+/* Daz pass X2 (D44): only the page title wears Cinzel, so one thing on the page stands out.
+   Section headings use the body font. Headings that want Cinzel (the CAD entry titles)
+   ask for it by class */
+h1 { font-family: var(--font-display); }
+h2,
+h3 { font-family: var(--font-body); }
 
 h1 { font-size: var(--step-3); }
 h2 { font-size: var(--step-2); }
@@ -326,7 +341,7 @@ hr {
   font-size: var(--step--1);
   font-weight: 400;
   color: var(--color-muted);
-  letter-spacing: 0.08em;
+  letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
 }
 
@@ -457,7 +472,7 @@ hr {
 
 .footer-label {
   font-family: var(--font-mono);
-  letter-spacing: 0.08em;
+  letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
   opacity: 0.75;
 }
@@ -568,7 +583,7 @@ hr {
 
 /* ---------- Frame ---------- */
 
-/* A full-width band (sand by day, navy at night) with a sage hairline below. The band is the <header>;
+/* A full-width band (white by day, near-black at night, D43) with a hairline below. The band is the <header>;
    the nav inside carries .wrapper, so the color reaches the screen edges */
 .site-header {
   position: relative;                  /* the theme dimmer hangs from this band (see THEME DIMMER) */
@@ -657,8 +672,8 @@ hr {
 
 .header-left-item,
 .header-right-item {
- padding: 15px;
- white-space: nowrap;
+  padding: var(--space-4);         /* was 15px: now on the spacing scale */
+  white-space: nowrap;
 }
 
 /* ---------- Menu button (phones) ----------
@@ -726,7 +741,7 @@ hr {
 /* transform needs a box, and an inline span isn't one, hence inline-block */
 .submenu-toggle span {
   display: inline-block;
-  transition: transform 0.2s;
+  transition: transform var(--speed-fast);
 }
 
 /* Points down when open */
@@ -882,7 +897,7 @@ hr {
 @media (prefers-reduced-motion: no-preference) {
   body,
   .site-header {
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color var(--speed) ease, color var(--speed) ease;
   }
 }
 

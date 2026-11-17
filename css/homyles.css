@@ -42,7 +42,7 @@
   display: inline-block;
   padding: var(--space-2) var(--space-5);
   border: 1px solid var(--color-accent);
-  border-radius: 999px;                /* pill */
+  border-radius: var(--radius-pill);                /* pill */
   color: var(--color-accent);
   font-size: var(--step--1);
   text-decoration: none;
@@ -108,7 +108,7 @@
 
 .card-stack > .bp-card {
   grid-area: 1 / 1;
-  transition: transform 300ms ease, translate 450ms ease, rotate 450ms ease, filter 450ms ease;
+  transition: transform var(--speed) ease, translate var(--speed-slow) ease, rotate var(--speed-slow) ease, filter var(--speed-slow) ease;
 }
 
 /* % in translate = % of the card's own size. 80% + 14% of 80% + the tilt stays inside the slot */
@@ -136,7 +136,7 @@
 .stack-next {
   padding: var(--space-1) var(--space-4);
   border: 1px solid var(--color-accent);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: none;
   color: var(--color-accent);
   font-family: var(--font-mono);
@@ -204,6 +204,12 @@
   margin: 0;
 }
 
+/* The "View projects" link beside it: a step down, so it reads as part of the label row
+   instead of shouting over it (it was body size next to small caps) */
+.catalog-head a {
+  font-size: var(--step--1);
+}
+
 /* auto-FIT, not auto-fill: empty columns collapse, so 3 projects stretch across the
    whole row instead of leaving it half empty. min(--tile-min, 45%) keeps 2 per row on
    phones. list-style: none makes Safari drop the "list" meaning, so the HTML adds role="list" */
@@ -233,7 +239,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: scale 300ms ease;
+  transition: scale var(--speed) ease;
 }
 
 .catalog-tile:hover .tile-art img {
@@ -280,7 +286,7 @@
   font-family: var(--font-mono);
   font-size: var(--step--1);
   color: var(--color-muted);
-  letter-spacing: 0.08em;
+  letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
 }
 
