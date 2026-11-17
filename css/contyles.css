@@ -52,7 +52,7 @@
   font-size: var(--step--1);
   font-weight: 400;
   color: var(--color-muted);
-  letter-spacing: 0.08em;
+  letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
 }
 
@@ -87,7 +87,7 @@
 .copy-button {
   padding: var(--space-1) var(--space-4);
   border: 1px solid var(--color-accent);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: none;
   color: var(--color-accent);
   font-family: var(--font-mono);
@@ -105,7 +105,7 @@
   display: inline-block;
   padding: var(--space-2) var(--space-5);
   border: 1px solid var(--color-accent);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: var(--color-accent);
   color: var(--color-bg);              /* page colour on the accent: 7.8 by day, 11.0 at night */
   text-decoration: none;

@@ -25,7 +25,7 @@
   font-size: var(--step--1);
   font-weight: 400;
   color: var(--color-muted);
-  letter-spacing: 0.08em;
+  letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
 }
 
@@ -101,7 +101,7 @@
      so the hover can straighten one without wiping out the others */
   rotate: var(--tilt);
   translate: var(--nudge) var(--lift);
-  transition: rotate 250ms ease, translate 250ms ease, scale 250ms ease;
+  transition: rotate var(--speed) ease, translate var(--speed) ease, scale var(--speed) ease;
 }
 
 .frame img {
@@ -110,7 +110,7 @@
   height: 100%;
   object-fit: cover;                   /* fill the opening, crop the edges, never stretch */
   /* The mat's bevelled cut: a thin white edge with a faint line around it */
-  border: 0.15rem solid #FFFFFF;
+  border: 0.15rem solid var(--color-paper);
   box-shadow: 0 0 0 1px rgb(0 0 0 / 0.18);
 }
 
@@ -187,7 +187,7 @@
 .art-tools button {
   padding: var(--space-1) var(--space-4);
   border: 1px solid var(--color-accent);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: none;
   color: var(--color-accent);
   font: inherit;

@@ -22,6 +22,9 @@ What it does to each photo (and why):
 It never touches a title, detail or alt text you've written. Entries whose file is gone are dropped,
 and the placeholders are dropped as soon as one real piece exists.
 Run with --dry-run to see what would change without writing anything.
+
+Other photos (About, CAD): `python tools/art.py --clean assets/images/about` strips and shrinks
+every photo in that folder the same way, and prints the width/height to paste into the HTML.
 """
 
 import json
@@ -81,8 +84,26 @@ def clean_photo(path, dry_run):
     return target, width, height
 
 
+def clean_folder(folder, dry_run):
+    """--clean <folder>: the same strip/upright/shrink for photos that aren't art (About, CAD...).
+    Writes no JSON; prints each size, because the HTML's width/height attributes need it."""
+    folder = (ROOT / folder).resolve()
+    if not folder.is_dir():
+        sys.exit(f"No such folder: {folder}")
+    for path in sorted(folder.iterdir()):
+        if path.suffix.lower() in IMAGE_TYPES:
+            final, width, height = clean_photo(path, dry_run)
+            print(f"  {final.relative_to(ROOT).as_posix()}   width=\"{width}\" height=\"{height}\"")
+
+
 def main():
     dry_run = "--dry-run" in sys.argv
+    if "--clean" in sys.argv:
+        args = sys.argv[sys.argv.index("--clean") + 1:]
+        if not args or args[0].startswith("--"):
+            sys.exit("Usage: python tools/art.py --clean assets/images/about")
+        clean_folder(args[0], dry_run)
+        return
     ART_DIR.mkdir(parents=True, exist_ok=True)
     pieces = json.loads(DATA.read_text(encoding="utf-8")) if DATA.exists() else []
     by_src = {piece["src"]: piece for piece in pieces}

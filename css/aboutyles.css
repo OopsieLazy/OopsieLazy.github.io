@@ -1,199 +1,215 @@
-/* About page (task 2.1): an encyclopedia-style biography (owner's pick).
+/* About page (R5, D44, owner's pick B): a short story in the dazprojects style.
+   Title, one big photo, short headed sections, a row of photos, one pull quote, the facts.
+   No boxes around the text: space and a few hairlines do the separating.
    Shared header, tokens and footer live in styles.css; the card lives in cardyles.css */
 
-.bio {
-  padding-bottom: var(--space-7);   /* the top comes from --page-top (styles.css) */
-}
-
-/* Title over a hairline, like an encyclopedia article */
-.bio-head {
-  margin-bottom: var(--space-5);
-  border-bottom: 1px solid var(--color-line);
-}
-
-.bio-head h1 {
-  margin: 0 0 var(--space-1);
-}
-
-.bio-tagline {
-  margin: 0 0 var(--space-3);
-  font-family: var(--font-mono);
-  font-size: var(--step--1);
-  color: var(--color-muted);
+/* Rounded photos and popover: --radius-soft in styles.css. (It was a page token, --about-radius,
+   set on .story, but the popover sits OUTSIDE .story, so it never got the value: square corners) */
+.story {
+  padding-bottom: var(--space-8);     /* the top comes from --page-top (styles.css) */
 }
 
 /* =========================================================
-   LAYOUT. Phones: one column in source order (lead, infobox, rest).
-   Wide: grid-template-areas puts the infobox in a right column that
-   spans both rows. The rows are "auto 1fr", so the infobox's extra
-   height goes to the 1fr row and the lead row stays its own height:
-   the rest starts right under the lead, not under the infobox
+   HEAD: the name on the left, the Profile card button on the right.
+   flex-wrap lets the button drop under the name on a narrow phone
    ========================================================= */
-.bio-layout {
-  display: grid;
-  gap: var(--space-5);
+.story-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--space-3) var(--space-5);
+}
+
+.story-head h1 {
+  margin: 0;
+}
+
+.story-sub {
+  margin: var(--space-1) 0 0;
+  color: var(--color-muted);
+}
+
+/* Same outline pill as Home's "Next card" and Art's "Shuffle" */
+.card-open,
+.card-close {
+  padding: var(--space-1) var(--space-4);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  cursor: pointer;
+}
+
+.card-open:hover,
+.card-close:hover {
+  border-color: var(--color-highlight);
+}
+
+/* =========================================================
+   PHOTOS. Every picture is cropped to its box with object-fit: cover
+   (fills it, never stretches); the pale surface shows while it loads.
+   Phones get a taller 4:3 hero: 21:9 on a 390px screen is a thin strip
+   ========================================================= */
+.story-hero,
+.story-row img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: var(--radius-soft);
+  background: var(--color-surface);
+}
+
+/* Until a real photo replaces it, the stand-in shows at its own size on the pale surface
+   instead of being blown up. [src$="…"] matches a src that ENDS with that text, so this
+   rule switches itself off the moment the src points at your photo */
+.story img[src$="placeholder.svg"] {
+  object-fit: none;
+}
+
+.story-hero {
+  aspect-ratio: 4 / 3;
+  margin: var(--space-6) 0;
 }
 
 @media (min-width: 52rem) {
-  .bio-layout {
-    grid-template-columns: minmax(0, 1fr) 18rem;   /* minmax(0, …) lets long words shrink the column instead of overflowing */
-    grid-template-rows: auto 1fr;
-    grid-template-areas:
-      "lead box"
-      "rest box";
-    column-gap: var(--space-7);
+  .story-hero {
+    aspect-ratio: 21 / 9;
   }
-
-  .bio-lead { grid-area: lead; }
-  .infobox { grid-area: box; align-self: start; }
-  .bio-rest { grid-area: rest; }
 }
 
-.bio-lead {
+/* auto-fit + minmax: three across when there's room, then two, then one. No media query */
+.story-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-7);
+}
+
+.story-row figure {
   margin: 0;
 }
 
-/* =========================================================
-   INFOBOX: the card on top, then a facts table on hairlines
-   ========================================================= */
-.infobox {
-  width: 100%;
-  max-width: 22rem;
-  padding: var(--space-4);
-  border: 1px solid var(--color-line);
-  background: var(--color-surface);
-  font-size: var(--step--1);
+.story-row img {
+  aspect-ratio: 4 / 3;
 }
 
-.infobox-title {
-  margin: 0 0 var(--space-3);
-  font-family: var(--font-display);
+.story-row figcaption {
+  margin-top: var(--space-2);
+  font-size: var(--step--1);
+  color: var(--color-muted);
+}
+
+/* =========================================================
+   TEXT: a bigger lead, then quiet section headings (body font,
+   text colour). Only the page title is Cinzel and pine (D44)
+   ========================================================= */
+.story-lead {
   font-size: var(--step-1);
-  color: var(--color-accent);
-  text-align: center;
+  line-height: 1.5;
 }
 
-.infobox-card {
-  width: 80%;
-  margin: 0 auto var(--space-4);
+.story h2 {
+  margin: var(--space-7) 0 var(--space-3);
+  font-size: var(--step-1);
+  font-weight: 600;
+  color: var(--color-ink);
 }
 
-.infobox-facts {
-  width: 100%;
-  border-collapse: collapse;           /* one hairline between rows, not two */
-}
-
-.infobox-facts th,
-.infobox-facts td {
-  padding: var(--space-2) 0;
-  border-top: 1px solid var(--color-line);
-  text-align: left;
-  vertical-align: top;
-}
-
-.infobox-facts th {
-  width: 40%;
-  padding-right: var(--space-3);
-  font-family: var(--font-mono);
-  font-weight: 400;
-  color: var(--color-muted);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-/* =========================================================
-   CONTENTS BOX AND SECTIONS
-   ========================================================= */
-.bio-toc {
-  display: inline-block;               /* only as wide as its links, like a printed contents box */
-  margin-bottom: var(--space-4);
-  padding: var(--space-3) var(--space-5);
-  border: 1px solid var(--color-line);
-  background: var(--color-surface);
-}
-
-.bio-toc-title {
-  margin: 0 0 var(--space-2);
-  font-family: var(--font-mono);
-  font-size: var(--step--1);
-  font-weight: 400;
-  color: var(--color-muted);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.bio-toc ol {
-  margin: 0;
-  padding-left: var(--space-5);
-  font-size: var(--step--1);
-}
-
-/* Section headings over a hairline, the encyclopedia look */
-.bio-rest h2:not(.bio-toc-title) {
-  margin: var(--space-6) 0 var(--space-3);
-  padding-bottom: var(--space-1);
-  border-bottom: 1px solid var(--color-line);
-}
-
-/* A jump from the contents box stops a little above the heading */
-.bio-rest section {
-  scroll-margin-top: var(--space-5);
-}
-
-/* The reset in styles.css zeroes every <p> margin. "p + p" only matches a paragraph
-   that follows another one, so the gap goes BETWEEN paragraphs, never above the first */
-.bio-rest section p + p {
+/* The reset in styles.css zeroes every <p> margin; "p + p" puts the gap BETWEEN paragraphs only */
+.story section p + p {
   margin-top: var(--space-3);
 }
 
+/* The one pull quote, centred. p already has max-width (65ch), so margin auto centres it */
+.story-quote {
+  margin: var(--space-7) 0 0;
+  padding: 0;
+  text-align: center;
+}
+
+.story-quote p {
+  margin: 0 auto;
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  color: var(--color-accent);
+}
+
 /* =========================================================
-   TOOLS AND YEARS: label left, bar + years right.
-   The bar length comes from data-years through --years. Why not
-   style="width: …" in the HTML? Inline style attributes are blocked
-   by a strict Content Security Policy (task 5.2), so the values live
-   here instead. (CSS attr() with types will do this in one line once
-   every browser supports it)
+   AT A GLANCE: label left, value right, a hairline under each pair.
+   Two columns when there's room (auto-fit again)
    ========================================================= */
-.tool-list {
-  --bar-track: clamp(3rem, 25vw, 12rem); /* the bar for 10 years; shorter on phones */
-  max-width: var(--measure);
+.story-facts dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  column-gap: var(--space-6);
   margin: 0;
-  font-family: var(--font-mono);
+  border-top: 1px solid var(--color-line);
   font-size: var(--step--1);
 }
 
-.tool-list div {
+.story-facts dl div {
   display: flex;
   justify-content: space-between;
-  align-items: center;
   gap: var(--space-4);
   padding: var(--space-2) 0;
   border-bottom: 1px solid var(--color-line);
 }
 
-.tool-list dd {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  margin: 0;
+.story-facts dt {
   color: var(--color-muted);
-  white-space: nowrap;
 }
 
-.tool-bar {
-  width: calc(var(--years, 0) / 10 * var(--bar-track));
-  height: 0.375rem;
-  background: var(--color-accent);
-  opacity: 0.6;                        /* decoration: the years are written as text next to it */
+.story-facts dd {
+  margin: 0;
+  text-align: right;
 }
 
-.tool-bar[data-years="1"]  { --years: 1; }
-.tool-bar[data-years="2"]  { --years: 2; }
-.tool-bar[data-years="3"]  { --years: 3; }
-.tool-bar[data-years="4"]  { --years: 4; }
-.tool-bar[data-years="5"]  { --years: 5; }
-.tool-bar[data-years="6"]  { --years: 6; }
-.tool-bar[data-years="7"]  { --years: 7; }
-.tool-bar[data-years="8"]  { --years: 8; }
-.tool-bar[data-years="9"]  { --years: 9; }
-.tool-bar[data-years="10"] { --years: 10; }
+/* =========================================================
+   PROFILE CARD POPOVER: a golden rectangle, clear of the stripes (owner's pick A, D46).
+   Two rules, both worked out from numbers already on the page:
+   1. Proportion: width = φ × height (--golden, 1.618). The height is fixed by what's
+      inside (padding + the 63:88 card + the Close row), so the width follows from it.
+      At 1440px: 455px tall -> 736px wide. (The band it replaced was 3:1, a thin strip.)
+   2. Clearance: never wider than the window minus the stripes on BOTH sides
+      (their gap + the five stripes + a breathing gap), so it never crosses them and
+      stays centred. min() takes whichever rule is smaller: φ on screens, clearance on phones.
+   The browser places a popover with position: fixed; inset: 0; margin: auto, so a set
+   width + margin: auto centres it both ways. The reset in styles.css zeroes every
+   margin, so margin: auto has to be put back here, or it sticks to the top-left
+   ========================================================= */
+.card-pop {
+  --pop-card: 16rem;                  /* the card's width inside the panel */
+  --pop-close: 2rem;                  /* the Close button's height (small mono text + padding + border) */
+  --pop-height: calc(2 * var(--space-5) + var(--pop-card) * 88 / 63 + var(--space-4) + var(--pop-close));
+  --pop-clear: calc(var(--loop-inset) + var(--loop-width) + var(--space-4));
+  width: min(var(--golden) * var(--pop-height), 100% - 2 * var(--pop-clear));
+  margin: auto;
+  max-height: calc(100dvh - 2 * var(--loop-inset));   /* a phone on its side: scroll, don't cut off */
+  overflow-y: auto;
+  padding: var(--space-5);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-soft);
+  background: var(--color-bg);
+  color: var(--color-ink);
+  text-align: center;
+}
+
+/* The dimmed page behind it. A plain colour, not a token: older browsers didn't let
+   ::backdrop inherit custom properties, so var(--…) here could silently fail */
+.card-pop::backdrop {
+  background: rgb(0 0 0 / 0.45);
+}
+
+/* .card-holder fills its parent, so in the wide panel the card would grow huge: cap it */
+.card-pop .card-holder {
+  width: min(var(--pop-card), 100%);
+  margin-inline: auto;
+}
+
+.card-close {
+  margin-top: var(--space-4);
+}

@@ -113,121 +113,122 @@
 
             <!-- Landmarks: screen readers can jump straight to main or footer. The skip link targets #content -->
             <main id="content" class="site-main wrapper">
-                <!-- An encyclopedia-style biography (task 2.1, owner's pick): title, lead paragraph,
-                     infobox, contents, sections. Plain HTML, no JS. Every text slot is marked CONTENT -->
-                <article class="bio">
-                    <header class="bio-head">
-                        <h1>Zach Nott</h1>
-                        <!-- CONTENT: one short line under the name -->
-                        <p class="bio-tagline">Designer · Maker · Fabricator</p>
+                <!-- About (R5, D44, owner's pick B): a short story like dazprojects' About page.
+                     Title, one big photo, a lead, then short headed sections with a row of photos
+                     and one pull quote, and the facts at the end. Plain HTML, no JS.
+                     PHOTOS: put them in assets/images/about/, run  python tools/art.py --clean assets/images/about
+                     (strips EXIF/GPS, prints each width/height), then change src, alt, width and height here -->
+                <article class="story">
+                    <header class="story-head">
+                        <div>
+                            <h1>Zach Nott</h1>
+                            <p class="story-sub">Mechanical design &amp; CAD · Courtice, Ontario</p>
+                        </div>
+                        <!-- The trading card lives in a popover (owner, 2026-11-16): popovertarget opens it with
+                             no JavaScript, and the browser adds Esc and click-outside to close it -->
+                        <button class="card-open" type="button" popovertarget="profile-card">Profile card</button>
                     </header>
 
-                    <!-- Phones: lead, infobox, the rest (source order). Wide screens: the infobox moves
-                         to a right column beside both the lead and the rest (grid areas in aboutyles.css) -->
-                    <div class="bio-layout">
-                        <!-- CONTENT: the lead. Your name in bold first, then who you are in a sentence or two -->
-                        <p class="bio-lead"><b>Zach Nott</b> is a self-taught CAD designer with mechanical engineering coursework and hands-on machine-shop experience, who models parts and prints them to test: printer fixes, guitar hardware and mechanisms.</p>
+                    <!-- CONTENT: the hero photo (you at the bench, or a part in hand). Wide works best (about 21:9).
+                         alt describes what's in it, e.g. "Zach at the workbench fitting a printed bracket" -->
+                    <img class="story-hero" src="assets/images/placeholder.svg" alt="" width="300" height="300">
 
-                        <aside class="infobox" aria-label="Profile summary">
-                            <p class="infobox-title">Zach Nott</p>
-                            <!-- The card is decoration: its name, tools and text are all on this page as
-                                 real text too, so aria-hidden stops screen readers reading them twice.
-                                 .card-holder is required around a card (see cardyles.css) -->
-                            <div class="card-holder infobox-card" aria-hidden="true">
-                                <div class="bp-card">
-                                    <span class="card-top"><span class="card-tool">CAD</span><span class="card-name">Zach Nott</span><span class="card-number">00</span></span>
-                                    <!-- CONTENT: your photo (strip EXIF/GPS first) and your top four tools -->
-                                    <span class="card-art">
-                                        <img src="assets/images/placeholder.svg" alt="">
-                                        <span class="card-stats">
-                                            <span class="card-stat"><span class="card-icon">◆</span><b>7y</b><small>F360</small></span>
-                                            <span class="card-stat"><span class="card-icon">◆</span><b>6y</b><small>SW</small></span>
-                                            <span class="card-stat"><span class="card-icon">◆</span><b>6y</b><small>Py</small></span>
-                                            <span class="card-stat"><span class="card-icon">◆</span><b>5y</b><small>CNC</small></span>
-                                        </span>
-                                    </span>
-                                    <span class="card-type">Designer · Maker · Fabricator</span>
-                                    <span class="card-text">
-                                        <span class="card-desc">Designs parts you can hold, from first sketch to printed test.</span>
-                                        <span class="card-flavor">Create something from nothing.</span>
-                                    </span>
-                                    <!-- data-label names each footer cell (cardyles.css) -->
-                                    <span class="card-foot">
-                                        <span class="card-rev" data-label="YEARS">7</span>
-                                        <span class="card-difficulty" data-label="FOCUS">CAD · PRINT</span>
-                                        <span class="card-date" data-label="SINCE">2019</span>
-                                    </span>
-                                </div>
-                            </div>
-                            <!-- CONTENT: the facts. A row header (th scope="row") names each value for screen readers -->
-                            <table class="infobox-facts">
-                                <tr><th scope="row">Field</th><td>Mechanical design &amp; CAD</td></tr>
-                                <tr><th scope="row">Education</th><td>University of Ottawa, Mechanical Engineering</td></tr>
-                                <tr><th scope="row">Based in</th><td>Courtice, Ontario</td></tr>
-                                <tr><th scope="row">CAD since</th><td>2019</td></tr>
-                                <tr><th scope="row">Known for</th><td><a href="projects.html#bridge-guitar">Bridge Guitar</a></td></tr>
-                            </table>
-                        </aside>
+                    <!-- CONTENT: the lead, in your voice (first person, owner 2026-11-16) -->
+                    <p class="story-lead">I'm a self-taught CAD designer with mechanical engineering coursework and hands-on machine-shop experience. I model parts and print them to test: printer fixes, guitar hardware and mechanisms.</p>
 
-                        <div class="bio-rest">
-                            <!-- Contents box: plain links to the section ids below -->
-                            <nav class="bio-toc" aria-labelledby="toc-title">
-                                <h2 id="toc-title" class="bio-toc-title">Contents</h2>
-                                <ol>
-                                    <li><a href="#background">Background</a></li>
-                                    <li><a href="#education">Education</a></li>
-                                    <li><a href="#tools">Tools and years</a></li>
-                                    <li><a href="#see-also">See also</a></li>
-                                    <li><a href="#external-links">External links</a></li>
-                                </ol>
-                            </nav>
+                    <section>
+                        <h2>Origin</h2>
+                        <!-- CONTENT: how you got here (rewritten in first person from the old Background and Education) -->
+                        <p>From 2021 to 2024 I led the steering design for the University of Ottawa's GNCTR concrete toboggan team: three seasons of rebuilding the system after the team's COVID pause, revising it from test results, and machining and welding the parts on CNC, lathe and shop equipment.</p>
+                        <p>In the summers I worked as a junior inspector with WSP, checking installed sewer and water services against engineering drawings and standards.</p>
+                        <p>I studied Mechanical Engineering (B.A.Sc. program) at the University of Ottawa from 2020 to 2024 and plan to complete the remaining requirements. Highlights: first place at the Design Day competition with a medical VR program, and two roles in the Engineering Students Society, first-year representative and manager of sports.</p>
+                    </section>
 
-                            <section id="background">
-                                <h2>Background</h2>
-                                <!-- CONTENT: how you got into design, what you like to make -->
-                                <p>From 2021 to 2024 Zach led the steering design for the University of Ottawa's GNCTR concrete toboggan team: three seasons of rebuilding the system after the team's COVID pause, revising it from test results, and machining and welding the parts on CNC, lathe and shop equipment. Summers as a junior inspector with WSP meant checking installed sewer and water services against engineering drawings and standards.</p>
-                                <p>Since January 2026 Zach has run a small product design business, with 13 original designs published on maker platforms and 8 products for sale: laboratory accessories, portable games, workshop tools and hobby gear. A small-engine repair service in Clarington runs alongside it.</p>
-                            </section>
+                    <!-- CONTENT: three photos, any shape (they're cropped to 4:3). Captions say what and when -->
+                    <div class="story-row">
+                        <figure>
+                            <img src="assets/images/placeholder.svg" alt="" width="300" height="300" loading="lazy">
+                            <figcaption>Toboggan steering, GNCTR</figcaption>
+                        </figure>
+                        <figure>
+                            <img src="assets/images/placeholder.svg" alt="" width="300" height="300" loading="lazy">
+                            <figcaption>The shop</figcaption>
+                        </figure>
+                        <figure>
+                            <img src="assets/images/placeholder.svg" alt="" width="300" height="300" loading="lazy">
+                            <figcaption>A printed part in use</figcaption>
+                        </figure>
+                    </div>
 
-                            <section id="education">
-                                <h2>Education</h2>
-                                <!-- CONTENT: school, program, years, anything you're proud of -->
-                                <p>Zach studied Mechanical Engineering (B.A.Sc. program) at the University of Ottawa from 2020 to 2024 and plans to complete the remaining requirements. Highlights include first place at the Design Day competition with a medical VR program, and two roles in the Engineering Students Society: first-year representative and manager of sports.</p>
-                            </section>
+                    <!-- The one pull quote: the idiom from the CAD page intro -->
+                    <blockquote class="story-quote">
+                        <p>Create something from nothing.</p>
+                    </blockquote>
 
-                            <section id="tools">
-                                <h2>Tools and years</h2>
-                                <!-- CONTENT: one row per tool. data-years (1–10) sets the bar length;
-                                     the years are also written as text, so the bar is only decoration -->
-                                <dl class="tool-list">
-                                    <div><dt>Fusion 360</dt><dd><span class="tool-bar" data-years="7"></span>7 years</dd></div>
-                                    <div><dt>SolidWorks</dt><dd><span class="tool-bar" data-years="6"></span>6 years</dd></div>
-                                    <div><dt>Python, C and C++</dt><dd><span class="tool-bar" data-years="6"></span>6 years</dd></div>
-                                    <div><dt>CNC, lathe and welding</dt><dd><span class="tool-bar" data-years="5"></span>5 years</dd></div>
-                                </dl>
-                            </section>
+                    <section>
+                        <h2>Now</h2>
+                        <p>Since January 2026 I've run a small product design business, with 13 original designs published on maker platforms and 8 products for sale: laboratory accessories, portable games, workshop tools and hobby gear. Alongside it I run a small-engine repair service in Clarington.</p>
+                    </section>
 
-                            <section id="see-also">
-                                <h2>See also</h2>
-                                <ul>
-                                    <li><a href="projects.html">CAD Portfolio</a></li>
-                                    <li><a href="code.html">Code Portfolio</a></li>
-                                    <li><a href="contact.html#resume">Resume</a></li>
-                                </ul>
-                            </section>
+                    <section>
+                        <h2>Next</h2>
+                        <!-- CONTENT: DRAFT by Claude from the Contact page's status line. Rewrite in your words:
+                             the roles you're after and what you want to build -->
+                        <p>I'm open to internships and projects in mechanical design. If you have a part that needs designing, <a href="contact.html">get in touch</a>.</p>
+                    </section>
 
-                            <section id="external-links">
-                                <h2>External links</h2>
-                                <!-- Profiles on other sites. They open in the same tab; a link that opens a new tab
-                                     (target="_blank") also gets rel="noopener noreferrer" -->
-                                <ul>
-                                    <li><a href="https://github.com/OopsieLazy">GitHub</a></li>
-                                    <li><a href="https://makerworld.com/en/@Azuya_1500">MakerWorld</a></li>
-                                </ul>
-                            </section>
+                    <!-- The facts recruiters scan for, on hairlines. A <dl> pairs each label with its value
+                         for screen readers ("term, definition"). CONTENT: confirm the years -->
+                    <section class="story-facts">
+                        <h2>At a glance</h2>
+                        <dl>
+                            <div><dt>Education</dt><dd>University of Ottawa, Mechanical Engineering</dd></div>
+                            <div><dt>CAD since</dt><dd>2019</dd></div>
+                            <div><dt>Known for</dt><dd><a href="projects.html#bridge-guitar">Bridge Guitar</a></dd></div>
+                            <div><dt>Fusion 360</dt><dd>7 years</dd></div>
+                            <div><dt>SolidWorks</dt><dd>6 years</dd></div>
+                            <div><dt>Python, C and C++</dt><dd>6 years</dd></div>
+                            <div><dt>CNC, lathe and welding</dt><dd>5 years</dd></div>
+                        </dl>
+                    </section>
+                </article>
+
+                <!-- The profile card popover. popover="auto" (the default) closes on Esc or a click outside,
+                     sits in the top layer (above everything, no z-index needed) and stays hidden until opened.
+                     role="dialog" + aria-label give it a name when it opens -->
+                <div id="profile-card" class="card-pop" popover role="dialog" aria-label="Profile card">
+                    <!-- .card-holder is required around a card (see cardyles.css).
+                         role="img" turns the whole card into one picture with one description,
+                         so a screen reader hears a sentence, not "7y F360 6y SW…" -->
+                    <div class="card-holder">
+                        <div class="bp-card" role="img" aria-label="Trading card: Zach Nott, designer, maker, fabricator. Fusion 360 7 years, SolidWorks 6, Python 6, CNC 5. Making since 2019.">
+                            <span class="card-top"><span class="card-tool">CAD</span><span class="card-name">Zach Nott</span><span class="card-number">00</span></span>
+                            <!-- CONTENT: your portrait (strip EXIF/GPS first) -->
+                            <span class="card-art">
+                                <img src="assets/images/placeholder.svg" alt="" width="300" height="300">
+                                <span class="card-stats">
+                                    <span class="card-stat"><span class="card-icon">◆</span><b>7y</b><small>F360</small></span>
+                                    <span class="card-stat"><span class="card-icon">◆</span><b>6y</b><small>SW</small></span>
+                                    <span class="card-stat"><span class="card-icon">◆</span><b>6y</b><small>Py</small></span>
+                                    <span class="card-stat"><span class="card-icon">◆</span><b>5y</b><small>CNC</small></span>
+                                </span>
+                            </span>
+                            <span class="card-type">Designer · Maker · Fabricator</span>
+                            <span class="card-text">
+                                <span class="card-desc">Designs parts you can hold, from first sketch to printed test.</span>
+                                <span class="card-flavor">Create something from nothing.</span>
+                            </span>
+                            <!-- data-label names each footer cell (cardyles.css) -->
+                            <span class="card-foot">
+                                <span class="card-rev" data-label="YEARS">7</span>
+                                <span class="card-difficulty" data-label="FOCUS">CAD · PRINT</span>
+                                <span class="card-date" data-label="SINCE">2019</span>
+                            </span>
                         </div>
                     </div>
-                </article>
+                    <!-- popovertargetaction="hide": this button only closes, never reopens -->
+                    <button class="card-close" type="button" popovertarget="profile-card" popovertargetaction="hide">Close</button>
+                </div>
             </main>
 
             <!-- The footer is the full-width pine band; .footer-inner keeps the content lined up with the page -->

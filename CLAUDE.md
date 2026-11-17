@@ -6,6 +6,29 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A personal portfolio site written from scratch in plain HTML, CSS, and JavaScript. No framework, no build step, no package manager, no tests, no linter. Keep solutions simple and readable, and prefer vanilla HTML/CSS/JS over adding libraries or tooling.
 
+## Before every prompt (run in order)
+
+1. **Branch and state:** `git branch --show-current` and `git status --short`. If on `main`, stop and remind the owner to cut a branch. First prompt of a session: also read PLAN.md's "Where we left off".
+2. **Skills:** match the prompt against this table and invoke each matching skill (Skill tool) *before* starting the work. Name the skills used in the AI-workflow rundown. None runs on every prompt: each costs time and context, so use only the ones whose trigger fits.
+
+| Trigger | Skill |
+|---|---|
+| "to-do list", "what's left", end of a session after PLAN.md notes | `todo-list` (project skill) |
+| Auditing or refining a page (an R task), a "looks unprofessional" pass | `design:design-critique` |
+| A page's markup or interaction changed, before handing over a PR | `design:accessibility-review` |
+| Writing or rewriting visible text: buttons, labels, intros, drafts for the owner | `design:ux-copy` |
+| Adding or renaming design tokens, a token pass | `design:design-system` |
+| Finished PR, before the command list | `code-review` (low or medium, never max/ultra unless asked), then `simplify` if it flags repetition |
+| JS that builds HTML, forms, CSP, links to other sites, L2 | `security-review` |
+| Page titles, meta, Open Graph, L1 | `searchfit-seo:seo-check`, `searchfit-seo:generate-schema` (a `Person` JSON-LD) |
+| Links added, moved or renamed; before launch | `searchfit-seo:broken-links` |
+| `.nojekyll`, 404 page, sitemap, hosting | `searchfit-seo:technical-seo` |
+| Going live (L3) | `engineering:deploy-checklist` |
+| A decision for the PLAN.md decision log with real trade-offs | `engineering:architecture` |
+| Hooks, permissions, "every time X" automation | `update-config` |
+
+Not used here: business, sales, finance, marketing, analytics and tracking plugins (a personal static site with no tracking, by choice), and Office/PDF tools except to check `assets/docs/`.
+
 ## Working agreement (follow on every prompt in this folder)
 
 - **Instructor + coder.** The owner is a junior developer who wants to learn by building. Explain the *why* behind each choice (architecture, CSS technique, security), comment code where it teaches something, and keep code clear and concise.
@@ -69,8 +92,8 @@ Each page pairs with its own stylesheet and script. The names are abbreviated:
 
 - **The header and nav are copied by hand into every page**: the left link list, the center logo, and the right "The Laboratory" mega menu. There are no includes, so a nav change has to be made in each page.
 - Nav links to pages that don't exist yet are `href="#"` placeholders. Real pages will replace them.
-- HTML pages stay at the repo root. CSS goes in `css/`, JS in `js/`, local helper scripts that never run on the site in `tools/` (`tools/art.py`: photos in `assets/images/art/` → `data/art.json`, strips EXIF/GPS; needs Pillow), images in `assets/images/` and downloadable documents in `assets/docs/` (the contact-sheet PDF: regenerate it after editing `contact.html`, see README) (`placeholder.svg` is the self-made generic placeholder). Image filenames are lowercase-kebab-case with no spaces (`bridge-guitar-v8.png`). The repo is public, so only add images the owner made or that have a reuse license, and strip metadata (EXIF/GPS) from photos first. Code is MIT (`LICENSE`); `assets/` and written content are all rights reserved, except `assets/fonts/` (OFL, licenses kept beside the files).
-- **Styling uses the design tokens** at the top of `css/styles.css` (`--color-*`, `--font-*`, `--step-*` type scale, `--space-*`). Never hard-code a color, font or size that a token covers. Colors come in two groups: a fixed **palette** (`--color-pine`, `--color-gunjo`, `--color-chochin`…, the same in every theme) and **roles** (`--color-bg`, `--color-accent`, `--color-active`…) that switch with `light-dark(Day, Lantern)` (the Moss theme was removed, D36). Style pages with roles; use palette colors only for things that must never change (the stripes). Check contrast in both themes. `--color-sage` and `--color-sand` are decoration only, and `--color-highlight` is for rings, underlines and borders, not small text, because jade fails text contrast by day. Fonts are self-hosted WOFF2 files with `@font-face` in `styles.css`. Pages reference them with relative paths such as `css/styles.css`.
+- HTML pages stay at the repo root. CSS goes in `css/`, JS in `js/`, local helper scripts that never run on the site in `tools/` (`tools/art.py`: photos in `assets/images/art/` → `data/art.json`, strips EXIF/GPS; `--clean <folder>` strips any other photo folder, e.g. About's; needs Pillow), images in `assets/images/` and downloadable documents in `assets/docs/` (the contact-sheet PDF: regenerate it after editing `contact.html`, see README) (`placeholder.svg` is the self-made generic placeholder). Image filenames are lowercase-kebab-case with no spaces (`bridge-guitar-v8.png`). The repo is public, so only add images the owner made or that have a reuse license, and strip metadata (EXIF/GPS) from photos first. Code is MIT (`LICENSE`); `assets/` and written content are all rights reserved, except `assets/fonts/` (OFL, licenses kept beside the files).
+- **Styling uses the design tokens** at the top of `css/styles.css` (`--color-*`, `--font-*`, `--step-*` type scale, `--space-*`, `--radius` / `--radius-soft` / `--radius-pill`, `--speed-fast` / `--speed` / `--speed-slow` for transitions, `--tracking-caps` for mono capitals). Never hard-code a color, font, size, corner or duration that a token covers. Colors come in two groups: a fixed **palette** (`--color-pine`, `--color-gunjo`, `--color-chochin`…, the same in every theme) and **roles** (`--color-bg`, `--color-accent`, `--color-active`…) that switch with `light-dark(Day, Lantern)` (the Moss theme was removed, D36). Style pages with roles; use palette colors only for things that must never change (the stripes). Check contrast in both themes. `--color-sage` and `--color-sand` are decoration only, and `--color-highlight` is for rings, underlines and borders, not small text, because jade fails text contrast by day. Fonts are self-hosted WOFF2 files with `@font-face` in `styles.css`. Pages reference them with relative paths such as `css/styles.css`.
 - New per-page files follow the owner's blended naming: page prefix + "yles"/"cript" (`projyles.css`, `artyles.css`, `homcript.js`).
 ## projects.html carousel
 

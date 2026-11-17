@@ -372,7 +372,7 @@
      includes the border, and the fullest fronts would come out 2px taller than the rest) */
   min-height: calc(var(--ic-top) + var(--flip-front-lines) * var(--ic-line));
   padding-bottom: var(--ic-line);      /* the last ruled line is kept free for the "Flip" hint */
-  transition: translate 150ms ease, box-shadow 150ms ease;
+  transition: translate var(--speed-fast) ease, box-shadow var(--speed-fast) ease;
 }
 
 .flip-front::after {
@@ -436,7 +436,7 @@
 @media (hover: hover) {
   .flip-hint {
     opacity: 0;
-    transition: opacity 150ms ease;
+    transition: opacity var(--speed-fast) ease;
   }
 
   .flip-front:hover .flip-hint,
