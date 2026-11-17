@@ -59,6 +59,12 @@ JSON is strict: double quotes only, a comma between items but **not after the la
 
 The frame's wood and tilt come from the piece's place in the file, and stay with the piece when a visitor drags it.
 
+## Add About photos
+
+1. Put the photos in `assets/images/about/` (the hero is shown wide, about 21:9; the row photos at 4:3).
+2. Run `python tools/art.py --clean assets/images/about`. It strips EXIF/GPS, turns them upright, shrinks and renames them like the art photos, and prints each file's `width="…" height="…"`.
+3. In `aboutme.html`, replace each `assets/images/placeholder.svg` with your file, paste its width and height, and write the `alt` text (the `CONTENT` comments say which photo goes where).
+
 ## Contact sheet files
 
 The contact page's title block exists twice as a file in `assets/docs/`, and **both must be made again after changing any text on `contact.html`**:
