@@ -41,11 +41,13 @@ The order we follow. Each step finishes before the next starts; only the drum's 
 |---|---|---|---|
 | 1 | 0–1: Foundation, responsive shell | Clean repo, tokens, header, themes, carousel on phones | ✅ |
 | 2 | 2: Content-ready templates | Every page exists, with its layout and `CONTENT` slots | ✅ |
-| 3 | **R: Refinement** | Each page, from Home down, made to look like the finished portfolio; every leftover finished, filled or removed | ▶ now |
-| 4 | L: Launch | Live on GitHub Pages, ready to send to recruiters | next |
+| 3 | R: Refinement | Each page, from Home down, made to look like the finished portfolio; every leftover finished, filled or removed | frozen: owner content + X8 only |
+| 4 | **L: Launch** | Live on GitHub Pages, ready to send to recruiters | ▶ now (2026-11-20) |
 | 5 | 3: Project displays | Film strip, spin reel, grid, display switcher | after launch |
 | 6 | 4: The museum | The walk-through signature feature | after launch |
 | ∥ | Theme drum (1.14b–e) | Built 2026-11-08 (D35); only the sun and moon sprites (1.14c) remain | built |
+
+**Launch freeze (owner, 2026-11-20, D47):** nothing new gets built until launch. Allowed: the Phase L tasks, X8 (one button class), bug fixes, and the owner's content. Everything else goes into Experiments, undated. Each PR stays at about 5 files or fewer (L1 touches all six pages for a line each, the one exception).
 
 **Guardrail:** Phase R refines what exists; it doesn't add features. New ideas go into Experiments, undated. A Phase 3 or 4 item moves forward only when a page can't be finished without it (e.g. 3.10 for the CAD page) and the owner says so.
 
@@ -57,11 +59,11 @@ Each change still goes **works → right** (layout, keyboard, phones) **→ nice
 
 ## ▶ Where we left off (update at the end of every session)
 
-*Last session: 2026-11-16*
-- **Branch:** `feat/refine-about`, cut from `main` (in sync with `origin/main`). Phase R (refinement) still comes before Phase L (launch). Collect 3–4 commits per PR (owner, 2026-11-09). Dice rolls are paused at the owner's request (2026-11-10) until they say to roll.
-- **Merged:** #35 art wall (R4a–c, D42), daz colours (D43), R2f popup picture. #34 Sleek pass.
-- **2026-11-16:** R5 About audited through the daz lens and rebuilt as the owner's pick B (D44): a first-person story, the card in a popover. Daz pass X2 (Cinzel for titles only) and X3 done, X1 declined, X4 waits for R6. `tools/art.py --clean` strips any photo folder. Later the same day: the profile card popover became a golden rectangle clear of the stripes (6px corners, D46), a token pass (D45), two small polish fixes (X5–X7), and a "Before every prompt" skills table in CLAUDE.md.
-- **Next:** the owner commits, pushes and opens the PR; adds the About photos (R5 owner content). Then X8 previews (one button style), R6 Contact (audit first; decide X4 there). The owner adds real art with `tools/art.py` whenever ready.
+*Last session: 2026-11-20*
+- **Branch:** `chore/launch-prep`, cut from `main` (in sync with `origin/main`). **Launch freeze (D47):** only launch-bar work, X8 and the owner's content from here. Dice rolls are paused at the owner's request (2026-11-10) until they say to roll.
+- **Merged:** #36 About story, golden popover, tokens (D44–D46). #35 art wall (R4a–c, D42), daz colours (D43).
+- **2026-11-20 (learning session, owner):** review check on #36. It was merged 92 seconds after its first commit, about 700 lines, so it wasn't read; the owner agreed it was far too large. From now on: PRs of about 5 files or fewer, Claude asks the owner questions about the code as it goes, and calls out any drift toward vibe coding (unread diffs, outcome-only prompts). Plan for launch agreed (Phase L below).
+- **Next:** PR 1 `chore/launch-prep` (this: notes, `.gitattributes`, plan) → L1 `chore/launch-basics` → the owner turns on Pages as hidden staging (L3a) → L2 → L4a checks → X8 buttons. The owner's content runs alongside and is the real critical path.
 - **Polish rule (owner, 2026-11-10):** each polish item gets a done definition first and at most two preview rounds.
 - **Recruiting readiness:** résumé and real email are live. Blocking: not hosted; End Stop Cap and Latch Hinge stats are made up; Art is 56 placeholders. Each R task lists its page's content.
 - **Owner habits:** end every PR with the full git command list (CLAUDE.md). After editing `contact.html` text, regenerate the contact-sheet PDF (README).
@@ -212,8 +214,8 @@ Goal (owner, 2026-11-07): go through the site page by page, from Home down, refi
   - [x] X5 Token pass (D45): `--radius-soft` (6px), `--radius-pill`, `--speed-fast/--speed/--speed-slow`, `--tracking-caps`. Replaced 6 pill radii, 8 letter-spacings, 16 transition times, a stray `15px` and a `#FFFFFF`. Times were rounded onto the scale: Art frames 250 → 300ms, the menu ▸ 200 → 150ms.
   - [x] X6 Profile card popover (D46): first a band over the stripes (owner), then, since the owner disliked the overlap, a **golden rectangle** (width = φ × height, measured 734 × 457 = 1.607 at 1440) that never crosses the stripes and is centred, so both sides match. Previews: A golden (picked), B the text column (2.3:1), C widest clear of the stripes (2.6:1). 6px corners. Fixed a bug: `--about-radius` lived on `.story`, outside which the popover sits, so its corners were square.
   - [x] X7 CAD "All projects" label no longer sits on the first sheet's frame; Home's "View projects" link is a step smaller and sentence case, like the hero button.
-  - [ ] X8 One button style: the site has three (body-font pills on Home and Contact, mono pills on Art, About and Home's "Next card", CAD's square caps). Previews first, then a shared class in `styles.css`.
-  - [ ] X9 Home hero at 1440: the text sits at the top with empty space under it, beside the taller card stack. Preview centring it.
+  - [ ] X8 One button style (in the launch freeze, owner 2026-11-20): the site has three (body-font pills on Home and Contact, mono pills on Art, About and Home's "Next card", CAD's square caps). Previews first, then one shared `.button` class (plus a filled variant) in `styles.css`, and the copies come out of the page files. Branch `feat/buttons`.
+  - [ ] X9 Home hero at 1440: the text sits at the top with empty space under it, beside the taller card stack. Preview centring it. **After launch** (freeze, D47).
 
 ## Phase L: Launch
 
@@ -227,14 +229,21 @@ Goal (owner, 2026-11-07): go through the site page by page, from Home down, refi
   - Favicon (stripe A).
   - Open Graph preview tags.
   - `.nojekyll`.
+  - `<meta name="robots" content="noindex">` on every page until launch, so search engines skip the staging site. **Removing it is the launch.**
 - [ ] **L2** `feat/csp-404` (was 5.2):
   - A CSP via `<meta>`, because GitHub Pages can't set headers.
   - `rel="noopener noreferrer"` on external links.
   - An `innerHTML` audit.
   - A plain `404.html` with the site header (4.2 dresses it up later).
+- [ ] **L3a Staging** (owner, right after L1 merges; D47): turn on GitHub Pages from `main` and don't share the address. Every merge after that is tested on a real phone at the real URL, so launch day is only "remove `noindex`, send the link".
 - [ ] **L3 Go live** (owner, was 5.1):
-  - Turn on GitHub Pages.
+  - Pages is already on (L3a): remove the `noindex` tag (its own small PR).
   - GitHub settings: the ruleset is done ✅. Still to do: secret scanning and push protection, Actions read-only, wiki off, "Automatically delete head branches".
+- [ ] **L4a Automatic checks** (`ci/site-checks`, owner 2026-11-20: "full test"; D47). Added to the existing GitHub workflow, so they run on GitHub's servers for every PR; nothing is installed locally and the site keeps no build step:
+  - **lychee:** every link and image path on every page.
+  - **pa11y-ci:** accessibility (contrast, alt text, labels) on each page, in a headless browser.
+  - **Lighthouse CI:** performance, accessibility, SEO and best-practice scores, with minimum scores that fail the PR.
+  - Each tool's version is pinned, like `vnu-jar`. Not added: stylelint (CLAUDE.md says no linter) and screenshot diffing (too heavy for six pages).
 - [ ] **L4 Audit** (was 5.5): Lighthouse, plus a real-phone test on the live URL.
 - [ ] **L5 Custom domain** (optional, was 5.6). `.dev` requires HTTPS, which GitHub Pages provides.
 
@@ -291,6 +300,8 @@ Design doc first (art style, room ↔ section map, controls), then build in smal
 - **Featured = a JSON flag** (D26): projects with `"featured": true` become cards; the rest stay in the catalog, so the stack never overflows.
 
 **🌆 Dusk theme** (owner asked 2026-11-15, "dusk should be a middle ground"): a true middle colour can't carry today's text. On the halfway grey every text colour fails WCAG (ink 2.8, grey 1.2, links 1.7–2.8); only pure white or black pass (~4.5). A real Dusk would be a third theme with its own roles (all text white, no grey captions, underlined links), like Moss (D36). Parked: the dimmer is frozen until launch; D41 already goes as far toward the middle as contrast allows.
+
+**🪸 Coral highlights** (owner, 2026-11-20; a token option, after launch): a cream page (`--color-cardstock`) with pine text and coral for the highlight role (rings, underlines, markers). Only role tokens change, no page CSS. Check first: the palette's coral, `--color-chochin` #FF7A59, is about 2.4:1 on cream, and rings and underlines need 3:1 (WCAG 1.4.11), so it needs a deeper coral: #D9502E is 3.8:1 (passes for rings and lines, still not for small text). Preview it against today's white + jade.
 
 **🔍 Code Lens**: a magnifying-glass toggle. A circular lens follows the cursor (or a finger on touch screens) and shows the page's *own source code* "underneath" the rendered page, as if seeing through it.
 - **Live, not screenshots.** The page fetches its own source (`fetch(location.href)`, plus its CSS/JS files), so the lens is always up to date. Screenshots would go stale after every change.
@@ -372,6 +383,7 @@ Design doc first (art style, room ↔ section map, controls), then build in smal
 | D44 | About is a short first-person story (owner's pick B after previews A/B): photo, Origin / Now / Next, a photo row, one pull quote, the facts at the end; the trading card opens in an HTML `popover`. Site-wide, Cinzel is for page titles only; `h2`/`h3` use the body font, and a heading that wants Cinzel asks by class | Owner, 2026-11-16: daz's professionalism first. daz's About is short sections and photos, with nothing boxed. The encyclopedia layout said the name four times and repeated the nav and footer. The card stays (owner) without crowding the text; `popover` gives Esc, click-outside and the top layer with no JS, so nothing to load or allow in the CSP. One display font on one element per page makes the title the thing that stands out |
 | D45 | Corners, motion and caps spacing are tokens: `--radius-soft` 6px (photos, floating panels), `--radius-pill`, three speeds (150 / 300 / 450ms), `--tracking-caps` 0.08em. A value used on one page by one thing stays a local page token | The same number typed in 6–9 places drifts (250ms here, 300ms there), and a page-level token is invisible to an element outside its box (the popover's square corners). Three speeds are enough to tell "respond", "move" and "glide" apart |
 | D46 | Floating panels are sized by rule, not by eye: width = `min(φ × height, window − stripe clearance on both sides)`, where the height comes from the content and the clearance is the stripes' gap + the stripes + `--space-4`. Centred, so both sides match | Owner, 2026-11-16: a full-width band over the stripes looked wrong (a 3:1 strip crossing the page's signature). φ already sets other spacing (`--golden`); the clearance keeps the stripes uncovered at every width, and min() hands over to it on phones |
+| D47 | Launch freeze: only Phase L, X8, fixes and content until launch. Pages goes on early as an unshared staging site with `noindex`; launch = removing the tag. lychee, pa11y-ci and Lighthouse CI run on every PR. PRs stay at about 5 files | Owner, 2026-11-20, after a 700-line PR was merged in 92 seconds. Testing on the real URL catches what local screenshots can't (real phones, paths in a subfolder). The checks catch dead links and contrast slips that a quick review misses. Small PRs are the only ones a person actually reads |
 | D17 | Skeleton and layout are separate PRs; keep the `#page` wrapper; the width cap is a reusable `.wrapper` class; two `rem` breakpoints | Smaller reviews; respects the owner's structure; a class can be reused, and the carousel can skip it when it needs more width; breakpoints give more control than fluid sizing alone |
 
 ## Open questions
