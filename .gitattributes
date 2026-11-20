@@ -1,0 +1,14 @@
+# Line endings: store every text file with LF (Unix style) in the repo, whatever the computer.
+# Windows git (core.autocrlf=true) was printing "LF will be replaced by CRLF" on every add.
+# "text=auto" lets git decide what is text; "eol=lf" keeps LF in your working copy too,
+# so the files on disk match what GitHub, the validator and the browser see.
+* text=auto eol=lf
+
+# Binary files: never convert line endings and never try to diff or merge them as text.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.woff2 binary
+*.pdf binary
+*.zip binary
