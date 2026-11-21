@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30">
+  <!-- Favicon "stripe A" (L1): the five 70s stripes from the right edge of every page.
+       An SVG favicon is drawn as its own little document, so it can't read styles.css or
+       the site's theme dimmer. Its <style> picks each colour BY CLASS (.s1 to .s5), and a
+       media query swaps them for the night greys when the visitor's computer is in dark mode -->
+  <style>
+    .s1 { fill: #3B5BA5; } /* gunjo */
+    .s2 { fill: #59877D; } /* jade */
+    .s3 { fill: #909E87; } /* sage */
+    .s4 { fill: #D0C0A0; } /* sand */
+    .s5 { fill: #B0204C; } /* beni */
+    @media (prefers-color-scheme: dark) {
+      /* The same light-to-dark greys the stripes fade to at night (styles.css, D43) */
+      .s1 { fill: #EDEDED; }
+      .s2 { fill: #BFBFBF; }
+      .s3 { fill: #8F8F8F; }
+      .s4 { fill: #636363; }
+      .s5 { fill: #3D3D3D; }
+    }
+  </style>
+  <!-- Rounded corners: everything inside the group is clipped to one rounded square -->
+  <clipPath id="round"><rect width="30" height="30" rx="5"/></clipPath>
+  <g clip-path="url(#round)">
+    <rect class="s1" x="0"  width="6" height="30"/>
+    <rect class="s2" x="6"  width="6" height="30"/>
+    <rect class="s3" x="12" width="6" height="30"/>
+    <rect class="s4" x="18" width="6" height="30"/>
+    <rect class="s5" x="24" width="6" height="30"/>
+  </g>
+</svg>
