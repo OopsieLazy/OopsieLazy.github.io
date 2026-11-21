@@ -34,11 +34,14 @@ function tiltFor(n) {                    // fractions of --salon-tilt / --salon-
     return { tilt, nudge, lift };
 }
 
-// Wide, tall or big, from the photo's own shape (or "size" in the JSON to choose by hand)
+// Wide, tall or big, from the photo's own shape (or "size" in the JSON to choose by hand).
+// ratio = width / height. A one-cell frame is square MINUS its label, so its opening is landscape:
+// any portrait photo (ratio under 1) needs the tall frame, or object-fit: cover crops it to a strip.
+// (Was "0.7 or less": 4:5 photos, 0.8, landed in one cell and showed as a thin band, 2026-11-20)
 function sizeFor(piece) {
     if (piece.size) return piece.size;
     const ratio = piece.w / piece.h;
-    return ratio >= 1.6 ? "wide" : ratio <= 0.7 ? "tall" : "";
+    return ratio >= 1.6 ? "wide" : ratio < 1 ? "tall" : "";
 }
 
 /* ---------- Building one piece ---------- */
