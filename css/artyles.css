@@ -1,6 +1,9 @@
-/* Browse Art page (task 2.4, owner's pick): a "salon hang".
-   Framed pictures of mixed sizes packed onto the page, each a little crooked, with a
-   straight museum label under each. Shared header, tokens and footer live in styles.css */
+/* Browse Art page (R4e, D48, owner's pick A after research and previews A/B/C).
+   An index grid like brittanybravo.com: bare photos, never cropped, in rows of three,
+   with a quiet caption under each. No frames, mats, shadows or tilt: the work is the colour.
+   (It was a "salon hang" of tilted gilded frames, 2.4 / D42; the class names .salon and .frame
+   are kept from then, so the HTML and script didn't have to change.)
+   Shared header, tokens and footer live in styles.css */
 
 .art-head {
   margin-block: 0 var(--space-5);   /* the top comes from --page-top (styles.css) */
@@ -20,7 +23,7 @@
 
 /* Small mono label, the same look as the other pages' section labels */
 .art-label {
-  margin: var(--space-6) 0 var(--space-5);
+  margin: var(--space-6) 0 var(--space-4);
   font-family: var(--font-mono);
   font-size: var(--step--1);
   font-weight: 400;
@@ -30,124 +33,50 @@
 }
 
 /* =========================================================
-   THE WALL. A grid of cells on the plain page background; a piece spans
-   1 or 2 cells. grid-auto-flow: dense lets a small piece fill a gap that
-   a big one left behind, so the wall stays packed whatever the HTML order
+   THE GRID. Three columns, rows read left to right (so the order a
+   visitor drags into is the order they see). 2 columns on tablets,
+   1 on phones. align-items: start lets each photo keep its own height:
+   a 2:3 photo next to 4:5 ones makes the row's bottom edge uneven, as
+   on the reference site, instead of cropping anything
    ========================================================= */
 .salon {
-  --cell: 9rem;                        /* one grid cell: frame + its label */
-
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(var(--cell), 40%), 1fr));
-  grid-auto-rows: var(--cell);
-  grid-auto-flow: dense;
-  gap: var(--space-6) clamp(var(--space-4), 3vw, var(--space-6));
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-7) var(--space-5);      /* more space between rows than columns: the caption needs it */
+  align-items: start;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.salon > .is-wide { grid-column: span 2; }
-.salon > .is-tall { grid-row: span 2; }
-.salon > .is-big  { grid-column: span 2; grid-row: span 2; }
+@media (width < 56rem) {
+  .salon { grid-template-columns: repeat(2, 1fr); }
+}
 
-/* One piece = the frame (fills the space) + the label (its own height) */
+@media (width < 37.5rem) {
+  .salon { grid-template-columns: 1fr; }
+}
+
 .piece {
-  display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
-  gap: var(--space-2);
-  height: 100%;
   margin: 0;
 }
 
-/* =========================================================
-   THE FRAME. The link itself is the frame: border = moulding,
-   padding = mat, the picture fills the rest.
-
-   The moulding trick: each side of a border can have its own colour,
-   and the browser joins them at 45°. Light on top, mid on the sides,
-   dark at the bottom reads as a carved moulding lit from above, with
-   real mitred corners. Colours are objects (the same in every theme),
-   so they live here as local variables, one set per moulding.
-
-   Tilt and offset are fractions of the design tokens --salon-tilt and
-   --salon-nudge in styles.css: change those, not the numbers below
-   ========================================================= */
+/* The link around the photo. The pale surface shows while the photo loads,
+   in the photo's exact shape (its width/height attributes reserve the space) */
 .frame {
-  /* Gilt (the default moulding) */
-  --frame-light: #E8CB86;
-  --frame-mid: #C49B4D;
-  --frame-dark: #8A6526;
-  --frame-width: 0.8rem;
-  --mat-width: 0.6rem;
-  /* Tilt and offset: fractions stamped on each piece by js/artcript.js (--tilt-f etc.),
-     times the design tokens --salon-tilt / --salon-nudge in styles.css. 0 = hangs straight */
-  --tilt: calc(var(--salon-tilt) * var(--tilt-f, 0));
-  --nudge: calc(var(--salon-nudge) * var(--nudge-f, 0));
-  --lift: calc(var(--salon-nudge) * var(--lift-f, 0));
-
   display: block;
-  height: 100%;
-  padding: var(--mat-width);
-  border: var(--frame-width) solid;
-  border-color: var(--frame-light) var(--frame-mid) var(--frame-dark) var(--frame-mid);
-  background: var(--color-washi);      /* the paper mat */
-  box-shadow:
-    inset 0 0 0 1px rgb(0 0 0 / 0.35),               /* the moulding's inner lip */
-    inset 0.15rem 0.2rem 0.35rem rgb(0 0 0 / 0.25),  /* the frame's shadow on the mat */
-    0 0 0 1px rgb(0 0 0 / 0.4),                      /* crisp outer edge */
-    0 0.6rem 1rem -0.3rem rgb(0 0 0 / 0.45);         /* hanging a little off the wall */
-  /* rotate and translate are separate properties (not one transform),
-     so the hover can straighten one without wiping out the others */
-  rotate: var(--tilt);
-  translate: var(--nudge) var(--lift);
-  transition: rotate var(--speed) ease, translate var(--speed) ease, scale var(--speed) ease;
+  background: var(--color-surface);
+  transition: scale var(--speed) ease;
 }
 
+/* Whole photo, its own shape: width fills the column, height follows (never cropped) */
 .frame img {
   display: block;
   width: 100%;
-  height: 100%;
-  object-fit: cover;                   /* fill the opening, crop the edges, never stretch */
-  /* The mat's bevelled cut: a thin white edge with a faint line around it */
-  border: 0.15rem solid var(--color-paper);
-  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.18);
+  height: auto;
 }
 
-/* Mouldings. js/artcript.js stamps data-wood on each piece from its number in art.json (cycles of
-   different lengths, so they mix irregularly). On the PIECE, not :nth-child(), so a frame keeps its
-   wood when a visitor drags it somewhere else */
-.salon > [data-wood="walnut"] .frame {
-  --frame-light: #8C603E;
-  --frame-mid: #6B4429;
-  --frame-dark: #432815;
-  --frame-width: 0.7rem;
-}
-.salon > [data-wood="oak"] .frame {          /* light oak */
-  --frame-light: #DDBE88;
-  --frame-mid: #BC935A;
-  --frame-dark: #8C6739;
-  --frame-width: 0.6rem;
-}
-.salon > [data-wood="black"] .frame {        /* thin black, wide mat: the modern one */
-  --frame-light: #4A4A4A;
-  --frame-mid: #2A2A2A;
-  --frame-dark: #121212;
-  --frame-width: 0.4rem;
-  --mat-width: 1rem;
-}
-
-/* Hover or keyboard focus: someone straightens the crooked frame */
-.salon > li:hover .frame,
-.salon > li:focus-within .frame {
-  position: relative;
-  z-index: 1;                          /* above its tilted neighbours */
-  rotate: 0deg;
-  translate: 0 0;
-  scale: 1.03;
-}
-
-/* styles.css colours focused links instead of drawing a ring; a frame needs a real ring */
+/* styles.css colours focused links instead of drawing a ring; a photo needs a real ring */
 .frame:focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 4px;
@@ -155,7 +84,28 @@
 }
 
 /* =========================================================
-   REORDERING (R4, D42): drag a frame, or Alt + arrow keys, like sliding
+   THE CAPTION: title in ink, then the detail and year in small mono capitals.
+   Always visible (the reference shows titles on hover only, which keyboard and
+   touch visitors never see)
+   ========================================================= */
+.piece figcaption {
+  margin-top: var(--space-2);
+  font-size: var(--step--1);
+  line-height: 1.4;
+  color: var(--color-ink);
+}
+
+.label-meta {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  color: var(--color-muted);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+/* =========================================================
+   REORDERING (R4, D42): drag a photo, or Alt + arrow keys, like sliding
    tasks up and down a list. js/artcript.js moves the <li>; CSS only styles it
    ========================================================= */
 .art-tools {
@@ -169,7 +119,6 @@
   color: var(--color-muted);
 }
 
-/* Same outline pill as Home's "Next card" button */
 /* Touch screens can't hover, so (hover: none) tells phones apart from mouse-and-keyboard
    computers: each gets the hint for how IT rearranges */
 .hint-touch { display: none; }
@@ -184,6 +133,7 @@
   display: none;
 }
 
+/* Same outline pill as Home's "Next card" button (X8 will make one shared button class) */
 .art-tools button {
   padding: var(--space-1) var(--space-4);
   border: 1px solid var(--color-accent);
@@ -203,11 +153,11 @@
 
 .salon > li {
   cursor: grab;
-  -webkit-touch-callout: none;         /* iOS: no "save image" menu on a long press (that's how you pick a frame up) */
+  -webkit-touch-callout: none;         /* iOS: no "save image" menu on a long press (that's how you pick a photo up) */
 }
 
-/* The frame being dragged: lifted above the rest, a bigger shadow, and invisible to the pointer,
-   so the script can see which frame is UNDER it (document.elementFromPoint) */
+/* The photo being dragged: lifted above the rest with a soft shadow, and invisible to the pointer,
+   so the script can see which photo is UNDER it (document.elementFromPoint) */
 .salon > li.is-dragging {
   position: relative;
   z-index: 10;
@@ -216,42 +166,12 @@
 }
 
 .salon > li.is-dragging .frame {
-  rotate: 0deg;
-  scale: 1.06;
-  box-shadow:
-    inset 0 0 0 1px rgb(0 0 0 / 0.35),
-    0 0 0 1px rgb(0 0 0 / 0.4),
-    0 1.5rem 2rem -0.6rem rgb(0 0 0 / 0.5);
-}
-
-/* While sorting, the other frames don't straighten on hover: only the dragged one moves */
-.salon.is-sorting > li:not(.is-dragging):hover .frame {
-  rotate: var(--tilt);
-  translate: var(--nudge) var(--lift);
-  scale: 1;
+  scale: 1.03;
+  box-shadow: 0 1.5rem 2rem -0.75rem rgb(0 0 0 / 0.35);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .frame {
     transition: none;
   }
-}
-
-/* =========================================================
-   THE LABEL. Straight, under the frame, like a museum wall label:
-   title in ink, the detail (page, year) smaller in muted mono
-   ========================================================= */
-.piece figcaption {
-  text-align: center;
-  font-size: var(--step--1);
-  line-height: 1.3;
-  color: var(--color-ink);
-}
-
-.label-meta {
-  display: block;
-  font-family: var(--font-mono);
-  font-size: var(--step--2);
-  color: var(--color-muted);
-  letter-spacing: 0.04em;
 }

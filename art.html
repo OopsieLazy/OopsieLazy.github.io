@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- CONTENT: the tab title and the text search engines and link previews show -->
         <title>Browse Art · Zach Nott</title>
-        <meta name="description" content="Art journals and photography by Zach Nott, hung salon-style.">
+        <meta name="description" content="Art journals and photography by Zach Nott.">
         <!-- Staging (L1, D47): search engines skip the site until launch. Removing this line IS the launch (L3) -->
         <meta name="robots" content="noindex">
         <!-- The five stripes; an SVG icon stays sharp at any size and switches to greys in dark mode -->
@@ -119,8 +119,8 @@
 
             <!-- Landmarks: screen readers can jump straight to main or footer. The skip link targets #content -->
             <main id="content" class="site-main wrapper">
-                <!-- Browse Art (task 2.4, R4, D42): a "salon hang", framed pictures packed in mixed sizes,
-                     each a little crooked, with a straight label underneath. Visitors can reorder the frames.
+                <!-- Browse Art (R4e, D48): an index grid, bare photos in rows of three with a caption under each
+                     (owner's pick A, after brittanybravo.com). Visitors can reorder them (D42).
                      The pieces come from data/art.json, built by js/artcript.js.
                      TO ADD ART: drop the photos into assets/images/art/, run  python tools/art.py
                      (it strips EXIF/GPS, shrinks them and lists them in art.json), then fix each new
@@ -134,8 +134,8 @@
                         <button type="button" id="art-shuffle">Shuffle</button>
                         <button type="button" id="art-reset">Reset</button>
                         <!-- One hint per kind of device (artyles.css, "hover" media feature) -->
-                        <span class="hint-pointer">Drag a frame to rearrange · Alt + arrow keys on a keyboard</span>
-                        <span class="hint-touch">Press and hold a frame, then drag it</span>
+                        <span class="hint-pointer">Drag a photo to rearrange · Alt + arrow keys on a keyboard</span>
+                        <span class="hint-touch">Press and hold a photo, then drag it</span>
                     </div>
                     <!-- Read out after a move ("Placeholder 3, position 2 of 8"). role="status" = polite live region -->
                     <p class="screen-reader-text" id="art-status" role="status"></p>

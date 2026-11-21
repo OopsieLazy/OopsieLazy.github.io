@@ -20,7 +20,7 @@ Use a local server rather than double-clicking the file, because JS modules (Pha
 |---|---|
 | `css/styles.css` | Shared header, footer, design tokens and base styles |
 | `css/cardyles.css` | The Blueprint trading card, shared by Home and About. Wrap each card in a `.card-holder` |
-| `art.html` + `css/artyles.css` + `js/artcript.js` | Browse Art as a salon wall of framed pictures with museum labels, built from `data/art.json`; visitors drag frames (or Alt + arrow keys) to reorder, Shuffle and Reset. `--salon-tilt` / `--salon-nudge` in `styles.css` set how crooked they hang |
+| `art.html` + `css/artyles.css` + `js/artcript.js` | Browse Art as an index grid: bare, uncropped photos in rows of three with a caption under each (R4e), built from `data/art.json`; visitors drag photos (or Alt + arrow keys) to reorder, Shuffle and Reset |
 | `tools/art.py` | Run on your computer, not the site: lists the photos in `assets/images/art/` in `data/art.json` and strips their location data (see Add art) |
 | `code.html` + `css/codyles.css` + `js/codcript.js` | Code Portfolio: every project a library catalog card, built from `data/code.json` (add one entry to add a project; `"featured": true` puts it in the top row, `"handWritten": true` stamps it, `"source": null` marks a private repo). All the page's sizes are tokens at the top of `codyles.css` |
 | `contact.html` + `css/contyles.css` + `js/contcript.js` | Contact & Résumé as a drawing title block: email with a Copy button, résumé PDF download |
@@ -54,10 +54,10 @@ JSON is strict: double quotes only, a comma between items but **not after the la
 
 1. Put the photos in `assets/images/art/`. Name them like `journal-3-page-5.jpg` or `harbour-2025.jpg`: a name starting with `journal` goes on the Art journals wall, anything else on Photography, and a 4-digit year becomes the label's year.
 2. Run `python tools/art.py` (once before: `pip install Pillow`). It strips EXIF/GPS (phone photos carry the place they were taken), turns photos upright, shrinks anything over 2000 px, renames files to lowercase-kebab-case and adds each new photo to `data/art.json`. `--dry-run` shows what it would do.
-3. In `data/art.json`, fix each new piece's `title`, `detail` (e.g. `"page 5"`) and `alt` (search for `TODO`: alt text describes what's in the picture). Optional `"size": "big"` makes a piece span two cells; otherwise wide and tall come from the photo's shape.
+3. In `data/art.json`, fix each new piece's `title`, `detail` (e.g. `"page 5"`) and `alt` (search for `TODO`: alt text describes what's in the picture). Each photo shows whole, in its own shape: nothing is cropped.
 4. Commit the photos and `art.json` together. The placeholders disappear as soon as one real piece exists.
 
-The frame's wood and tilt come from the piece's place in the file, and stay with the piece when a visitor drags it.
+The order in `art.json` is the order on the page, until a visitor drags photos around (remembered on their device only; Reset brings yours back).
 
 ## Add About photos
 
