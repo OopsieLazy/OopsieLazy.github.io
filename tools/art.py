@@ -15,6 +15,10 @@ writes it for you, so adding art is:
 What it does to each photo (and why):
   - Strips EXIF metadata: phone photos carry the GPS position where they were taken,
     plus the phone model and time. The repo is public, so that would publish your location.
+    The XMP block (editing notes, camera, time) goes too.
+  - KEEPS the colour profile (ICC). It isn't personal: it tells the browser which colour space the
+    numbers are in. Phones and editors often save Display P3; without the profile a browser reads
+    P3 numbers as plain sRGB and the photo looks duller and shifted (found 2026-11-20).
   - Turns the picture upright first (phones often store "rotate me" in EXIF instead).
   - Shrinks anything over MAX_SIDE pixels: a 12-megapixel photo is ~4 MB, far too heavy for a web page.
   - Records its width and height, so the page can reserve the space before it loads (no jumping).
@@ -63,6 +67,7 @@ def clean_photo(path, dry_run):
     target = path.with_name(kebab(path.stem) + path.suffix.lower().replace(".jpeg", ".jpg"))
     with Image.open(path) as image:
         had_metadata = bool(image.info.get("exif")) or bool(image.getexif())
+        colour_profile = image.info.get("icc_profile")  # read it now, from the original file
         upright = ImageOps.exif_transpose(image)       # apply the EXIF rotation to the pixels
         too_big = max(upright.size) > MAX_SIDE
         if too_big:
@@ -72,11 +77,16 @@ def clean_photo(path, dry_run):
     # (exif_transpose returned a separate, fully loaded copy, so the pixels are still here)
     if dry_run or not (had_metadata or too_big or target != path):
         return target, width, height
-    # Saving a NEW image without passing exif= writes no metadata at all
+    # Saving a NEW image writes only what we pass: no exif= means no EXIF, no xmp= means no XMP.
+    # icc_profile= puts back the one thing we want kept (None for photos that had none)
     if target.suffix == ".jpg":
-        upright.convert("RGB").save(target, quality=JPEG_QUALITY, optimize=True, progressive=True)
+        # A profile only fits the pixels it describes. convert("RGB") changes CMYK (some scanners)
+        # or greyscale pixels into RGB, and their old profile would then be wrong: drop it for those
+        rgb_profile = colour_profile if upright.mode in ("RGB", "RGBA") else None
+        upright.convert("RGB").save(target, quality=JPEG_QUALITY, optimize=True, progressive=True,
+                                    icc_profile=rgb_profile)
     else:
-        upright.save(target, optimize=True)
+        upright.save(target, optimize=True, icc_profile=colour_profile)
     if target != path:
         path.unlink()                                  # the renamed copy replaces the original
     print(f"  cleaned  {target.name}  ({width} x {height}"
@@ -141,7 +151,9 @@ def main():
     if dry_run:
         print(f"Dry run: {len(kept)} pieces would be listed. Nothing was written.")
         return
-    DATA.write_text(json.dumps(kept, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    # newline="\n": on Windows, Python would otherwise turn every \n into \r\n (CRLF), but the repo
+    # stores LF (.gitattributes), so the file would look changed on every run
+    DATA.write_text(json.dumps(kept, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
     todo = sum(1 for piece in kept if str(piece.get("alt", "")).startswith("TODO"))
     print(f"Wrote {DATA.relative_to(ROOT).as_posix()}: {len(kept)} pieces."
           + (f" {todo} still need a title check and alt text (search for TODO)." if todo else ""))
