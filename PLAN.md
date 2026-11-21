@@ -63,7 +63,7 @@ Each change still goes **works → right** (layout, keyboard, phones) **→ nice
 - **Branch:** `chore/launch-prep`, cut from `main` (in sync with `origin/main`). **Launch freeze (D47):** only launch-bar work, X8 and the owner's content from here. Dice rolls are paused at the owner's request (2026-11-10) until they say to roll.
 - **Merged:** #36 About story, golden popover, tokens (D44–D46). #35 art wall (R4a–c, D42), daz colours (D43).
 - **2026-11-20 (learning session, owner):** review check on #36. It was merged 92 seconds after its first commit, about 700 lines, so it wasn't read; the owner agreed it was far too large. From now on: PRs of about 5 files or fewer, Claude asks the owner questions about the code as it goes, and calls out any drift toward vibe coding (unread diffs, outcome-only prompts). Plan for launch agreed (Phase L below).
-- **Next:** PR 1 `chore/launch-prep` (this: notes, `.gitattributes`, plan) → L1 `chore/launch-basics` → the owner turns on Pages as hidden staging (L3a) → L2 → L4a checks → X8 buttons. The owner's content runs alongside and is the real critical path.
+- **Next:** the launch order table in Phase L: L1 (built 2026-11-20) → L1c Lab menu → L0 repo rename and L3a staging (owner) → L1b share tags → L2 → L4a → X8 → L3. The owner's content runs alongside and is the real critical path.
 - **Polish rule (owner, 2026-11-10):** each polish item gets a done definition first and at most two preview rounds.
 - **Recruiting readiness:** résumé and real email are live. Blocking: not hosted; End Stop Cap and Latch Hinge stats are made up; Art is 56 placeholders. Each R task lists its page's content.
 - **Owner habits:** end every PR with the full git command list (CLAUDE.md). After editing `contact.html` text, regenerate the contact-sheet PDF (README).
@@ -151,6 +151,8 @@ Goal (owner, 2026-11-07): go through the site page by page, from Home down, refi
     - [x] **R2f Full picture in the popup** (owner, 2026-11-15): the picked project's first gallery picture, uncropped (`contain`) in a dashed viewport at the top of the popup, grown in with it; a link to the full-size file. Beside the ring the frame grows to fit the taller popup (`fitSheet()`, measured, eased; instant with reduced motion). Partly reverses R2e's "picture only on the sheet": the sheet crops it square.
     - **Page:** ~~G1 tab title "Projects"~~ → "CAD Portfolio · Zach Nott". G2 the intro is 14 lines on a phone (**owner's text**). ~~G3 empty 4th index cell~~ (`auto-fit`). ~~G4 leftover comment after `</html>`~~.
   - **Owner content** (✱ blocks launch): ✱ real stats for End Stop Cap and Latch Hinge (made up 2026-11-05); ✱ the intro paragraph and tab title; ✱ one square render each (same angle, same background); photos (hero, in use, close-up, scale, iteration lineup), EXIF/GPS stripped; write-up notes (problem, what changed per version, print settings); files to share; MakerWorld links; references.
+  - **Quick, clean pictures** (owner, 2026-11-20: Fusion renders take too long, screenshots look rough). Skip the Render workspace: in the Design workspace use **File → Capture Image**, which saves the viewport at any size (1600 × 1600) with anti-aliasing and an optional transparent background, in seconds. For the same look every time: one camera (the ViewCube's Home view, or a saved Named View), one environment and visual style, grid and ground shadow off. A Render is only worth its time for one hero image.
+  - **Which projects** (owner to list): 3–6 of the strongest beat many. Pick ones with a real problem, more than one version, and ideally a photo of the printed part. For each: name, year, what it does, versions, parts, print time, MakerWorld link. The 13 published designs (About, "Now") are the pool. (Claude can't see Fusion: there's no connector, so the list comes from the owner.)
   - **Kit rules:** metadata stripped (STEP headers can hold your user name and folder paths, 3MF holds slicer profiles); each kit under ~20 MB, since git keeps every version forever; bigger models link to MakerWorld instead.
 - [ ] **R3 Code Portfolio** (`code.html`). Audited 2026-11-10 (Day and Night, 320 / 768 / 1440); the owner's calls are below.
   - [x] **Cards from the owner's GitHub** (owner's pick): MyWeb, INV.OS, GEX Terminal, AUDA in place of the two placeholders. One-liners, tools and statuses were drafted by Claude from each README and are marked `CONTENT` until the owner rewrites them.
@@ -224,18 +226,37 @@ Goal (owner, 2026-11-07): go through the site page by page, from Home down, refi
 - Real name, email, résumé and GitHub (no LinkedIn, owner R1a). No made-up project facts.
 - L1 and L2 are merged. The validator shows 0 errors. Lighthouse accessibility and a real-phone test pass on the live URL.
 
-- [ ] **L1** `chore/launch-basics` (was 5.3):
-  - Real page titles and the footer name.
-  - Favicon (stripe A).
-  - Open Graph preview tags.
-  - `.nojekyll`.
+**Launch order (owner, 2026-11-20).** One branch per row, each merged before the next starts:
+
+| Step | Who | Branch | What |
+|---|---|---|---|
+| L1 | Claude | `chore/launch-basics` | favicon, `.nojekyll`, `noindex`, CAD description |
+| L1c | Claude | `chore/remove-lab-menu` | the hidden Lab dropdown out of all six pages |
+| L0 | owner | (GitHub settings) | rename the repo, then `git remote set-url origin <new url>` |
+| L3a | owner | (GitHub settings) | Pages on, unshared |
+| L1b | Claude | `chore/share-tags` | Open Graph, canonical, `Person` JSON-LD (they need the final address) |
+| L2 | Claude | `feat/csp-404` | security |
+| L4a | Claude | `ci/site-checks` | lychee, pa11y-ci, Lighthouse CI |
+| X8 | Claude | `feat/buttons` | one button class |
+| L3 | owner + Claude | `chore/launch` | remove `noindex`, send the link |
+
+Content (renders, stats, photos, texts) runs alongside and decides the launch date.
+
+- [x] **L1** `chore/launch-basics` (was 5.3), built 2026-11-20:
+  - Real page titles and the footer name: already done in the R tasks.
+  - Favicon "stripe A": `favicon.svg`, the five stripes in a rounded square. Its own `<style>` picks colours by class and switches to the night greys with `prefers-color-scheme` (it can't see the site's dimmer). Checked at 16 / 32 / 64 px on light and dark tabs. Safari may show a letter instead until a PNG fallback is added (L4, if the audit flags it).
+  - `.nojekyll`: GitHub Pages serves the files as they are, without running Jekyll (which hides `_` files and slows each deploy).
   - `<meta name="robots" content="noindex">` on every page until launch, so search engines skip the staging site. **Removing it is the launch.**
+  - SEO check (`searchfit-seo:seo-check`): the CAD page had no description (added, drafted as option A of three, marked `CONTENT`). Descriptions are 58–117 characters, short of the 150–160 guideline: owner's text, before launch. No canonical, Open Graph or JSON-LD yet: L1b.
+- [ ] **L1b** `chore/share-tags`, after L0 and L3a: `og:title`, `og:description`, `og:image` (1200 × 630, a full URL: social sites fetch it from their own servers, so a relative path doesn't work), `og:url`, a canonical link, Twitter card tags and a `Person` JSON-LD (`searchfit-seo:generate-schema`).
+- [ ] **L1c** `chore/remove-lab-menu` (owner, 2026-11-20): remove the hidden Lab dropdown (7 `href="#"` links per page, its toggle button, its CSS and JS). Decide what happens to `thelab.html` once nothing links to it: delete it, or keep it with `noindex` as a private experiment.
+- [ ] **L0 Repo rename** (owner; before L3a, because the Pages address is the repo name: `username.github.io/<repo>/`). GitHub redirects the old address, but update your copy: `git remote set-url origin https://github.com/OopsieLazy/<new-name>.git`. Then the Code page's MyWeb Source link (`data/code.json`) and the README.
 - [ ] **L2** `feat/csp-404` (was 5.2):
   - A CSP via `<meta>`, because GitHub Pages can't set headers.
   - `rel="noopener noreferrer"` on external links.
   - An `innerHTML` audit.
   - A plain `404.html` with the site header (4.2 dresses it up later).
-- [ ] **L3a Staging** (owner, right after L1 merges; D47): turn on GitHub Pages from `main` and don't share the address. Every merge after that is tested on a real phone at the real URL, so launch day is only "remove `noindex`, send the link".
+- [ ] **L3a Staging** (owner, right after L0; D47): turn on GitHub Pages from `main` and don't share the address. Every merge after that is tested on a real phone at the real URL, so launch day is only "remove `noindex`, send the link".
 - [ ] **L3 Go live** (owner, was 5.1):
   - Pages is already on (L3a): remove the `noindex` tag (its own small PR).
   - GitHub settings: the ruleset is done ✅. Still to do: secret scanning and push protection, Actions read-only, wiki off, "Automatically delete head branches".
