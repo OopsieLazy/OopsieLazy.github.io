@@ -1,6 +1,7 @@
-// Browse Art (R4, D42): builds the salon walls from data/art.json and lets visitors reorder them,
-// like sliding tasks up and down a to-do list: drag a frame (or Alt + arrow keys) and the others
-// make room. Shuffle mixes a wall; Reset puts it back. The order is remembered on this device.
+// Browse Art (R4, D42; grid since R4e, D48): builds the walls from data/art.json and lets visitors
+// reorder them, like sliding tasks up and down a to-do list: drag a photo (or Alt + arrow keys) and the
+// others make room. Shuffle mixes a wall; Reset puts it back. The order is remembered on this device.
+// The look (bare photos in a grid) is all CSS (artyles.css); this file only builds and moves them.
 // New pieces come from tools/art.py, which writes art.json from the photos in assets/images/art/.
 // Loaded with `defer` after js/datacript.js (fetchJson, make).
 
@@ -11,42 +12,11 @@ const DRAG_START = 6;                     // px a mouse must move before a press
 const HOLD_MS = 350;                      // touch: press and hold this long to pick a frame up (a swipe still scrolls)
 const lessMotion = matchMedia("(prefers-reduced-motion: reduce)");
 
-/* ---------- Each frame's look belongs to the PIECE, not its place on the wall ----------
-   It used to come from :nth-child() in the CSS, so moving a frame would have changed its wood and
-   tilt. Now it's worked out ONCE from the piece's number in the JSON, with the same overlapping
-   cycles (2, 3, 4, 5, 7), and stamped on the piece: the wall starts out looking the same, and a
-   frame keeps its look wherever you drag it */
-function woodFor(n) {
-    let wood = "gilt";
-    if (n % 3 === 2) wood = "walnut";
-    if (n % 5 === 4) wood = "oak";
-    if (n % 4 === 3) wood = "black";     // later rules win, like later CSS rules did
-    return wood;
-}
+/* ---------- Building one piece ----------
+   (The frames' wood, tilt and wide/tall cell sizes lived here until R4e. The grid needs none of
+   them: each photo keeps its own shape. They're in git history: git log -S "woodFor") */
 
-function tiltFor(n) {                    // fractions of --salon-tilt / --salon-nudge (styles.css)
-    let tilt = 0, nudge = 0, lift = 0;
-    if (n % 2 === 0) { tilt = 0.5; lift = -0.6; }
-    if (n % 3 === 0) { tilt = -0.8; nudge = 0.7; }
-    if (n % 5 === 0) { tilt = 1; nudge = -1; lift = 0.5; }
-    if (n % 7 === 0) { tilt = -0.35; lift = 1; }
-    if (n % 4 === 1) { tilt = -0.6; nudge = -0.4; }
-    return { tilt, nudge, lift };
-}
-
-// Wide, tall or big, from the photo's own shape (or "size" in the JSON to choose by hand).
-// ratio = width / height. A one-cell frame is square MINUS its label, so its opening is landscape:
-// any portrait photo (ratio under 1) needs the tall frame, or object-fit: cover crops it to a strip.
-// (Was "0.7 or less": 4:5 photos, 0.8, landed in one cell and showed as a thin band, 2026-11-20)
-function sizeFor(piece) {
-    if (piece.size) return piece.size;
-    const ratio = piece.w / piece.h;
-    return ratio >= 1.6 ? "wide" : ratio < 1 ? "tall" : "";
-}
-
-/* ---------- Building one piece ---------- */
-
-function buildPiece(piece, n) {
+function buildPiece(piece) {
     // SECURITY: the frame is a link to the picture, and an href can run code ("javascript:…").
     // Only our own image folder is allowed, so a typo or a pasted URL can't become a link
     if (!/^assets\/images\/[\w./-]+$/.test(piece.src || "")) {
@@ -66,14 +36,6 @@ function buildPiece(piece, n) {
     const item = make("li", "", make("figure", "piece", frame,
         make("figcaption", "", piece.title || "", detail ? make("span", "label-meta", detail) : "")));
     item.dataset.id = piece.id;
-    item.dataset.wood = woodFor(n);
-    const size = sizeFor(piece);
-    if (size) item.classList.add(`is-${size}`);
-    const { tilt, nudge, lift } = tiltFor(n);
-    // CSSOM setProperty: allowed under a strict CSP, unlike a style="" attribute in the HTML
-    item.style.setProperty("--tilt-f", tilt);
-    item.style.setProperty("--nudge-f", nudge);
-    item.style.setProperty("--lift-f", lift);
     return item;
 }
 
@@ -258,7 +220,7 @@ async function initArt() {
         const wall = document.querySelector(selector);
         if (!wall) continue;
         const items = pieces.filter((piece) => piece.kind === kind)
-            .map((piece, i) => buildPiece(piece, i + 1)).filter(Boolean);
+            .map(buildPiece).filter(Boolean);
         wall.replaceChildren(...items);
         wall.closest(".art-room").hidden = items.length === 0;   // no pieces: no empty heading
         applyOrder(wall, saved[kind]);
