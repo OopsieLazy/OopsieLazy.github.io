@@ -129,15 +129,14 @@
                     <h1>Browse Art</h1>
                     <!-- CONTENT: one line about your art journals and photography -->
                     <p>One line about your art journals and photography.</p>
-                    <!-- hidden until js/artcript.js has built the walls: without JS these buttons would do nothing -->
-                    <div class="art-tools" id="art-tools" hidden>
-                        <button type="button" id="art-shuffle">Shuffle</button>
-                        <button type="button" id="art-reset">Reset</button>
-                        <!-- One hint per kind of device (artyles.css, "hover" media feature) -->
-                        <span class="hint-pointer">Drag a photo to rearrange · Alt + arrow keys on a keyboard</span>
-                        <span class="hint-touch">Press and hold a photo, then drag it</span>
-                    </div>
-                    <!-- Read out after a move ("Placeholder 3, position 2 of 8"). role="status" = polite live region -->
+                    <!-- Jump list (R4e-2): plain links to each area ("Nature 3 · Architecture 2"). js/artcript.js
+                         fills it and shows it only from 2 areas up: with one area there's nowhere to jump -->
+                    <nav class="area-jump" id="art-jump" aria-label="Art areas" hidden>
+                        <ul role="list"></ul>
+                    </nav>
+                    <!-- The visible hint sits below the photos; screen readers get the instruction BEFORE them -->
+                    <p class="screen-reader-text">To move a photo, focus it and press Alt with an arrow key.</p>
+                    <!-- Read out after a move ("Looking Up, position 2 of 3"). role="status" = polite live region -->
                     <p class="screen-reader-text" id="art-status" role="status"></p>
                 </header>
 
@@ -149,9 +148,20 @@
 
                 <section class="art-room" aria-labelledby="photos-title">
                     <h2 id="photos-title" class="art-label">Photography</h2>
-                    <ul class="salon" id="wall-photos" role="list"></ul>
+                    <!-- One heading + grid per area ("area" in art.json: Nature, Architecture…), built by js/artcript.js.
+                         Photos without an area share one grid with no sub-heading -->
+                    <div id="photo-areas"></div>
                 </section>
 
+                <!-- Below the photos (owner, 2026-11-22): nothing stands between the intro and the work, like the reference.
+                     Hidden until js/artcript.js has built the walls: without JS these buttons would do nothing -->
+                <div class="art-tools" id="art-tools" hidden>
+                    <button type="button" id="art-shuffle">Shuffle</button>
+                    <button type="button" id="art-reset">Reset</button>
+                    <!-- One hint per kind of device (artyles.css, "hover" media feature) -->
+                    <span class="hint-pointer">Drag a photo to rearrange · Alt + arrow keys on a keyboard</span>
+                    <span class="hint-touch">Press and hold a photo, then drag it</span>
+                </div>
                 <noscript>
                     <p>The pieces need JavaScript to load.</p>
                 </noscript>

@@ -6,8 +6,9 @@
 // Loaded with `defer` after js/datacript.js (fetchJson, make).
 
 const ART_URL = "data/art.json";
-const ORDER_KEY = "art-order";            // localStorage: { journal: [ids], photo: [ids] }
-const WALLS = { journal: "#wall-journals", photo: "#wall-photos" };
+// localStorage: { [wall id]: [piece ids] }. "-2" since R4e-2: the walls became one per area, so an
+// order saved in the old shape ({ journal, photo }) is simply left unused instead of misapplied
+const ORDER_KEY = "art-order-2";
 const DRAG_START = 6;                     // px a mouse must move before a press becomes a drag (else it's a click)
 const HOLD_MS = 350;                      // touch: press and hold this long to pick a frame up (a swipe still scrolls)
 const lessMotion = matchMedia("(prefers-reduced-motion: reduce)");
@@ -48,9 +49,9 @@ function readOrder() {
 
 function saveOrder() {
     const order = {};
-    for (const [kind, selector] of Object.entries(WALLS)) {
-        order[kind] = [...document.querySelectorAll(`${selector} > li`)].map((li) => li.dataset.id);
-    }
+    document.querySelectorAll(".salon").forEach((wall) => {
+        order[wall.id] = [...wall.children].map((li) => li.dataset.id);
+    });
     try { localStorage.setItem(ORDER_KEY, JSON.stringify(order)); } catch { /* storage full or blocked */ }
 }
 
@@ -195,6 +196,47 @@ function shuffle(list) {
     return list;
 }
 
+/* ---------- Masonry (owner, 2026-11-22: "cleanly laid out chaotically", like brittanybravo.com) ----------
+   Each photo spans as many tiny grid rows (--masonry-row in artyles.css) as it is tall, so the grid
+   packs it into its column's first free spot. A ResizeObserver re-measures whenever a photo's box
+   changes size (window resized, 3 columns became 2, a caption wrapped), and its callback runs before
+   the browser paints, so the layout never shows unpacked. A span doesn't depend on WHERE a photo is,
+   so dragging and Shuffle need nothing extra. grid-row-end is set through the CSSOM (element.style),
+   which a strict CSP allows, unlike a style="" attribute written into the HTML */
+const masonry = new ResizeObserver((entries) => {
+    for (const { target: li, borderBoxSize } of entries) {
+        const row = parseFloat(getComputedStyle(li.parentElement).getPropertyValue("--masonry-row")) || 4;
+        const height = borderBoxSize?.[0]?.blockSize ?? li.getBoundingClientRect().height;
+        li.style.gridRowEnd = `span ${Math.ceil(height / row)}`;
+    }
+});
+
+function enableMasonry(wall) {
+    wall.classList.add("is-masonry");      // CSS switches to the tiny rows only once spans are coming
+    [...wall.children].forEach((li) => masonry.observe(li));
+}
+
+/* ---------- Areas (R4e-2) ---------- */
+
+// "Street & City" -> "street-city": only a-z, 0-9 and "-", so it's safe inside an id and a #link
+const slug = (text) => text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "area";
+
+// Ids must be unique, or a #link jumps to the wrong place and two walls share a saved order.
+// "Street & City" and "Street City" give the same slug, and an area called "Photos" would take the
+// unnamed wall's id, so a taken slug gets -2, -3… (wall ids already in the HTML are reserved up front)
+const usedSlugs = new Set(["journals", "photos"]);
+function uniqueSlug(text) {
+    const base = slug(text);
+    let candidate = base;
+    for (let n = 2; usedSlugs.has(candidate); n++) candidate = `${base}-${n}`;
+    usedSlugs.add(candidate);
+    return candidate;
+}
+
+// "3" on screen; screen readers hear "3 photos" (the word is screen-reader-only text)
+const count = (n) => make("span", "area-count", String(n),
+    make("span", "screen-reader-text", n === 1 ? " photo" : " photos"));
+
 /* ---------- Start ---------- */
 
 async function initArt() {
@@ -216,35 +258,85 @@ async function initArt() {
     }
 
     const saved = readOrder();
-    for (const [kind, selector] of Object.entries(WALLS)) {
-        const wall = document.querySelector(selector);
-        if (!wall) continue;
-        const items = pieces.filter((piece) => piece.kind === kind)
-            .map(buildPiece).filter(Boolean);
-        wall.replaceChildren(...items);
-        wall.closest(".art-room").hidden = items.length === 0;   // no pieces: no empty heading
-        applyOrder(wall, saved[kind]);
+    const walls = [];                     // every wall on the page with its pieces in JSON order (Shuffle, Reset)
+    const jumps = [];                     // [label, #target, how many] for the jump list
+
+    function fillWall(wall, list) {
+        wall.replaceChildren(...list.map(buildPiece).filter(Boolean));
+        enableMasonry(wall);
+        applyOrder(wall, saved[wall.id]);
         enableDragging(wall, announce);
         enableKeys(wall, announce);
+        walls.push({ wall, list });
+    }
+
+    // Art journals: one wall, already in the HTML. No pieces: the whole section stays hidden
+    const journals = pieces.filter((piece) => piece.kind === "journal");
+    const journalWall = document.querySelector("#wall-journals");
+    if (journalWall) journalWall.closest(".art-room").hidden = journals.length === 0;
+    if (journalWall && journals.length) {
+        fillWall(journalWall, journals);
+        jumps.push(["Art journals", "#journals-title", journals.length]);
+    }
+
+    // Photography: one wall per area, in the order the areas first appear in art.json.
+    // A Map keeps that order (an object would too, mostly; a Map says it on purpose)
+    const photos = pieces.filter((piece) => piece.kind === "photo");
+    const areas = new Map();
+    for (const photo of photos) {
+        const name = (photo.area || "").trim();           // no area = the shared wall without a sub-heading
+        if (!areas.has(name)) areas.set(name, []);
+        areas.get(name).push(photo);
+    }
+    const holder = document.querySelector("#photo-areas");
+    if (holder) holder.closest(".art-room").hidden = photos.length === 0;
+    for (const [name, list] of holder ? areas : []) {
+        const key = name ? uniqueSlug(name) : "photos";
+        const wall = make("ul", "salon");
+        wall.id = `wall-${key}`;
+        wall.setAttribute("role", "list");    // list-style: none makes Safari drop the list meaning
+        if (name) {
+            const heading = make("h3", "area-title", name, count(list.length));
+            heading.id = `area-${key}`;
+            holder.append(heading);
+            jumps.push([name, `#${heading.id}`, list.length]);
+        } else {
+            jumps.push(["Photography", "#photos-title", list.length]);
+        }
+        holder.append(wall);
+        fillWall(wall, list);
+    }
+
+    // A heading that's the only one of its kind says nothing the page doesn't already show (owner,
+    // 2026-11-22: nothing in the way of the work). screen-reader-text hides it from sight only:
+    // screen readers still find it when they jump between headings
+    const rooms = [...document.querySelectorAll(".art-room")].filter((room) => !room.hidden);
+    if (rooms.length === 1) rooms[0].querySelector(".art-label")?.classList.add("screen-reader-text");
+    if (areas.size === 1) holder?.querySelector(".area-title")?.classList.add("screen-reader-text");
+
+    // The jump list: plain links, so Back, bookmarks and "copy link" all work without any code.
+    // Only from 2 places up: with one, there's nowhere to jump to
+    const jump = document.querySelector("#art-jump");
+    if (jumps.length >= 2) {
+        jump.querySelector("ul").replaceChildren(...jumps.map(([label, href, n]) => {
+            const link = make("a", "", label);
+            link.href = href;
+            return make("li", "", link, " ", count(n));
+        }));
+        jump.hidden = false;
     }
 
     document.querySelector("#art-tools").hidden = false;   // the walls exist now, so the buttons can work
 
     document.querySelector("#art-shuffle")?.addEventListener("click", () => {
-        Object.values(WALLS).forEach((selector) => {
-            const wall = document.querySelector(selector);
-            if (wall) reorder(wall, () => wall.append(...shuffle([...wall.children])));
-        });
+        walls.forEach(({ wall }) => reorder(wall, () => wall.append(...shuffle([...wall.children]))));
         saveOrder();
         status.textContent = "Shuffled";
     });
 
     document.querySelector("#art-reset")?.addEventListener("click", () => {
         try { localStorage.removeItem(ORDER_KEY); } catch { /* ignore */ }
-        for (const [kind, selector] of Object.entries(WALLS)) {
-            const wall = document.querySelector(selector);
-            if (wall) reorder(wall, () => applyOrder(wall, pieces.filter((p) => p.kind === kind).map((p) => p.id)));
-        }
+        walls.forEach(({ wall, list }) => reorder(wall, () => applyOrder(wall, list.map((piece) => piece.id))));
         status.textContent = "Back in the original order";
     });
 }

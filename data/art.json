@@ -2,6 +2,7 @@
   {
     "id": "hairy-woodpecker-looking-up-2026",
     "kind": "photo",
+    "area": "Nature",
     "src": "assets/images/art/hairy-woodpecker-looking-up-2026.jpg",
     "w": 1600,
     "h": 2000,
@@ -13,6 +14,7 @@
   {
     "id": "hairy-woodpecker-among-the-berries-2026",
     "kind": "photo",
+    "area": "Nature",
     "src": "assets/images/art/hairy-woodpecker-among-the-berries-2026.jpg",
     "w": 1600,
     "h": 2000,
@@ -24,6 +26,7 @@
   {
     "id": "hairy-woodpecker-last-light-2026",
     "kind": "photo",
+    "area": "Nature",
     "src": "assets/images/art/hairy-woodpecker-last-light-2026.jpg",
     "w": 1333,
     "h": 2000,

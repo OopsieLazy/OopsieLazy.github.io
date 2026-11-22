@@ -80,7 +80,7 @@ Each page pairs with its own stylesheet and script. The names are abbreviated:
 | `projects.html` (CAD Portfolio) | `css/styles.css` + `css/projyles.css` | `js/script.js` + `js/themcript.js` + `js/projcript.js` + `js/datacript.js` + `js/sectcript.js` (project entries from the JSON) |
 | `thelab.html` | inline `<style>` | inline |
 | `aboutme.html` | `css/styles.css` + `css/cardyles.css` + `css/aboutyles.css` | `js/script.js` + `js/themcript.js` |
-| `art.html` (Browse Art) | `css/styles.css` + `css/artyles.css` | `js/script.js` + `js/themcript.js` + `js/datacript.js` + `js/artcript.js` (builds the salon walls from `data/art.json`, drag/keyboard reordering, D42) |
+| `art.html` (Browse Art) | `css/styles.css` + `css/artyles.css` | `js/script.js` + `js/themcript.js` + `js/datacript.js` + `js/artcript.js` (builds the photo grid from `data/art.json`, one grid per photo area, drag/keyboard reordering; D42, R4e) |
 | `code.html` (Code Portfolio) | `css/styles.css` + `css/codyles.css` | `js/script.js` + `js/themcript.js` + `js/datacript.js` + `js/codcript.js` (builds the catalog and flip cards from `data/code.json`, D40) |
 | `contact.html` (Contact & Résumé) | `css/styles.css` + `css/contyles.css` | `js/script.js` + `js/themcript.js` + `js/contcript.js` (rebuilds the email, Copy button) |
 
