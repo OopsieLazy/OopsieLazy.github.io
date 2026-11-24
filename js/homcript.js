@@ -1,170 +1,78 @@
-// Home page: builds the catalog and the featured card stack from data/projects.json (D26).
-// Each project is typed once in the JSON; this script turns it into HTML.
-// Loaded with `defer`, so the page's HTML is already parsed when this runs.
-// loadProjects(), make() and makeImage() come from js/datacript.js, which loads first.
+// Home page (O4, D51): one mosaic of the work, CAD projects and photos mixed, like brittanybravo.com.
+// No words show until a tile is hovered or focused (css/homyles.css), but they're in every link,
+// so screen readers and search engines still get them.
+// (The hero and the featured card stack lived here until O4: git log -S "setupStack")
+// Loaded with `defer` after js/datacript.js (loadProjects, fetchJson, make, makeImage, joinMeta, enableMasonry).
 
-const MAX_FEATURED = 3; // the stack's CSS has a place for 3 cards (data-pos 0, 1, 2)
+const HOME_ART_URL = "data/art.json";
+const EAGER_TILES = 3;   // the first row loads straight away; the rest wait until they're near the screen (lazy)
 
-/* ---------- Catalog: one tile per project ---------- */
-
-// One tile per project (sleek pass, 2026-11-11): picture, name, one meta line, like dazprojects.
-// The description lives on the CAD entry the tile links to, so it isn't repeated here.
-// Only the NAME is a link. Its ::after stretches over the whole tile (css/homyles.css), so the
-// tile is clickable, but a screen reader hears a short link name ("Bridge Guitar").
-// The name is an <h3> under the "All projects" <h2>, so screen-reader users can jump
-// from project to project
-function buildTile(project) {
-    const link = make("a", "", project.name);
-    link.href = projectHref(project); // opens the project's entry on the CAD page
-    const tile = make("article", "catalog-tile",
-        make("div", "tile-art", makeImage(project.image)),
-        make("div", "tile-body",
-            make("h3", "tile-name", link),
-            // joinMeta skips missing parts instead of printing "undefined"
-            make("p", "tile-meta", joinMeta([project.type, project.year]))
-        )
-    );
-    dragOutProject(tile, project); // the whole box drags out (datacript.js)
-    return make("li", "catalog-item", tile);
+// One tile: the picture, and a caption that the CSS hides until hover or focus.
+// The caption is INSIDE the link, so it's the link's name ("Bridge Guitar, CAD · 2025"). That's why the
+// image has alt="": a screen reader would otherwise read the name twice
+function buildTile({ href, src, w, h, title, meta }, index) {
+    const image = makeImage(src);
+    image.decoding = "async";
+    if (index >= EAGER_TILES) image.loading = "lazy";
+    if (w && h) { image.width = w; image.height = h; }   // reserves the shape before it loads: no jumping
+    const link = make("a", "tile", image,
+        make("span", "tile-cap", make("span", "tile-title", title), " ", make("span", "tile-meta", meta)));
+    link.href = href;
+    return make("li", "", link);
 }
 
-function renderCatalog(projects) {
-    const grid = document.querySelector("#catalog-grid");
-    if (grid) grid.replaceChildren(...projects.map(buildTile)); // swaps the list's contents in one step
-}
+// Both lists turned into the same tile shape
+const fromProject = (project) => ({
+    href: projectHref(project),            // its entry on the CAD page
+    src: project.image,
+    title: project.name,
+    meta: joinMeta(["CAD", project.year])
+});
 
-function showCatalogNote() {
-    const grid = document.querySelector("#catalog-grid");
-    if (!grid) return;
-    const link = make("a", "", "Open the CAD portfolio");
-    link.href = "projects.html";
-    grid.after(make("p", "catalog-note", "Projects couldn't load. ", link));
-}
+// SECURITY: only our own image folder, the same check as artcript.js, so a typo or a pasted URL
+// in art.json can't become a picture from somewhere else
+const fromPhoto = (photo) => /^assets\/images\/[\w./-]+$/.test(photo.src || "") && {
+    href: `art.html#piece-${encodeURIComponent(photo.id)}`,   // the photo on the Art page
+    src: photo.src, w: photo.w, h: photo.h,
+    title: photo.title || "Untitled",
+    meta: joinMeta(["Photography", photo.year])
+};
 
-/* ---------- Featured card stack (2.0c) ---------- */
-
-// One Blueprint card. The values in the corners are DERIVED, not typed:
-// card number from its place, "v8" from iterations, stars from difficulty
-function buildCard(project, index, total) {
-    const stats = project.stats || {};
-    // A missing stat shows a dash instead of "undefined"
-    const show = (value, unit = "") => (value === undefined || value === null) ? "–" : `${value}${unit}`;
-    const difficulty = Math.min(5, Math.max(0, stats.difficulty ?? 0)); // keep it within 0–5
-
-    const stat = (icon, value, label) =>
-        make("span", "card-stat", make("span", "card-icon", icon), make("b", "", value), make("small", "", label));
-
-    const card = make("a", "bp-card",
-        make("span", "card-top",
-            make("span", "card-tool", project.tool || "CAD"),
-            make("span", "card-name", project.name),
-            make("span", "card-number", `${twoDigits(index + 1)}/${twoDigits(total)}`)
-        ),
-        make("span", "card-art",
-            makeImage(project.image),
-            make("span", "card-stats",
-                stat("↻", show(stats.iterations), "Iter"),
-                stat("⚙", show(stats.parts), "Parts"),
-                stat("⏱", show(stats.printHours, "h"), "Print"),
-                stat("◆", show(stats.difficulty), "Diff")
-            )
-        ),
-        make("span", "card-type", project.type || ""),
-        make("span", "card-text",
-            make("span", "card-desc", project.description || ""),
-            make("span", "card-flavor", project.flavor || "")
-        ),
-        make("span", "card-foot",
-            make("span", "card-rev", show(stats.iterations && `v${stats.iterations}`)),
-            // Empty stars get their own span so the CSS can fade them (tiny ☆ and ★ look alike)
-            make("span", "card-difficulty",
-                "★".repeat(difficulty),
-                make("span", "star-empty", "☆".repeat(5 - difficulty))
-            ),
-            make("span", "card-date", show(project.year))
-        )
-    );
-    // It's a link because it GOES somewhere (a <button> DOES something on the page).
-    // aria-label gives it a short name; otherwise a screen reader would read every stat
-    card.href = projectHref(project);
-    card.setAttribute("aria-label", `${project.name}, featured project`);
-    card.dataset.name = project.name;
-    dragOutProject(card, project); // the whole card drags out (datacript.js)
-    return card;
-}
-
-// Reusable: give it a container (with .card-stack, .featured-name, .stack-next inside)
-// and the projects to show. Phase 3 can register it as a display without a rewrite
-function setupStack(container, projects) {
-    if (projects.length === 0) return; // nothing featured: the slot stays hidden
-
-    const stack = container.querySelector(".card-stack");
-    const name = container.querySelector(".featured-name");
-    const caption = container.querySelector(".featured-caption");
-    const next = container.querySelector(".stack-next");
-
-    // The ARRAY ORDER is the stack order: cards[0] is always the front card.
-    // JS only reorders this array and renumbers data-pos; CSS does the placing and the motion
-    const cards = projects.map((project, i) => buildCard(project, i, projects.length));
-    stack.append(...cards);
-
-    function update() {
-        cards.forEach((card, pos) => {
-            card.dataset.pos = pos;
-            const isFront = pos === 0;
-            // Back cards leave the Tab order and the screen-reader view: they are a mouse
-            // shortcut only. Keyboard users get the same result from the "Next card" button
-            card.tabIndex = isFront ? 0 : -1;
-            if (isFront) card.removeAttribute("aria-hidden");
-            else card.setAttribute("aria-hidden", "true");
-        });
-        name.textContent = cards[0].dataset.name;
+// Project, photo, project, photo…: the two kinds mixed evenly, like the reference's mosaic
+function interleave(a, b) {
+    const mixed = [];
+    for (let i = 0; i < Math.max(a.length, b.length); i++) {
+        if (i < a.length) mixed.push(a[i]);
+        if (i < b.length) mixed.push(b[i]);
     }
-
-    // One listener on the stack instead of one per card ("event delegation")
-    stack.addEventListener("click", (event) => {
-        const card = event.target.closest(".bp-card");
-        if (!card || card === cards[0]) return; // the front card is a normal link: let it navigate
-        event.preventDefault();                 // a back card swaps to the front instead
-        cards.splice(cards.indexOf(card), 1);   // take it out...
-        cards.unshift(card);                    // ...and put it first
-        update();
-    });
-
-    if (cards.length > 1) {
-        next.hidden = false;
-        next.addEventListener("click", () => {
-            cards.push(cards.shift()); // the front card goes to the back, the next one comes forward
-            update();
-        });
-    }
-
-    update();
-    // Only now: if aria-live were on from the start, the first fill would be announced on page load
-    caption.setAttribute("aria-live", "polite");
-    container.hidden = false;
+    return mixed;
 }
-
-/* ---------- Start ---------- */
 
 async function initHome() {
-    let projects;
-    try {
-        projects = await loadProjects();
-    } catch (error) {
-        // Tell the owner what to fix (console), and tell visitors where to go (page).
-        // The stack slot stays hidden, so the hero is just its text column
-        console.error(`Home not built: check ${PROJECTS_URL} for a typo, and serve the site with "python -m http.server" (fetch is blocked on file://).`, error);
-        showCatalogNote();
+    const grid = document.querySelector("#mosaic");
+    if (!grid) return;
+
+    // allSettled waits for both files and never throws: if one fails, the other still shows
+    const [projects, art] = await Promise.allSettled([loadProjects(), fetchJson(HOME_ART_URL)]);
+    for (const result of [projects, art]) {
+        if (result.status === "rejected") {
+            console.error(`Home: a data file didn't load. Check data/*.json for a typo, and serve the site with "python -m http.server".`, result.reason);
+        }
+    }
+    const projectTiles = projects.status === "fulfilled" ? projects.value.map(fromProject) : [];
+    const photoTiles = art.status === "fulfilled"
+        ? art.value.filter((piece) => piece.kind === "photo").map(fromPhoto).filter(Boolean)
+        : [];
+
+    const tiles = interleave(projectTiles, photoTiles);
+    if (tiles.length === 0) {
+        const link = make("a", "", "Open the CAD portfolio");
+        link.href = "projects.html";
+        grid.after(make("p", "mosaic-note", "The work couldn't load. ", link));
         return;
     }
-
-    renderCatalog(projects);
-
-    const slot = document.querySelector(".featured-slot");
-    if (slot) {
-        setupStack(slot, projects.filter((project) => project.featured).slice(0, MAX_FEATURED));
-    }
+    grid.replaceChildren(...tiles.map(buildTile));
+    enableMasonry(grid);   // datacript.js: packs each tile into the shortest column
 }
 
 initHome();

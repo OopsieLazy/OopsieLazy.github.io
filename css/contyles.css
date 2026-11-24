@@ -166,11 +166,6 @@
     display: none;
   }
 
-  /* No 70s stripes, no right-hand room for them */
-  .site {
-    background: none;
-  }
-
   .site-main {
     padding: 0;
   }

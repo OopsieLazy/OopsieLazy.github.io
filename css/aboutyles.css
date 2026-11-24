@@ -169,14 +169,15 @@
 }
 
 /* =========================================================
-   PROFILE CARD POPOVER: a golden rectangle, clear of the stripes (owner's pick A, D46).
+   PROFILE CARD POPOVER: a golden rectangle, clear of the window edges (owner's pick A, D46).
    Two rules, both worked out from numbers already on the page:
    1. Proportion: width = φ × height (--golden, 1.618). The height is fixed by what's
       inside (padding + the 63:88 card + the Close row), so the width follows from it.
       At 1440px: 455px tall -> 736px wide. (The band it replaced was 3:1, a thin strip.)
-   2. Clearance: never wider than the window minus the stripes on BOTH sides
-      (their gap + the five stripes + a breathing gap), so it never crosses them and
-      stays centred. min() takes whichever rule is smaller: φ on screens, clearance on phones.
+   2. Clearance: never wider than the window minus the page gutter on BOTH sides, so it
+      stays centred with room around it. (It cleared the edge stripes until they became the
+      small mark under the name, O2 / D51.) min() takes whichever rule is smaller: φ on
+      screens, clearance on phones.
    The browser places a popover with position: fixed; inset: 0; margin: auto, so a set
    width + margin: auto centres it both ways. The reset in styles.css zeroes every
    margin, so margin: auto has to be put back here, or it sticks to the top-left
@@ -185,10 +186,10 @@
   --pop-card: 16rem;                  /* the card's width inside the panel */
   --pop-close: 2rem;                  /* the Close button's height (small mono text + padding + border) */
   --pop-height: calc(2 * var(--space-5) + var(--pop-card) * 88 / 63 + var(--space-4) + var(--pop-close));
-  --pop-clear: calc(var(--loop-inset) + var(--loop-width) + var(--space-4));
+  --pop-clear: var(--gutter);
   width: min(var(--golden) * var(--pop-height), 100% - 2 * var(--pop-clear));
   margin: auto;
-  max-height: calc(100dvh - 2 * var(--loop-inset));   /* a phone on its side: scroll, don't cut off */
+  max-height: calc(100dvh - 2 * var(--space-4));   /* a phone on its side: scroll, don't cut off */
   overflow-y: auto;
   padding: var(--space-5);
   border: 1px solid var(--color-line);
