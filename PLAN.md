@@ -45,7 +45,7 @@ The order we follow. Each step finishes before the next starts; only the drum's 
 | 4 | **L: Launch** | Live on GitHub Pages, ready to send to recruiters | ▶ now (2026-11-20) |
 | 5 | 3: Project displays | Film strip, spin reel, grid, display switcher | after launch |
 | 6 | 4: The museum | The walk-through signature feature | after launch |
-| ∥ | Theme drum (1.14b–e) | Built 2026-11-08 (D35); only the sun and moon sprites (1.14c) remain | built |
+| ∥ | Theme drum (1.14b–e) | Built 2026-11-08 (D35); replaced by a round Auto / Day / Night button in O1 (D51) | replaced |
 
 **Launch freeze (owner, 2026-11-20, D47):** nothing new gets built until launch. Allowed: the Phase L tasks, X8 (one button class), R4e (the Art redesign, added by the owner on 2026-11-20, D48), bug fixes, and the owner's content. Everything else goes into Experiments, undated. Each PR stays at about 5 files or fewer (L1 touches all six pages for a line each, the one exception).
 
@@ -83,7 +83,7 @@ Done, closed 2026-11-04 (real-phone test and a Lighthouse accessibility run, bot
 **Parked from Phase 1:**
 
 **Theme thumbwheel ✅ (frozen 2026-11-10).** 1.14b–e done in #29 and #31: a ridged drum under the logo that works as a smooth dimmer. The why is in D35–D38 and the comments in `themcript.js` and the THEME DIMMER section of `styles.css`.
-- [ ] **1.14c** Sprites: the owner draws the sun and moon (pixel art, about 22 × 22, PNG or SVG, metadata stripped). They replace the two `<g>` groups in the drum's `<svg>` (drawn around 0,0). Stand-in shapes until then. **The only theme work left before launch.**
+- [-] **1.14c** Sprites: dropped with the drum (O1, D51). The theme button draws thin line icons (sun, moon, half circle) in the text colour.
 
 **Polish** (done at the phase close): *(add refinements to finished features here)*
 - [x] Theme lantern ran 8 px into the "CAD's Creations" `<h1>` between ~330 and 340 px wide (measured by sweeping every page 300–640 px; only this page). Fixed in `feat/cad-restyle`: on phones that heading keeps a lantern-sized gap.
@@ -187,10 +187,11 @@ Goal (owner, 2026-11-07): go through the site page by page, from Home down, refi
     - [x] **R4e-3** `feat/art-lightbox` (built 2026-11-23): a click opens the photo in a `<dialog>` on the page colour, with visible Previous / Next / Close, arrow keys and Esc; reduced motion respected. Follows the visitor's order across all areas, wraps at the ends, focus returns to the last photo shown, and Ctrl/Cmd-click still opens the file. A fourth photo (*In the Thicket*) went in on the same branch.
   - [x] **D Declutter** (owner, 2026-11-23, D50; merged in #42 with the lightbox). Analysis: `references/reports/Declutter reference analysis 2026-11-23.md` (git-ignored). D-a footer = outside links + © only (name, tagline, page list removed from all six pages). D-b CAD entries lose the double frame: the carousel is the one drawing sheet, entries get a hairline. D-c About's grey boxes: no code, they're the placeholder's loading surface and vanish with real photos (owner content). D-d theme drum narrower (`--drum-width` max(6rem, 8vw)), height kept. D-e Code cards: no resting shadow, sans titles, fainter rules. Also removed: the second "View projects" on Home (beside "All projects"). X8 still owns the four button looks (previews A/B/C shown 2026-11-23).
   - [ ] **O Overhaul** `feat/header-overhaul` (owner, 2026-11-23, D51: "the imagery and overall layout should look similar to" brittanybravo.com). Previews: `x9` (header A/B/C, Home and CAD mockups), `x10` (A1 split / **A2 name centred, links below** (recommended); stripe S1 thin edge / **S2 small mark under the name** (recommended) / S3 About only / S4 removed). The carousel stays (owner: "that's ma baby").
-    - [ ] **O1** Header: "ZACH NOTT" in mono capitals, centred, with five short links (CAD · Code · Art · About · Contact), no hairline; the drum becomes a small round Auto / Day / Night button.
-    - [ ] **O2** Stripe: the owner's pick from S1-S4; the footer becomes one plain line on the page colour.
+    - [x] **O1** Header (owner's pick A1, built 2026-11-23): "Zach Nott" (capitals from CSS) centred between CAD · Code · Art and About · Contact, no band or hairline; the current page is underlined. The drum became a 40px round button (left of the name on phones, right end on desktop) that cycles Auto → Day → Night; `themcript.js` went from 284 to ~70 lines and clears the drum's old saved level. The ZcN logo file stays in `assets/images/`. Tested: 1440 Day/Night, 390 (Menu open and closed), 320, three clicks, validator 0 errors.
+    - [x] **O2** Stripe (owner's pick S2): a 48 × 4px five-stripe mark under the name (greys at Night); the edge band and its right-hand padding are gone, and About's popover now clears the gutter instead. Footer: muted text on the page colour under a hairline.
     - [ ] **O3** Headings in sans instead of Cinzel; X8 shared button, look A (pill, body sans).
-    - [ ] **O4** Home: no hero or trading card; one intro line, then a masonry grid of CAD and photos together.
+    - [x] **O4** Home (built 2026-11-23): the hero, card stack and tile catalog are gone. One masonry mosaic of CAD projects and photos, mixed (project, photo, …), with even 16px gaps; no visible intro (the `<h1>` is screen-reader-only). Owner, same day, from the reference: "no text until the image is hovered", "crisp white borders in a mosaic style". So each title + meta fades in over a 62% dark veil on hover **or keyboard focus**; the words stay inside the link for screen readers. Art's grid got the same captions and gaps (touch visitors read them in the viewer). `enableMasonry` moved to `datacript.js` so both pages share it; Art photos got ids (`art.html#piece-…`) for Home's links. Home no longer loads `cardyles.css`. Tested at 1440 / 390 Day, focus on a tile, validator 0 errors.
+      - Open: the 60-80px `--page-top` gap above the mosaic is larger than the reference's (it's the same on every page by the owner's pick B, 2026-11-08). A smaller gap is a one-token change if wanted.
     - [ ] **O5** CAD entries: big picture, underlined title, one credits line. The carousel keeps its spin, pause and popup and loses its frame.
     - [ ] **O6** Code, About and Contact: a light pass to match.
   - **Owner content:** ✱ photos of journal pages (flat, even light) and more photographs, each with a real title and year; one intro line. The public résumé was checked on 2026-11-20: no phone number or street address, only the town and the public email.
