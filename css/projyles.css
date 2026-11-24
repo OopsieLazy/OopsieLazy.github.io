@@ -8,8 +8,8 @@ html {
 }
 
 /* =========================================================
-   THE CAROUSEL AS A DRAWING SHEET (R2d). The same frame as the entries
-   below (.cad-sheet shares their rule, see THE SHEET), a ruled title
+   THE CAROUSEL AS A DRAWING SHEET (R2d). The page's one framed object
+   (see THE SHEET; the entries lost theirs in D-b), a ruled title
    strip, and a ring of small sheets that projcript.js builds from
    data/projects.json. Every line uses --color-accent, so it follows
    the theme like the entries do
@@ -452,9 +452,10 @@ html {
    bottom are two thin repeating gradients: a 1px line every 12.5%
    (8 zones), only 0.6rem tall, painted in the margin between the lines
    ========================================================= */
-/* The frame alone, shared by the carousel (.cad-sheet, R2d) and every entry */
-.cad-sheet,
-.cad-entry {
+/* The frame: the carousel's sheet only (.cad-sheet, R2d). Declutter (D-b, 2026-11-23): every entry
+   had this double frame too, boxes stacked inside boxes. Now the carousel is the one drawing sheet
+   and the entries are separated by space and a hairline, so the renders are what you see */
+.cad-sheet {
   --sheet-inset: 0.6rem;               /* gap between the two frame lines */
   border: 2px solid var(--color-accent);
   outline: 1px solid var(--color-accent);
@@ -466,12 +467,12 @@ html {
       bottom / 100% var(--sheet-inset) no-repeat;
 }
 
+/* One entry: a hairline on top, no side padding (it lines up with the page text) */
 .cad-entry {
   display: grid;
   gap: var(--space-5);
-  margin-bottom: var(--space-6);
-  /* Side padding shrinks on phones so the 2 × 2 title block keeps room for "ITERATIONS" at 320px */
-  padding: var(--space-6) clamp(var(--space-3), 4vw, var(--space-5)) var(--space-5);
+  padding-block: var(--space-6);
+  border-top: 1px solid var(--color-line);
   /* A jump to #bridge-guitar stops a little above the sheet, not flush with the screen edge */
   scroll-margin-top: var(--space-5);
 }

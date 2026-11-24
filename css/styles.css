@@ -175,9 +175,11 @@
   --golden: 1.618;         /* φ, the golden ratio: used for spacing that should feel "just right" */
   /* The theme dimmer under the logo (THEME DIMMER below, D35, D38). Tune it here.
      Owner, 2026-11-10: wider, and further from the header band */
-  --drum-width: max(7rem, 12vw);      /* how wide the drum is: compact since D43 (was max(11rem, 45vw)) */
+  --drum-width: max(6rem, 8vw);       /* how wide the drum is. Declutter (D-d, 2026-11-23): it was the loudest thing above
+                                         every page title (max(7rem, 12vw) after D43, max(11rem, 45vw) before). Height stays:
+                                         themcript.js draws the face 40 units tall, so a shorter drum would squash it */
   --drum-height: 2.5rem;              /* how tall (40px) */
-  --drum-gap: var(--space-4);         /* space between the header band and the drum (was 4px) */
+  --drum-gap: var(--space-3);         /* space between the header band and the drum (space-4 until D-d, 4px before that) */
   --drum-tag-gap: 2px;                /* drum to its "Auto / Day / Night" label */
   --drum-tag-size: 0.625rem;          /* the label's font size (10px) */
   /* Everything that hangs below the header: gap + drum + label (its line is 1.2 × its size) */
@@ -411,9 +413,11 @@ hr {
    FOOTER: a full-width pine band with white text.
    The band is the <footer>; the content sits in .footer-inner.wrapper, so the
    color reaches the screen edges while the text lines up with the page.
-   One set of markup, two layouts (owner's pick, R1):
-   - Phones (option A): labelled groups on a grid, so each link has an obvious home
-   - From 40rem (option B): everything centered in rows, the labels hidden
+   Declutter (D-a, 2026-11-23): it holds only what the header doesn't, the
+   outside links and the © line. The name, tagline and page list were the
+   header a second time. The band's colour stays: it ends the page.
+   - Phones: the two labelled groups side by side, the © line under them
+   - From 40rem: one row, the links on the left in small caps, © on the right
    ========================================================= */
 .site-footer {
   background-color: var(--color-footer-bg);
@@ -421,20 +425,18 @@ hr {
   font-size: var(--step--1);
 }
 
-/* Phones: two columns. The name, the Pages group and the © line span both;
-   Elsewhere and Get in touch sit side by side underneath */
+/* Phones: two columns, Elsewhere and Get in touch; the © line spans both */
 .footer-inner {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--space-6) var(--space-5);   /* row gap, column gap */
+  gap: var(--space-5);
   align-items: start;
-  padding-block: var(--space-7) var(--space-5);
+  padding-block: var(--space-6);
 }
 
-.footer-brand,
-.footer-nav,
 .footer-copy {
   grid-column: 1 / -1;
+  opacity: 0.75;                        /* quieter than the links; white at 75% is still 4.5+ on pine */
 }
 
 /* display: contents removes this wrapper's own box, so its two groups become
@@ -449,17 +451,7 @@ hr {
   margin: 0;
 }
 
-.footer-name {
-  font-family: var(--font-display);
-  font-size: var(--step-1);
-}
-
-.footer-tagline,
-.footer-copy {
-  opacity: 0.75;                        /* quieter than the links; white at 75% is still 4.5+ on pine */
-}
-
-/* The small group names (Pages, Elsewhere, Get in touch), same feel as .retro-label.
+/* The small group names (Elsewhere, Get in touch), same feel as .retro-label.
    Two classes (0,2,0) beat ".footer-inner p" (0,1,1), so this margin wins the reset above */
 .footer-inner .footer-label {
   margin-bottom: var(--space-3);
@@ -481,31 +473,19 @@ hr {
   list-style: none;
 }
 
-/* Six page links in two columns, so the group isn't a long thin tower */
-.footer-pages {
-  grid-template-columns: 1fr 1fr;
-  column-gap: var(--space-5);
-}
-
-/* The hairline above the © line: the text color at 25%, so it follows the theme
-   instead of hard-coding a white */
-.footer-copy {
-  padding-top: var(--space-4);
-  border-top: 1px solid color-mix(in srgb, currentColor 25%, transparent);
-}
-
-/* Tablet and desktop (option B): one centered column of rows.
-   Name, then the page links, then the outside links in small caps, then the © line */
+/* Tablet and desktop: one row. Links on the left, © on the right */
 @media (min-width: 40rem) {
   .footer-inner {
-    grid-template-columns: 1fr;
-    justify-items: center;
-    gap: var(--space-5);
-    text-align: center;
+    display: flex;
+    flex-wrap: wrap;                    /* a narrow window drops © under the links instead of squeezing */
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-3) var(--space-5);
+    padding-block: var(--space-5);
   }
 
-  /* The group names aren't needed when everything is one centered row, so they're
-     hidden the screen-reader-text way: screen readers still hear "Elsewhere" etc. */
+  /* The group names aren't needed in one row, so they're hidden the
+     screen-reader-text way: screen readers still hear "Elsewhere" etc. */
   .footer-label {
     position: absolute;
     width: 1px;
@@ -515,25 +495,18 @@ hr {
     white-space: nowrap;
   }
 
-  /* Rows instead of columns: flex-wrap keeps them centered and lets them wrap */
+  /* Elsewhere and Get in touch become one small row, split by dots */
   .footer-list,
   .footer-extras {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-    gap: var(--space-2) var(--space-5);
+    gap: var(--space-2) var(--space-4);
   }
 
-  /* Elsewhere and Get in touch become one small row, split by dots */
   .footer-extras {
-    gap: var(--space-2) var(--space-4);
     font-family: var(--font-mono);
     letter-spacing: 0.06em;
     text-transform: uppercase;
-  }
-
-  .footer-extras .footer-list {
-    gap: var(--space-2) var(--space-4);
   }
 
   /* A dot before every link except the very first one. It's decoration from CSS,
@@ -543,10 +516,6 @@ hr {
     content: "·" / "";
     margin-right: var(--space-4);
     opacity: 0.6;
-  }
-
-  .footer-copy {
-    justify-self: stretch;              /* the hairline runs the full width */
   }
 }
 

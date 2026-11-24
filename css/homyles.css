@@ -204,11 +204,6 @@
   margin: 0;
 }
 
-/* The "View projects" link beside it: a step down, so it reads as part of the label row
-   instead of shouting over it (it was body size next to small caps) */
-.catalog-head a {
-  font-size: var(--step--1);
-}
 
 /* auto-FIT, not auto-fill: empty columns collapse, so 3 projects stretch across the
    whole row instead of leaving it half empty. min(--tile-min, 45%) keeps 2 per row on
