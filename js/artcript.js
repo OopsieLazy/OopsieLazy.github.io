@@ -237,6 +237,79 @@ function uniqueSlug(text) {
 const count = (n) => make("span", "area-count", String(n),
     make("span", "screen-reader-text", n === 1 ? " photo" : " photos"));
 
+/* ---------- The viewer (R4e-3): a click opens the photo large ----------
+   One <dialog> in art.html, reused for every photo. It reads everything it shows (picture, alt text,
+   caption) from the grid itself, so it always follows the order the visitor arranged */
+function enableViewer() {
+    const viewer = document.querySelector("#art-viewer");
+    // A browser without <dialog> keeps the plain link: the click opens the photo file
+    if (!viewer || typeof viewer.showModal !== "function") return;
+    const stage = viewer.querySelector(".viewer-stage");
+    const caption = viewer.querySelector(".viewer-caption");
+    const counter = viewer.querySelector(".viewer-count");
+    const prev = viewer.querySelector(".viewer-prev");
+    const next = viewer.querySelector(".viewer-next");
+    let frames = [];                      // every photo link on the page, in the order they're shown now
+    let index = 0;
+
+    function show(i) {
+        index = (i + frames.length) % frames.length;    // wraps around: Next on the last photo shows the first
+        const frame = frames[index];
+        const source = frame.querySelector("img");
+        // A new <img> (not a changed src): the old photo can't linger while the next one loads.
+        // Same file as the grid's, so it usually comes straight from the browser's cache
+        const image = make("img", "");
+        Object.assign(image, { src: frame.getAttribute("href"), alt: source.alt, decoding: "async" });
+        image.width = source.getAttribute("width");     // the attributes (true size), not .width (the size on screen)
+        image.height = source.getAttribute("height");
+        stage.replaceChildren(image);
+        // cloneNode copies the caption's text and spans as elements: no innerHTML, so nothing in
+        // art.json can be turned into markup here (an XSS habit worth keeping)
+        // ?. guards a photo with no caption: an empty caption, instead of an error that would leave the viewer shut
+        const captionSource = frame.closest("figure")?.querySelector("figcaption");
+        caption.replaceChildren(...(captionSource ? captionSource.cloneNode(true).childNodes : []));
+        counter.textContent = `${index + 1} / ${frames.length}`;
+    }
+
+    // Opening: clicks bubble up from any photo link to <main>, so one listener covers every grid
+    document.querySelector("#content").addEventListener("click", (event) => {
+        const frame = event.target.closest(".salon .frame");
+        // defaultPrevented: the drag code already cancelled this click (it ended a drag).
+        // Ctrl/Cmd/Shift/middle click keep their usual meaning: open the file in a new tab or window
+        if (!frame || event.defaultPrevented || event.ctrlKey || event.metaKey || event.shiftKey || event.button) return;
+        event.preventDefault();
+        frames = [...document.querySelectorAll(".salon .frame")];
+        const single = frames.length < 2;
+        prev.hidden = single;
+        next.hidden = single;
+        show(frames.indexOf(frame));
+        viewer.showModal();
+    });
+
+    prev.addEventListener("click", () => show(index - 1));
+    next.addEventListener("click", () => show(index + 1));
+    viewer.querySelector(".viewer-close").addEventListener("click", () => viewer.close());
+
+    viewer.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowLeft") show(index - 1);
+        if (event.key === "ArrowRight") show(index + 1);
+        // Esc needs no code: a modal <dialog> closes on it by itself
+    });
+
+    // A click on the empty space around the photo closes it, like most viewers.
+    // The target is the dialog or the stage only when nothing inside them (photo, buttons) was hit
+    viewer.addEventListener("click", (event) => {
+        if (event.target === viewer || event.target === stage) viewer.close();
+    });
+
+    // Closing (any way: button, Esc, outside click): focus goes back to the photo last shown,
+    // so a keyboard visitor carries on from where they are instead of from the top of the page
+    viewer.addEventListener("close", () => {
+        stage.replaceChildren();
+        frames[index]?.focus();
+    });
+}
+
 /* ---------- Start ---------- */
 
 async function initArt() {
@@ -327,6 +400,7 @@ async function initArt() {
     }
 
     document.querySelector("#art-tools").hidden = false;   // the walls exist now, so the buttons can work
+    enableViewer();
 
     document.querySelector("#art-shuffle")?.addEventListener("click", () => {
         walls.forEach(({ wall }) => reorder(wall, () => wall.append(...shuffle([...wall.children]))));

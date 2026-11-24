@@ -42,19 +42,19 @@
   --ic-top: var(--space-5);            /* top padding = where ruled line 0 sits */
   --ic-pad-x: var(--space-5);          /* left and right padding */
   --ic-pad-bottom: var(--space-7);     /* bottom padding: room for the punched hole */
-  --ic-ruled-ink: 8%;                  /* strength of the blue ruled lines: faint, so they guide, not decorate */
+  --ic-ruled-ink: 5%;                  /* strength of the blue ruled lines: faint, so they guide, not decorate (8% until D-e, 2026-11-23) */
   --ic-hole: 1.1rem;                   /* the punched hole's size */
-  --ic-title-tracking: 0.06em;         /* letter spacing of the typed titles */
+  --ic-title-tracking: 0;              /* letter spacing of the titles (0.06em while they were typed capitals) */
   --ic-chip-radius: 3px;
 
   /* Quiet paper (sleek pass, owner's pick B, 2026-11-11): cream card stock with one soft
      shadow. The grain, tilt and red header rule of the first paper look (pick A) were removed;
      they're in git history (commit 3c710ff) if you ever want them back */
   --paper-radius: 3px;                 /* card stock has softly rounded corners */
-  /* Two shadows: a tight contact line under the edge, and one soft spread below */
-  --paper-shadow:
-    0 1px 2px rgb(0 0 0 / 0.08),
-    0 6px 14px -6px rgb(0 0 0 / 0.14);
+  /* Declutter (D-e, 2026-11-23): no shadow at rest. 26 shadowed cards were 26 boxes in a row;
+     flat card stock lets the titles lead. The lift on hover stays: it says "this one turns over".
+     (The resting shadow was: 0 1px 2px rgb(0 0 0 / 0.08), 0 6px 14px -6px rgb(0 0 0 / 0.14)) */
+  --paper-shadow: none;
   --paper-shadow-lift:                 /* picked up a little (hover): the shadow spreads */
     0 2px 4px rgb(0 0 0 / 0.10),
     0 12px 22px -8px rgb(0 0 0 / 0.18);
@@ -196,15 +196,17 @@
   white-space: nowrap;
 }
 
-/* Typed title: the mono font in capitals. One empty band under the number, then the
-   title fills exactly one band, so the description below starts on the grid too */
+/* The title, in the body sans (D-e, 2026-11-23: it was the mono font in capitals, so the whole
+   card was one typewriter voice and the names didn't stand out). Mono stays for the number and
+   blurb, the card's metadata. One empty band under the number, then the title fills exactly
+   one band, so the description below starts on the grid too */
 .ic-title {
   margin: var(--ic-line) 0 0;
   line-height: var(--ic-line);
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: var(--step-0);
+  font-weight: 600;
   letter-spacing: var(--ic-title-tracking);
-  text-transform: uppercase;
 }
 
 .ic-desc {

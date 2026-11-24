@@ -162,6 +162,25 @@
                     <span class="hint-pointer">Drag a photo to rearrange · Alt + arrow keys on a keyboard</span>
                     <span class="hint-touch">Press and hold a photo, then drag it</span>
                 </div>
+                <!-- The viewer (R4e-3): a click on a photo opens it large, on the page colour.
+                     A native <dialog> opened with showModal() gives us for free: Esc closes it, the rest
+                     of the page can't be reached by Tab or a screen reader, and it sits above everything.
+                     js/artcript.js puts the photo in .viewer-stage and copies its caption.
+                     Without JS a click just opens the photo file, as before -->
+                <dialog class="viewer" id="art-viewer" aria-label="Photo viewer">
+                    <div class="viewer-bar">
+                        <p class="viewer-count"></p>
+                        <!-- autofocus: the dialog puts focus here when it opens, so Enter or Space closes it -->
+                        <button type="button" class="viewer-close" autofocus>Close</button>
+                    </div>
+                    <div class="viewer-stage"></div>
+                    <div class="viewer-bar viewer-foot">
+                        <button type="button" class="viewer-prev">Previous</button>
+                        <!-- aria-live: when Previous/Next swaps the photo, screen readers read the new caption -->
+                        <p class="viewer-caption" aria-live="polite"></p>
+                        <button type="button" class="viewer-next">Next</button>
+                    </div>
+                </dialog>
                 <noscript>
                     <p>The pieces need JavaScript to load.</p>
                 </noscript>
@@ -171,27 +190,10 @@
             <footer class="site-footer">
                 <div class="footer-inner wrapper">
                     <!-- Same footer in all six pages: change them together.
-                         Phones show labelled groups; from 40rem it's centered rows (css/styles.css, FOOTER).
+                         Declutter (D-a, 2026-11-23): only what the header doesn't already give you,
+                         the outside links and the © line. The name and the page list were the header twice.
+                         Phones: two labelled groups; from 40rem one row, links left and © right (css/styles.css, FOOTER).
                          Every link uses the same pattern: to fill one in, change only its href (and text) -->
-                    <div class="footer-brand">
-                        <p class="footer-name">Zach Nott</p>
-                        <p class="footer-tagline">Mechanical design &amp; CAD</p>
-                    </div>
-
-                    <!-- aria-labelledby names the landmark with the visible "Pages" label,
-                         so screen readers announce "Pages, navigation" -->
-                    <nav class="footer-nav" aria-labelledby="footer-pages-label">
-                        <p class="footer-label" id="footer-pages-label">Pages</p>
-                        <ul class="footer-list footer-pages">
-                            <li class="footer-item"><a class="footer-link" href="index.html">Home</a></li>
-                            <li class="footer-item"><a class="footer-link" href="projects.html">CAD Portfolio</a></li>
-                            <li class="footer-item"><a class="footer-link" href="code.html">Code Portfolio</a></li>
-                            <li class="footer-item"><a class="footer-link" href="art.html" aria-current="page">Browse Art</a></li>
-                            <li class="footer-item"><a class="footer-link" href="aboutme.html">About Me</a></li>
-                            <li class="footer-item"><a class="footer-link" href="contact.html">Contact and Resume</a></li>
-                        </ul>
-                    </nav>
-
                     <!-- Two groups in one wrapper: side by side on phones, one dotted row on wider screens -->
                     <div class="footer-extras">
                         <!-- The owner's profiles on other sites -->
@@ -212,7 +214,6 @@
                             </ul>
                         </div>
                     </div>
-
                     <p class="footer-copy">&copy; 2026 Zach Nott</p>
                 </div>
             </footer>
