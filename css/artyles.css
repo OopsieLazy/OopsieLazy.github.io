@@ -211,8 +211,10 @@
   display: none;
 }
 
-/* Same outline pill as Home's "Next card" button (X8 will make one shared button class) */
-.art-tools button {
+/* Same outline pill as Home's "Next card" button (X8 will make one shared button class).
+   The viewer's buttons share it, so the page has one button look, not two */
+.art-tools button,
+.viewer button {
   padding: var(--space-1) var(--space-4);
   border: 1px solid var(--color-accent);
   border-radius: var(--radius-pill);
@@ -223,7 +225,9 @@
 }
 
 .art-tools button:hover,
-.art-tools button:focus-visible {
+.art-tools button:focus-visible,
+.viewer button:hover,
+.viewer button:focus-visible {
   border-color: var(--color-highlight);
   outline: none;
   text-shadow: var(--faux-bold);
@@ -252,4 +256,95 @@
   .frame {
     transition: none;
   }
+}
+
+/* =========================================================
+   THE VIEWER (R4e-3): a click opens the photo large in a <dialog>,
+   on the page colour (no black box: the photo stays the only colour).
+   Three rows: count + Close, the photo, then Previous · caption · Next
+   ========================================================= */
+.viewer {
+  /* A dialog is a small centred box by default; this one fills the window */
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: var(--space-4);
+  border: 0;
+  background: var(--color-bg);
+  color: var(--color-ink);
+}
+
+/* Only when open: display: grid on the closed dialog would beat the browser's display: none */
+.viewer[open] {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;   /* minmax(0, …): the photo row may shrink, so a tall photo can't push the buttons off screen */
+  gap: var(--space-3);
+}
+
+/* ::backdrop covers the page behind the dialog; the page colour hides it completely */
+.viewer::backdrop {
+  background: var(--color-bg);
+}
+
+/* No scrolling the page underneath while the viewer is open */
+html:has(.viewer[open]) {
+  overflow: hidden;
+}
+
+.viewer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--color-muted);
+}
+
+.viewer-bar p {
+  margin: 0;
+}
+
+/* Whole photo, never cropped, as big as the stage allows. The <img> box is pinned to the stage
+   (absolute, inset 0) and object-fit: contain fits the picture inside it at its own shape.
+   (max-height: 100% looks simpler but doesn't hold: a percentage height inside a grid row
+   can't always be resolved, and a tall photo spilled over the buttons. Found in testing) */
+.viewer-stage {
+  position: relative;
+  min-height: 0;
+}
+
+.viewer-stage img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* The caption in the middle reads like the grid's: title in ink, detail · year in small capitals */
+.viewer-caption {
+  flex: 1;
+  text-align: center;
+  font-family: var(--font-body);
+  color: var(--color-ink);
+}
+
+/* Phones: the caption gets its own line above the two buttons */
+@media (width < 37.5rem) {
+  .viewer-foot { flex-wrap: wrap; }
+  .viewer-caption { order: -1; flex-basis: 100%; }
+}
+
+/* A soft fade in, only for visitors who haven't asked for less motion */
+@media (prefers-reduced-motion: no-preference) {
+  .viewer[open] {
+    animation: viewer-in var(--speed) ease-out;
+  }
+}
+
+@keyframes viewer-in {
+  from { opacity: 0; }
 }
