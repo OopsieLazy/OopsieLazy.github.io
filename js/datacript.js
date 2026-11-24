@@ -1,5 +1,5 @@
-// Shared project-data helpers (D26), used by the home page (homcript.js), the
-// CAD page (projcript.js, sectcript.js) and the Code page (codcript.js). Load this FIRST, before the page script:
+// Shared data helpers (D26), used by the home page (homcript.js), the
+// CAD page (projcript.js, sectcript.js), the Code page (codcript.js) and Art (artcript.js). Load this FIRST, before the page script:
 // scripts with `defer` run in the order they appear in the HTML.
 //
 // Plain (non-module) scripts on one page share one global scope, so the page
@@ -97,4 +97,25 @@ function makeImage(src, alt = "") {
     image.src = src;
     image.alt = alt;
     return image;
+}
+
+/* ---------- Masonry (owner, 2026-11-22: "cleanly laid out chaotically", like brittanybravo.com; D49) ----------
+   Shared by the Art walls (artcript.js) and Home's mosaic (homcript.js) since O4.
+   Each tile spans as many tiny grid rows (--masonry-row in the page's CSS) as it is tall, so the grid
+   packs it into its column's first free spot. A ResizeObserver re-measures whenever a photo's box
+   changes size (window resized, 3 columns became 2, a caption wrapped), and its callback runs before
+   the browser paints, so the layout never shows unpacked. A span doesn't depend on WHERE a photo is,
+   so Art's dragging and Shuffle need nothing extra. grid-row-end is set through the CSSOM (element.style),
+   which a strict CSP allows, unlike a style="" attribute written into the HTML */
+const masonry = new ResizeObserver((entries) => {
+    for (const { target: li, borderBoxSize } of entries) {
+        const row = parseFloat(getComputedStyle(li.parentElement).getPropertyValue("--masonry-row")) || 4;
+        const height = borderBoxSize?.[0]?.blockSize ?? li.getBoundingClientRect().height;
+        li.style.gridRowEnd = `span ${Math.ceil(height / row)}`;
+    }
+});
+
+function enableMasonry(wall) {
+    wall.classList.add("is-masonry");      // CSS switches to the tiny rows only once spans are coming
+    [...wall.children].forEach((li) => masonry.observe(li));
 }

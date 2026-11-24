@@ -37,6 +37,7 @@ function buildPiece(piece) {
     const item = make("li", "", make("figure", "piece", frame,
         make("figcaption", "", piece.title || "", detail ? make("span", "label-meta", detail) : "")));
     item.dataset.id = piece.id;
+    item.id = `piece-${piece.id}`;      // Home's mosaic links here (art.html#piece-…); the prefix keeps it apart from wall ids
     return item;
 }
 
@@ -196,25 +197,7 @@ function shuffle(list) {
     return list;
 }
 
-/* ---------- Masonry (owner, 2026-11-22: "cleanly laid out chaotically", like brittanybravo.com) ----------
-   Each photo spans as many tiny grid rows (--masonry-row in artyles.css) as it is tall, so the grid
-   packs it into its column's first free spot. A ResizeObserver re-measures whenever a photo's box
-   changes size (window resized, 3 columns became 2, a caption wrapped), and its callback runs before
-   the browser paints, so the layout never shows unpacked. A span doesn't depend on WHERE a photo is,
-   so dragging and Shuffle need nothing extra. grid-row-end is set through the CSSOM (element.style),
-   which a strict CSP allows, unlike a style="" attribute written into the HTML */
-const masonry = new ResizeObserver((entries) => {
-    for (const { target: li, borderBoxSize } of entries) {
-        const row = parseFloat(getComputedStyle(li.parentElement).getPropertyValue("--masonry-row")) || 4;
-        const height = borderBoxSize?.[0]?.blockSize ?? li.getBoundingClientRect().height;
-        li.style.gridRowEnd = `span ${Math.ceil(height / row)}`;
-    }
-});
-
-function enableMasonry(wall) {
-    wall.classList.add("is-masonry");      // CSS switches to the tiny rows only once spans are coming
-    [...wall.children].forEach((li) => masonry.observe(li));
-}
+/* ---------- Masonry: enableMasonry() lives in js/datacript.js since O4 (D51), so Home's mosaic shares it ---------- */
 
 /* ---------- Areas (R4e-2) ---------- */
 

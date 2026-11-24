@@ -1,6 +1,7 @@
 /* Browse Art page (R4e, D48, owner's pick A after research and previews A/B/C).
-   An index grid like brittanybravo.com: bare photos, never cropped, in rows of three,
-   with a quiet caption under each. No frames, mats, shadows or tilt: the work is the colour.
+   An index grid like brittanybravo.com: bare photos, never cropped, in three columns with even
+   gaps; each caption fades in over its photo on hover or focus (O4). No frames, mats, shadows
+   or tilt: the work is the colour.
    (It was a "salon hang" of tilted gilded frames, 2.4 / D42; the class names .salon and .frame
    are kept from then, so the HTML and script didn't have to change.)
    Shared header, tokens and footer live in styles.css */
@@ -104,7 +105,7 @@
   --masonry-row: 4px;                      /* the tiny row height the spans count in (read by the script) */
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-7) var(--space-4);      /* rows: room for the caption; columns: a slim, even gutter */
+  gap: var(--space-4);                     /* one even gap both ways: the "crisp white border" between photos (O4) */
   align-items: start;
   margin: 0;
   padding: 0;
@@ -118,7 +119,7 @@
 }
 
 .salon.is-masonry > li {
-  padding-bottom: var(--space-5);
+  padding-bottom: var(--space-4);          /* the same as the column gap, so every gap matches */
 }
 
 /* The Art page's <main> is wider than the site's 72rem, like Home's, so photos get room
@@ -136,6 +137,7 @@
 }
 
 .piece {
+  position: relative;                      /* the caption is laid over the photo (THE CAPTION below) */
   margin: 0;
 }
 
@@ -162,24 +164,57 @@
 }
 
 /* =========================================================
-   THE CAPTION: title in ink, then the detail and year in small mono capitals.
-   Always visible (the reference shows titles on hover only, which keyboard and
-   touch visitors never see)
+   THE CAPTION: title, then the detail and year in small mono capitals, laid over
+   the photo on a dark veil. Hidden until the photo is hovered or focused, like the
+   reference and Home's mosaic (owner, 2026-11-23, O4). It was always visible below
+   the photo before. Who still gets the words:
+   - keyboard visitors: Tab onto a photo and it shows (:focus-visible)
+   - touch visitors (no hover): a tap opens the viewer, which shows the caption
+   - screen readers: opacity hides it from sight only, never from them
    ========================================================= */
 .piece figcaption {
-  margin-top: var(--space-2);
-  font-size: var(--step--1);
-  line-height: 1.4;
-  color: var(--color-ink);
+  position: absolute;
+  inset: 0;                                /* the figure is exactly the photo's size (the caption is out of the flow) */
+  display: grid;
+  place-content: center;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  background: var(--color-veil);
+  color: var(--color-on-veil);
+  font-size: var(--step-1);
+  font-weight: 600;                        /* 19px+ bold counts as large text: 3:1 is enough on the veil */
+  line-height: 1.3;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;                    /* it lies over the link: clicks and drags must reach the photo */
 }
 
+.piece:hover figcaption,
+.frame:focus-visible + figcaption {
+  opacity: 1;
+}
+
+/* Small mono capitals. Also used by the viewer's caption, which copies the same spans */
 .label-meta {
   display: block;
   font-family: var(--font-mono);
   font-size: var(--step--2);
+  font-weight: 400;
   color: var(--color-muted);
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
+}
+
+/* On the veil, the capitals are white like the title */
+.piece .label-meta {
+  color: inherit;
+}
+
+/* The fade, only for visitors who haven't asked for less motion (the same as Home's tiles) */
+@media (prefers-reduced-motion: no-preference) {
+  .piece figcaption {
+    transition: opacity var(--speed) ease;
+  }
 }
 
 /* =========================================================
