@@ -12,6 +12,8 @@
         <!-- The five stripes; an SVG icon stays sharp at any size and switches to greys in dark mode -->
         <link rel="icon" href="favicon.svg" type="image/svg+xml">
         <link rel="stylesheet" href="css/styles.css">
+        <!-- cardyles.css: the Blueprint cards in the "Featured cards" drawer -->
+        <link rel="stylesheet" href="css/cardyles.css">
         <link rel="stylesheet" href="css/homyles.css">
         <script src="js/script.js" defer></script>
         <!-- datacript.js before homcript.js: deferred scripts run in this order -->
@@ -112,19 +114,51 @@
                      so screen readers and search engines still read them. The page's name stays a real <h1>,
                      hidden from sight only. (The hero and the card stack were here until O4: git log -S "home-hero") -->
                 <h1 class="screen-reader-text">Zach Nott: mechanical design, CAD and photography</h1>
-                <ul id="mosaic" class="mosaic" role="list" aria-label="Selected work"></ul>
+                <!-- One quiet row above the mosaic (owner, 2026-11-24: minimal, no section label, no arrow):
+                     the two ways into CAD, the main work. "Featured cards" slides the flip cards open right here,
+                     pushing the mosaic down; it stays hidden until js/homcript.js has built the cards.
+                     The section's name is still a real <h2> for screen readers, hidden from sight -->
+                <h2 id="mosaic-title" class="screen-reader-text">Selected work</h2>
+                <p class="mosaic-links">
+                    <!-- A disclosure button: aria-expanded says open or shut, aria-controls points at the drawer -->
+                    <button class="cards-open" type="button" aria-expanded="false" aria-controls="featured-cards" hidden>Featured cards</button>
+                    <a class="mosaic-link" href="projects.html">CAD portfolio</a>
+                </p>
+
+                <!-- FEATURED CARDS (owner, 2026-11-24: "slide open or push down" instead of a pop-up): the Blueprint
+                     card stack, Home's hero until O4. The drawer animates its height open (homyles.css, THE CARDS DRAWER).
+                     "inert" while shut: the closed cards can't be reached by Tab or a screen reader. js/homcript.js builds
+                     one card per project with "featured": true (up to 3); Previous / Next and ← → turn the stack like a wheel -->
+                <div id="featured-cards" class="cards-drawer" role="region" aria-label="Featured CAD cards" inert>
+                    <div class="cards-drawer-inner">
+                        <div class="featured-slot">
+                            <div class="card-stack"></div>
+                            <div class="stack-controls">
+                                <!-- aria-atomic: when the name changes, screen readers read the whole line.
+                                     aria-live is added by the script AFTER the first fill, so building it stays quiet -->
+                                <p class="featured-caption" aria-atomic="true">Featured: <b class="featured-name"></b></p>
+                                <div class="stack-buttons">
+                                    <button class="stack-prev" type="button" hidden>Previous</button>
+                                    <button class="stack-next" type="button" hidden>Next</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <ul id="mosaic" class="mosaic" role="list" aria-labelledby="mosaic-title"></ul>
                 <noscript>
                     <p class="mosaic-note">The work needs JavaScript. <a href="projects.html">Open the CAD portfolio</a>.</p>
                 </noscript>
+
             </main>
 
-            <!-- The footer: one quiet line; .footer-inner keeps it lined up with the page -->
+            <!-- The footer: a slim pine band, centred (E1, D53); .footer-inner keeps it lined up with the page -->
             <footer class="site-footer">
                 <div class="footer-inner wrapper">
                     <!-- Same footer in all six pages: change them together.
                          Declutter (D-a, 2026-11-23): only what the header doesn't already give you,
                          the outside links and the © line. The name and the page list were the header twice.
-                         Phones: two labelled groups; from 40rem one row, links left and © right (css/styles.css, FOOTER).
+                         One centred row of links, then the © line with the stripe mark under the name (css/styles.css, FOOTER).
                          Every link uses the same pattern: to fill one in, change only its href (and text) -->
                     <!-- Two groups in one wrapper: side by side on phones, one dotted row on wider screens -->
                     <div class="footer-extras">
@@ -146,7 +180,7 @@
                             </ul>
                         </div>
                     </div>
-                    <p class="footer-copy">&copy; 2026 Zach Nott</p>
+                    <p class="footer-copy">&copy; 2026 <span class="footer-name">Zach Nott</span></p>
                 </div>
             </footer>
         </div>

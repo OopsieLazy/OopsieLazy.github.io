@@ -8,6 +8,10 @@
    Only <main>: the header keeps the site width */
 .thehomepage .site-main {
   --content-max: 80rem;
+  /* Home's own top gap (owner, 2026-11-24: "the gap between the nav bar and the featured cards").
+     Other pages open with a big title, which needs room; Home opens with a small row of links
+     that belongs right under the nav, so it gets 24px instead of the site's 60-80px */
+  --page-top: var(--space-5);
 }
 
 /* =========================================================
@@ -96,6 +100,23 @@
   opacity: 1;
 }
 
+/* The hover lift (owner, 2026-11-24: "smoother and less subtle"): the picture grows a little, rises
+   and casts a soft shadow, the same on Art and the CAD index (--lift-* tokens in styles.css).
+   Focus gets it too, so keyboard visitors see where they are. The hovered tile's <li> comes to
+   the front (z-index), so its shadow lies over its neighbours instead of under them */
+.mosaic > li:hover,
+.mosaic > li:focus-within {
+  position: relative;
+  z-index: 1;
+}
+
+.tile:hover,
+.tile:focus-visible {
+  scale: var(--lift-scale);
+  translate: 0 var(--lift);
+  box-shadow: var(--shadow-lift);
+}
+
 /* styles.css styles focused links by colour and fake bold; a picture needs a real ring instead */
 .tile:focus-visible {
   outline: 2px solid var(--color-accent);
@@ -106,6 +127,10 @@
 /* The animation: the veil fades in and the words rise a few pixels. Only for visitors who
    haven't asked for less motion; for them it simply appears */
 @media (prefers-reduced-motion: no-preference) {
+  .tile {
+    transition: scale var(--speed) var(--ease-smooth), translate var(--speed) var(--ease-smooth), box-shadow var(--speed) var(--ease-smooth);
+  }
+
   .tile-cap {
     transition: opacity var(--speed) ease;
   }
@@ -124,4 +149,190 @@
 /* When the data can't load: a short note and a way on */
 .mosaic-note {
   color: var(--color-muted);
+}
+
+/* =========================================================
+   THE ROW above the mosaic (owner, 2026-11-24: no label, no arrow): the two ways
+   into CAD, two quiet words centred under the header's name
+   ========================================================= */
+.mosaic-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-8);  /* 64px between the two (owner, 2026-11-24: "spread out a bit") */
+  max-width: none;                     /* styles.css gives every <p> a 65ch reading width; this row spans the page */
+  margin: 0 0 var(--space-6);          /* 32px of air before the mosaic (was 16px) */
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+/* The drawer's button looks like the link beside it: a quiet underlined word, not a pill */
+.cards-open {
+  padding: var(--space-1) 0;           /* small text, but a 24px+ tap target (WCAG 2.5.8) */
+  border: 0;
+  background: none;
+  color: var(--color-ink);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--color-line);
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+/* Open: the underline turns solid, the same "you are here" sign as the header's current page */
+.cards-open[aria-expanded="true"] {
+  text-decoration-color: currentColor;
+}
+
+.mosaic-link {
+  display: inline-block;
+  padding-block: var(--space-1);
+  color: var(--color-ink);
+  text-decoration-color: var(--color-line);
+}
+
+.cards-open:hover,
+.mosaic-link:hover {
+  text-decoration-color: var(--color-highlight);
+}
+
+/* =========================================================
+   THE CARDS DRAWER (owner, 2026-11-24: "slide open or push down", not a pop-up).
+   Height can't animate to "auto", but a grid row can animate from 0fr to 1fr,
+   and 1fr IS the content's height. So: a one-row grid, 0fr when shut, 1fr open.
+   The inner box hides what doesn't fit yet (overflow: hidden, min-height: 0),
+   so the cards are revealed from the top as the row grows, pushing the mosaic down
+   ========================================================= */
+.cards-drawer {
+  display: grid;
+  grid-template-rows: 0fr;
+}
+
+.cards-drawer.is-open {
+  grid-template-rows: 1fr;
+}
+
+.cards-drawer-inner {
+  min-height: 0;                       /* lets the row shrink below the content's height */
+  overflow: hidden;
+}
+
+/* Breathing room inside, so the tilted back cards aren't clipped at the edges */
+.cards-drawer .featured-slot {
+  padding-block: var(--space-4) var(--space-6);
+}
+
+/* The motion, only for visitors who haven't asked for less: the row grows with a smooth
+   ease-out (fast start, gentle stop), and the cards fade up into place as it opens */
+@media (prefers-reduced-motion: no-preference) {
+  .cards-drawer {
+    transition: grid-template-rows var(--speed-slow) var(--ease-smooth);
+  }
+
+  .cards-drawer .featured-slot {
+    opacity: 0;
+    translate: 0 calc(-1 * var(--space-4));
+    transition: opacity var(--speed-slow) var(--ease-smooth), translate var(--speed-slow) var(--ease-smooth);
+  }
+
+  .cards-drawer.is-open .featured-slot {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+/* The drawer's buttons: small outline pills (X8 will make one shared button) */
+.stack-buttons {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.stack-prev,
+.stack-next {
+  padding: var(--space-1) var(--space-4);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  cursor: pointer;
+}
+
+.stack-prev:hover,
+.stack-next:hover {
+  border-color: var(--color-highlight);
+}
+
+/* =========================================================
+   FEATURED SLOT: holds the card stack and its caption (2.0c, from the old hero)
+   ========================================================= */
+.featured-slot {
+  /* An element can't query its OWN size: cqi used on .bp-card (its frame and grid)
+     measures the nearest ANCESTOR container. So the slot is a container too */
+  container-type: inline-size;
+  --stack-width: 80%;                  /* the front card's width; the rest is room for the back cards to peek */
+  /* Room above the stack for the back cards' tips: translate and rotate take no layout
+     space, so without this they'd poke out of the top. Card 2 (translate -12%, rotate 8deg)
+     rises ~19% of the slot's width. If you change the data-pos values below, change this too */
+  --stack-rise: 20%;
+  width: min(100%, 24rem);
+  margin-inline: auto;
+}
+
+/* =========================================================
+   CARD STACK: every card sits in the SAME grid cell (grid-area 1 / 1), so they pile
+   up without position: absolute and the stack keeps its height. data-pos (0 = front)
+   picks each card's place; JS only renumbers it. translate and rotate are separate
+   properties from transform, so the hover lift (transform) and the place never clash
+   ========================================================= */
+.card-stack {
+  container-type: inline-size;         /* the cards' cqi now measure the card, not the whole slot */
+  display: grid;
+  width: var(--stack-width);
+  margin-top: var(--stack-rise);
+  text-align: left;                    /* the card lays out its own text */
+}
+
+.card-stack > .bp-card {
+  grid-area: 1 / 1;
+  transition: transform var(--speed) ease, translate var(--speed-slow) ease, rotate var(--speed-slow) ease, filter var(--speed-slow) ease;
+}
+
+/* % in translate = % of the card's own size. 80% + 14% of 80% + the tilt stays inside the slot */
+.card-stack > [data-pos="0"] { z-index: 3; }
+.card-stack > [data-pos="1"] { z-index: 2; translate: 7% -6%; rotate: 4deg; filter: brightness(0.85); }
+.card-stack > [data-pos="2"] { z-index: 1; translate: 14% -12%; rotate: 8deg; filter: brightness(0.7); }
+
+/* Reduced motion: cards jump to their new places with no slide */
+@media (prefers-reduced-motion: reduce) {
+  .card-stack > .bp-card {
+    transition: none;
+  }
+}
+
+.stack-controls {
+  width: var(--stack-width);           /* same width as the front card, so the caption centres under it */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+.featured-caption {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--color-muted);
+}
+
+.featured-caption b {
+  color: var(--color-accent);
 }
