@@ -76,8 +76,8 @@ Each page pairs with its own stylesheet and script. The names are abbreviated:
 
 | Page | CSS | JS |
 |---|---|---|
-| `index.html` (Home) | `css/styles.css` + `css/homyles.css` | `js/script.js` + `js/themcript.js` + `js/datacript.js` + `js/homcript.js` (a masonry mosaic of CAD projects and photos from `data/projects.json` + `data/art.json`, captions on hover/focus; O4, D51) |
-| `projects.html` (CAD Portfolio) | `css/styles.css` + `css/projyles.css` | `js/script.js` + `js/themcript.js` + `js/projcript.js` + `js/datacript.js` + `js/sectcript.js` (project entries from the JSON) |
+| `index.html` (Home) | `css/styles.css` + `css/cardyles.css` + `css/homyles.css` | `js/script.js` + `js/themcript.js` + `js/datacript.js` + `js/homcript.js` (a masonry mosaic of CAD projects and photos from `data/projects.json` + `data/art.json`, in the order `data/home.json` sets (owner only; `?shuffle` previews), captions on hover/focus, O4 / D51; the featured Blueprint cards in a slide-open drawer above it, D52) |
+| `projects.html` (CAD Portfolio) | `css/styles.css` + `css/projyles.css` | `js/script.js` + `js/themcript.js` + `js/projcript.js` + `js/datacript.js` + `js/sectcript.js` (the index of tiles and the project entries from the JSON, D52) |
 | `thelab.html` | inline `<style>` | inline |
 | `aboutme.html` | `css/styles.css` + `css/cardyles.css` + `css/aboutyles.css` | `js/script.js` + `js/themcript.js` |
 | `art.html` (Browse Art) | `css/styles.css` + `css/artyles.css` | `js/script.js` + `js/themcript.js` + `js/datacript.js` + `js/artcript.js` (builds the photo grid from `data/art.json`, one grid per photo area, drag/keyboard reordering; D42, R4e) |
