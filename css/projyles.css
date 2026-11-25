@@ -675,3 +675,140 @@ html {
 .cad-note {
   color: var(--color-muted);
 }
+
+/* =========================================================
+   THE INDEX (owner, 2026-11-24): every project as a clean tile above the
+   write-ups, like dazprojects: a picture on a pale square, the name, one meta
+   line, nothing around them. It's the old Home catalog (sleek pass, 2026-11-11),
+   moved here when Home became the mosaic, plus ‹ › arrows for projects with more
+   than one picture. Built by js/sectcript.js
+   ========================================================= */
+.cad-index {
+  --tile-min: 15rem;                   /* narrowest tile on a wide screen */
+  --tile-min-phone: 45%;               /* phones: 2 tiles per row */
+  margin-block: var(--space-6);
+}
+
+/* auto-FIT, not auto-fill: empty columns collapse, so 3 projects stretch across the row.
+   list-style: none makes Safari drop the "list" meaning, so the HTML adds role="list" */
+.index-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(var(--tile-min), var(--tile-min-phone)), 1fr));
+  gap: var(--space-6) var(--space-4);
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.index-tile {
+  position: relative;                  /* the stretched link's ::after fills this box */
+}
+
+/* The picture on a pale square; overflow: hidden keeps the hover zoom inside it */
+.index-art {
+  position: relative;                  /* the arrows sit on the picture */
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--color-surface);
+}
+
+/* object-fit: cover fills the square evenly: it can crop, never stretch */
+.index-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.index-name,
+.index-meta {
+  margin: 0;
+}
+
+.index-name {
+  margin-top: var(--space-3);
+  font-family: var(--font-body);
+  font-size: var(--step-1);
+  font-weight: 600;
+}
+
+.index-name a {
+  color: var(--color-ink);
+  text-decoration: none;
+}
+
+.index-tile:hover .index-name a {
+  text-decoration: underline;
+  text-decoration-color: var(--color-highlight);
+}
+
+/* The stretched link: an empty ::after over the whole tile, so a click anywhere follows the link */
+.index-name a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.index-meta {
+  margin-top: var(--space-1);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--color-muted);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+/* Keyboard focus lands on the small name link; the ring goes round the whole tile (:has) */
+.index-tile:has(.index-name a:focus-visible) {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+/* ‹ › arrows, like dazprojects: small round buttons at the picture's sides.
+   z-index 1 lifts them above the stretched link, so a click on an arrow turns the picture
+   instead of following the link. They show on hover or keyboard focus; touch screens
+   (no hover) always show them, since there's no way to hover first */
+.index-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  translate: 0 -50%;
+  width: var(--space-6);
+  height: var(--space-6);
+  padding: 0;
+  border: 1px solid var(--color-line);
+  border-radius: 50%;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-size: var(--step-1);
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.index-arrow.is-previous { left: var(--space-2); }
+.index-arrow.is-next { right: var(--space-2); }
+
+.index-tile:hover .index-arrow,
+.index-arrow:focus-visible {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .index-arrow { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .index-arrow { transition: opacity var(--speed-fast) ease; }
+}
+
+/* The hover lift, shared with Home and Art (--lift and --shadow-lift in styles.css) */
+.index-tile:hover .index-art,
+.index-tile:has(.index-name a:focus-visible) .index-art {
+  scale: var(--lift-scale);
+  translate: 0 var(--lift);
+  box-shadow: var(--shadow-lift);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .index-art { transition: scale var(--speed) var(--ease-smooth), translate var(--speed) var(--ease-smooth), box-shadow var(--speed) var(--ease-smooth); }
+}

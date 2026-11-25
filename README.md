@@ -19,13 +19,13 @@ Use a local server rather than double-clicking the file, because JS modules (Pha
 | File | Purpose |
 |---|---|
 | `css/styles.css` | Shared header, footer, design tokens and base styles |
-| `css/cardyles.css` | The Blueprint trading card (About's profile card). Wrap each card in a `.card-holder` |
+| `css/cardyles.css` | The Blueprint trading card (About's profile card, Home's featured cards drawer). Wrap each card in a `.card-holder` or another container |
 | `art.html` + `css/artyles.css` + `js/artcript.js` | Browse Art as a masonry grid (D49): bare, uncropped photos in three packed columns with a caption under each (R4e), photography split into areas (`"area"` in the JSON), built from `data/art.json`; visitors drag photos (or Alt + arrow keys) to reorder, Shuffle and Reset |
 | `tools/art.py` | Run on your computer, not the site: lists the photos in `assets/images/art/` in `data/art.json` and strips their location data (see Add art) |
 | `code.html` + `css/codyles.css` + `js/codcript.js` | Code Portfolio: every project a library catalog card, built from `data/code.json` (add one entry to add a project; `"featured": true` puts it in the top row, `"handWritten": true` stamps it, `"source": null` marks a private repo). All the page's sizes are tokens at the top of `codyles.css` |
 | `contact.html` + `css/contyles.css` + `js/contcript.js` | Contact & Résumé as a drawing title block: email with a Copy button, résumé PDF download |
 | `aboutme.html` + `css/aboutyles.css` | About page, laid out like an encyclopedia biography (fill in the `<!-- CONTENT -->` slots) |
-| `index.html` + `css/homyles.css` + `js/homcript.js` | Home page: a masonry mosaic of CAD projects and photos, mixed; titles fade in on hover or focus (Home's `<main>` is wider: 80rem) |
+| `index.html` + `css/homyles.css` + `js/homcript.js` | Home page: a masonry mosaic of CAD projects and photos, mixed; titles fade in on hover or focus. "Featured cards" slides the Blueprint card stack open above the mosaic (Home's `<main>` is wider: 80rem) |
 | `data/projects.json` | Every project, written once. The home catalog and the CAD page entries are built from it |
 | `js/datacript.js` | Shared helpers that load the JSON and build elements safely (home and CAD page) |
 | `projects.html` + `css/projyles.css` + `js/projcript.js` + `js/sectcript.js` | CAD portfolio: the 3D carousel and side popup, then one entry per project (`projects.html#<id>`) |
@@ -42,7 +42,7 @@ Add one object to `data/projects.json`: the home catalog builds its tile and the
 
 - `id`: lowercase-kebab-case, unique. It's the link anchor, `projects.html#bridge-guitar`; a bad or clashing id still shows the entry but gets no link (the console says why)
 - `name`, `image` (path in `assets/images/`), `alt`, `type` (e.g. `"Part · 3D print"`), `year`
-- `featured`: `true` marks a highlight (the Home card stack used it until O4; kept for later)
+- `featured`: `true` puts it in Home's "Featured cards" drawer (up to 3)
 - Optional: `tool`, `description`, `flavor`, `stats` (`iterations`, `parts`, `printHours`, `difficulty` 1–5)
 - Optional: `writeup`, the longer story on the CAD page, as a list of paragraphs: `"writeup": ["First paragraph.", "Second paragraph."]`
 - Optional: `images`, the pictures in the CAD page's gallery (D33). Each one is `{ "src", "alt", "kind", "caption" }`, where `kind` is `"cad"` or `"photo"` (it sets the tag in the corner). The first one shows first; thumbnails appear once there are two or more. `image` stays the single cover used on Home and the cards. New photos go in a folder per project: `assets/images/<id>/`.
@@ -59,6 +59,18 @@ JSON is strict: double quotes only, a comma between items but **not after the la
 4. Commit the photos and `art.json` together. The placeholders disappear as soon as one real piece exists.
 
 The order in `art.json` is the order on the page, until a visitor drags photos around (remembered on their device only; Reset brings yours back).
+
+## Home order
+
+`data/home.json` sets the order of the Home mosaic. It's in the repo, so only you can change it.
+
+- `"mode": "mixed"`: project, photo, project, photo… (the default; `order` is ignored)
+- `"mode": "listed"`: the ids in `"order"` first, exactly as written. Anything you haven't listed (a new project or photo) follows at the end, so nothing goes missing
+- `"mode": "random"`: a new shuffle on every visit
+
+Ids are the `"id"` values in `data/projects.json` and `data/art.json`. A typo is skipped with a warning in the browser console (F12).
+
+**Trying layouts:** open `index.html?shuffle` and reload until you like one. The console prints that order as ready-to-paste JSON with `"mode": "listed"`; copy it into `home.json`. Visitors who find `?shuffle` only reshuffle their own screen.
 
 ## Add About photos
 

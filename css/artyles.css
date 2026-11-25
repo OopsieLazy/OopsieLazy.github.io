@@ -156,6 +156,27 @@
   height: auto;
 }
 
+/* The hover lift (owner, 2026-11-24), the same as Home and the CAD index (tokens in styles.css).
+   The whole figure lifts (photo + its caption overlay move together).
+   Not while a photo is being dragged: that one has its own bigger lift (.is-dragging below) */
+.salon > li:not(.is-dragging) .piece:hover,
+.piece:has(.frame:focus-visible) {
+  scale: var(--lift-scale);
+  translate: 0 var(--lift);
+  box-shadow: var(--shadow-lift);
+}
+
+/* The hovered photo's <li> comes to the front, so its shadow lies over its neighbours */
+.salon > li:hover,
+.salon > li:focus-within {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .piece { transition: scale var(--speed) var(--ease-smooth), translate var(--speed) var(--ease-smooth), box-shadow var(--speed) var(--ease-smooth); }
+}
+
 /* styles.css colours focused links instead of drawing a ring; a photo needs a real ring */
 .frame:focus-visible {
   outline: 2px solid var(--color-accent);

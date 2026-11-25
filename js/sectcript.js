@@ -2,6 +2,7 @@
 // (The row of jump links above them was removed in the sleek pass, 2026-11-11: it repeated
 // the carousel and the entries' own titles.) Each entry has the project's JSON id, so
 // projects.html#bridge-guitar opens straight at that project (the home page links here).
+// Since 2026-11-24 it also builds the index of tiles above the entries (buildIndexTile).
 // Loaded with `defer` after js/datacript.js (loadProjects, make, makeImage, twoDigits).
 // The carousel above (projcript.js) reads the same JSON; its DWG numbers match these entries.
 
@@ -57,7 +58,10 @@ function projectImages(project) {
     const list = Array.isArray(project.images) && project.images.length
         ? project.images
         : [{ src: project.image, alt: project.alt || "", kind: "cad" }];
-    return list.filter((picture) => picture && picture.src);
+    const usable = list.filter((picture) => picture && picture.src);
+    // No picture at all: the placeholder, so the tile and the entry still build (an empty list
+    // would make pictures[0] undefined, and that error would stop every project after this one)
+    return usable.length ? usable : [{ src: "assets/images/placeholder.svg", alt: "", kind: "" }];
 }
 
 function buildGallery(project) {
@@ -104,6 +108,43 @@ function buildGallery(project) {
     return figure;
 }
 
+/* ---------- The index (owner, 2026-11-24): clean tiles above the write-ups, like dazprojects ---------- */
+
+// ‹ › on a tile with more than one picture. They loop like a wheel: after the last picture comes the
+// first again, so the % (remainder) wraps the number around. The tile's link isn't touched
+function pictureArrows(pictures, image, name) {
+    let index = 0;
+    const step = (by) => {
+        index = (index + by + pictures.length) % pictures.length;
+        image.src = pictures[index].src;
+    };
+    return [[-1, "‹", "Previous"], [1, "›", "Next"]].map(([by, symbol, word]) => {
+        // The arrow character is decoration (aria-hidden); the label says what the button does
+        const button = make("button", `index-arrow is-${word.toLowerCase()}`, make("span", "", symbol));
+        button.type = "button";
+        button.firstChild.setAttribute("aria-hidden", "true");
+        button.setAttribute("aria-label", `${word} picture of ${name}`);
+        button.addEventListener("click", () => step(by));
+        return button;
+    });
+}
+
+// One tile: picture on a pale square, the name (a link to the write-up), one meta line.
+// Only the NAME is a link; its ::after stretches over the whole tile (projyles.css), so the tile
+// is clickable while a screen reader hears a short name. alt="" because that name says it all
+function buildIndexTile(project, id) {
+    const pictures = projectImages(project);
+    const image = makeImage(pictures[0].src);
+    image.loading = "lazy";
+    const link = make("a", "", project.name);
+    link.href = id ? `#${id}` : "#cad-sections";
+    const art = make("div", "index-art", image);
+    if (pictures.length > 1) art.append(...pictureArrows(pictures, image, project.name));
+    return make("li", "", make("article", "index-tile", art,
+        make("h3", "index-name", link),
+        make("p", "index-meta", joinMeta([project.type, project.year]))));
+}
+
 // One entry: square image box on the left, text on the right (layout C, owner's pick)
 function buildEntry(project, index, id) {
     const number = twoDigits(index + 1);
@@ -125,7 +166,7 @@ function buildEntry(project, index, id) {
     );
 
     const back = make("a", "cad-back", "↑ All projects");
-    back.href = "#cad-sections";
+    back.href = "#cad-index";   // back up to the tiles (the index), not just the top of the write-ups
     body.append(back);
 
     // <article>: a self-contained piece that makes sense on its own, like a catalog entry
@@ -161,10 +202,12 @@ async function initSections() {
         return;
     }
 
+    const index = document.querySelector("#cad-index-grid");
     projects.forEach((project, i) => {
         // Check the id BEFORE adding the entry: once it's on the page, it would clash with itself
         const id = usableId(project.id) ? project.id : "";
         entries.append(buildEntry(project, i, id));
+        index?.append(buildIndexTile(project, id));
     });
 
     scrollToHash();

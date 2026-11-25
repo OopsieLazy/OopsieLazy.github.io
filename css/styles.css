@@ -105,10 +105,17 @@
      small text at 4.5:1 even over the grey CAD renders (#B3B3B3) */
   --color-veil: color-mix(in srgb, var(--color-sumi) 62%, transparent);
   --color-on-veil: #FFFFFF;
+  /* The hover lift on a picture (Home's mosaic, Art, the CAD index). Owner, 2026-11-24: first "a slight
+     raise, very small", then "smoother and less subtle": it grows 3%, rises 4px and casts a deeper
+     shadow. 3% of a 380px tile is about 6px each side, still inside the 16px gaps */
+  --lift: -4px;
+  --lift-scale: 1.03;
+  --shadow-lift: 0 0.75rem 1.5rem -0.75rem color-mix(in srgb, var(--color-sumi) 55%, transparent);
   --color-accent: light-dark(var(--color-pine), #F5F5F5);              /* links, headings: 7.8 / 17.2 */
   --color-highlight: light-dark(var(--color-jade), #BDBDBD);           /* underlines, rings, markers: 4.05 (not small text) / 10.0 */
-  /* (The header and footer bands had their own colours: a white band with a hairline, D43, and a
-     pine-to-charcoal footer, D38. Since O1/O2 (D51) both sit on the page colour, so no tokens) */
+  /* The footer band (E1, D53): pine by day, charcoal at night, as in D38. Text on it: 7.8 / 14.5 */
+  --color-band: light-dark(var(--color-pine), var(--color-charcoal));
+  --color-on-band: light-dark(#FFFFFF, #EDEDED);
 
   /* Project status dots (Code page, R3). Graphics need 3:1 (WCAG 1.4.11); numbers are on --color-surface.
      Each status also has its own SHAPE (filled, half, ring), so colour is never the only clue */
@@ -141,7 +148,10 @@
      so the whole site feels like it moves at one pace */
   --speed-fast: 150ms;   /* small responses: a hover lift, a fade, the ▸ arrow turning */
   --speed: 300ms;        /* most transitions: theme crossfade, picture zoom, frames settling */
-  --speed-slow: 450ms;   /* big moves: the home card stack shuffling */
+  --speed-slow: 450ms;   /* big moves: the home card stack shuffling, the cards drawer opening */
+  /* The easing for things that glide: a fast start and a long, gentle stop (an "ease-out quint").
+     It feels smoother than plain ease, which speeds up and slows down evenly */
+  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
 
   /* Fluid type scale: clamp(min, preferred, max) grows smoothly with screen width,
      so no media queries are needed just to resize text */
@@ -176,7 +186,8 @@
 
   /* Where every page's content starts below the header (owner's pick B, 2026-11-08):
      60px on phones, growing smoothly to 80px on wide screens. (It used to make room for the
-     theme drum hanging under the header too; the drum went in O1, D51) */
+     theme drum hanging under the header too; the drum went in O1, D51.) Home sets its own,
+     smaller one: its first line is a quiet row of links, not a page title (homyles.css) */
   --page-top: clamp(3.75rem, 2.5rem + 2.5vw, 5rem);
 
   /* 3D displays: the CAD carousel (projyles.css), later the spin reel (3.7).
@@ -396,38 +407,29 @@ hr {
 }
 
 /* =========================================================
-   FOOTER: one quiet line on the page colour, under a hairline (O2, D51).
-   It was a full-width pine band (D38); in the overhaul the page has no
-   coloured bands, so the work is the only colour. The hairline sits on
-   .footer-inner.wrapper, so it lines up with the page column.
+   FOOTER: a slim pine band that closes every page (owner's pick E1, D53).
+   It was a full pine band (D38), then one quiet line on the page colour (O2, D51);
+   the owner wanted the pine back, but slimmer. Everything is centred, like the
+   header, so the page opens and closes the same way:
+     GITHUB · MAKERWORLD · EMAIL · RESUME
+              © 2026 Zach Nott
+                        ▔▔▔▔▔▔▔▔▔  <- the stripe mark, exactly as wide as the name
    Declutter (D-a, 2026-11-23): it holds only what the header doesn't, the
    outside links and the © line.
-   - Phones: the two labelled groups side by side, the © line under them
-   - From 40rem: one row, the links on the left in small caps, © on the right
    ========================================================= */
 .site-footer {
   font-size: var(--step--1);
-  color: var(--color-muted);
+  background-color: var(--color-band);
+  color: var(--color-on-band);
 }
 
-/* Phones: two columns, Elsewhere and Get in touch; the © line spans both */
+/* One centred column: the links row, then the © line */
 .footer-inner {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-5);
-  align-items: start;
-  padding-block: var(--space-6);
-  border-top: 1px solid var(--color-line);
-}
-
-.footer-copy {
-  grid-column: 1 / -1;
-}
-
-/* display: contents removes this wrapper's own box, so its two groups become
-   grid items of .footer-inner. It only exists to group them for the wide layout */
-.footer-extras {
-  display: contents;
+  justify-items: center;
+  gap: var(--space-3);
+  padding-block: var(--space-5);
+  text-align: center;
 }
 
 /* styles.css gives every <p> a reading width (65ch); the footer lays out its own lines */
@@ -436,65 +438,41 @@ hr {
   margin: 0;
 }
 
-/* The small group names (Elsewhere, Get in touch), same feel as .retro-label.
-   Two classes (0,2,0) beat ".footer-inner p" (0,1,1), so this margin wins the reset above */
-.footer-inner .footer-label {
-  margin-bottom: var(--space-3);
-}
-
+/* The group names (Elsewhere, Get in touch) are hidden the screen-reader-text way:
+   one row of four links doesn't need them on screen, but screen readers still
+   hear which group a link is in */
 .footer-label {
-  font-family: var(--font-mono);
-  letter-spacing: var(--tracking-caps);
-  text-transform: uppercase;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
-/* Same reset as .header-left-list: no bullets or indent. One link per line on phones */
+/* Both groups, and the lists inside them, become one centred, wrapping row.
+   Same reset as .header-left-list: no bullets or indent */
+.footer-extras,
 .footer-list {
-  display: grid;
-  gap: var(--space-2);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2) var(--space-4);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-/* Tablet and desktop: one row. Links on the left, © on the right */
+.footer-extras {
+  font-family: var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* From 40rem the four links fit on one line, so a dot goes between them. (On phones
+   they may wrap, and a dot at the start of a line looks like a mistake, so no dots there.)
+   It's decoration from CSS, so screen readers skip it (content: "·" / "" speaks nothing) */
 @media (min-width: 40rem) {
-  .footer-inner {
-    display: flex;
-    flex-wrap: wrap;                    /* a narrow window drops © under the links instead of squeezing */
-    justify-content: space-between;
-    align-items: center;
-    gap: var(--space-3) var(--space-5);
-    padding-block: var(--space-5);
-  }
-
-  /* The group names aren't needed in one row, so they're hidden the
-     screen-reader-text way: screen readers still hear "Elsewhere" etc. */
-  .footer-label {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
-
-  /* Elsewhere and Get in touch become one small row, split by dots */
-  .footer-list,
-  .footer-extras {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2) var(--space-4);
-  }
-
-  .footer-extras {
-    font-family: var(--font-mono);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-
-  /* A dot before every link except the very first one. It's decoration from CSS,
-     so screen readers skip it (content: "·" / "" sets its spoken text to nothing) */
   .footer-extras li + li::before,
   .footer-extras .footer-group + .footer-group li:first-child::before {
     content: "·" / "";
@@ -503,16 +481,41 @@ hr {
   }
 }
 
-/* The links in ink, a step darker than the muted labels and ©; underline only on hover keeps it quiet.
-   Keyboard focus uses the site-wide link look (a:focus-visible: colour + fake bold) */
+/* The stripe mark, small this time: under your name on the © line and exactly as wide
+   as it (left: 0 and right: 0 stretch it to the span). position: absolute keeps it out
+   of the line, so the band is no taller than the text. --stripe-mark is the same
+   gradient as the header's mark (STRIPE COLOURS, near the end of this file) */
+.footer-name {
+  position: relative;
+  display: inline-block;
+}
+
+.footer-name::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: calc(100% + 2px);
+  height: 3px;
+  background-image: var(--stripe-mark);
+}
+
+/* On the band the links are the band's text colour; underline only on hover keeps it quiet.
+   The site-wide link focus turns words gunjo blue, which is hard to read on pine, so the
+   footer uses a ring in the text colour instead (a class + :focus-visible beats a:focus-visible) */
 .footer-link {
-  color: var(--color-ink);
+  color: inherit;
   text-decoration: none;
 }
 
 .footer-link:hover {
   text-decoration: underline;
-  text-decoration-color: var(--color-highlight);
+  text-underline-offset: 0.25em;
+}
+
+.footer-link:focus-visible {
+  color: inherit;
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
 }
 
 /* =========================================================
@@ -584,12 +587,7 @@ hr {
   translate: -50% 0;
   width: var(--space-7);
   height: var(--space-1);
-  background-image: linear-gradient(to right,
-    var(--stripe-1) 0%  20%,
-    var(--stripe-2) 20% 40%,
-    var(--stripe-3) 40% 60%,
-    var(--stripe-4) 60% 80%,
-    var(--stripe-5) 80% 100%);   /* hard stops (each colour starts where the last ends): solid stripes, not a blend */
+  background-image: var(--stripe-mark);   /* the five stripes (STRIPE COLOURS); the footer's mark uses it too */
 }
 
 /* The site-wide link focus (colour + fake bold) works on the name too, but a ring is clearer
@@ -794,7 +792,7 @@ hr {
 
 /* =========================================================
    STRIPE COLOURS: the five 70s stripes (D38, D43). Since O2 (D51) they are
-   only the small mark under the name (HEADER above); until then they ran
+   only the small mark under the name (HEADER above, and the footer's © line since D53); until then they ran
    down the right edge of every page (git log -S "RETRO STRIPES" has the band).
    By day they are the palette colours; at Night each one is a grey, light to
    dark, so the mark stays calm on the near-black page
@@ -806,6 +804,15 @@ hr {
   --stripe-3: color-mix(in oklab, var(--color-sage), #8F8F8F calc(var(--dim) * 100%));
   --stripe-4: color-mix(in oklab, var(--color-sand), #636363 calc(var(--dim) * 100%));
   --stripe-5: color-mix(in oklab, var(--color-beni), #3D3D3D calc(var(--dim) * 100%));
+
+  /* The mark itself, used twice: under the name in the header and under it in the footer.
+     Hard stops (each colour starts where the last ends) give solid stripes, not a blend */
+  --stripe-mark: linear-gradient(to right,
+    var(--stripe-1) 0%  20%,
+    var(--stripe-2) 20% 40%,
+    var(--stripe-3) 40% 60%,
+    var(--stripe-4) 60% 80%,
+    var(--stripe-5) 80% 100%);
 }
 
 /* =========================================================

@@ -1,0 +1,13 @@
+{
+  "_help": "Home mosaic order (owner only; visitors can't change it). mode: \"listed\" = the ids below in this exact order (anything new or not listed follows at the end), \"mixed\" = project, photo, project, photo (ignores the list), \"random\" = a new shuffle every visit. Ids come from data/projects.json and data/art.json. To try layouts: open index.html?shuffle, reload until you like one, then copy the order the browser console prints into this file. See README, Home order.",
+  "mode": "mixed",
+  "order": [
+    "bridge-guitar",
+    "hairy-woodpecker-looking-up-2026",
+    "end-stop-cap",
+    "hairy-woodpecker-among-the-berries-2026",
+    "latch-hinge",
+    "hairy-woodpecker-last-light-2026",
+    "hairy-woodpecker-in-the-thicket-2026"
+  ]
+}
