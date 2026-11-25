@@ -14,22 +14,33 @@ const catalogNumber = (index) => `No. ${String(index + 1).padStart(3, "0")}`;
 
 /* ---------- Small parts every card shares ---------- */
 
-// The dot is drawn by CSS (codyles.css); the hidden text gives screen readers the word
-function statusDot(status) {
-    const key = STATUS_WORDS[status] ? status : "archived";
-    const word = STATUS_WORDS[key];
-    const dot = make("span", `ic-status is-${key}`,
-        make("span", "screen-reader-text", `Status: ${word.toLowerCase()}`));
-    dot.title = word;                  // a tooltip for mouse users
-    return dot;
-}
+// An unknown status in the JSON is treated as "archived" everywhere (words, lamp, card class)
+const statusKey = (status) => (STATUS_WORDS[status] ? status : "archived");
 
-// "No. 004 · 2026" on the left, the status dot on the right
-function metaLine(project, number, withYear) {
+// The title bar (O7a, the retro "window" from 2Advanced): the number on the left, like a
+// window's name, and one control on the right: "Flip ↻" on the front, the close box on the back
+function titleBar(project, number, withYear, control) {
     const label = make("span", "ic-no", withYear ? joinMeta([number, project.year]) : number);
     if (project.handWritten) label.append(make("span", "ic-stamp", "Hand-written"));
-    return make("p", "ic-meta", label, " ", statusDot(project.status));
+    return make("div", "ic-bar", label, control);
 }
+
+// The status lamp (Conspiracy's indicator lights): a bulb drawn by CSS, plus the WORD, always
+// on screen. A lamp alone would be colour only (WCAG 1.4.1); the bulb keeps its shape too.
+// "Status: " is hidden text, so a screen reader hears "Status: Live", not just "Live"
+function statusLamp(status) {
+    const key = statusKey(status);
+    return make("p", "ic-meta",
+        make("span", "ic-lamp",
+            make("span", `ic-status is-${key}`),
+            make("span", "screen-reader-text", "Status: "),
+            STATUS_WORDS[key]));
+}
+
+// The readout (2Advanced's microtext): the first two tools and the year, in small capitals.
+// The full tool list is on the back, as chips
+const readout = (project) =>
+    make("p", "ic-readout", joinMeta([...(project.tools || []).slice(0, 2), project.year]));
 
 function toolChips(tools = []) {
     const list = make("ul", "ic-chips", ...tools.map((tool) => make("li", "", tool)));
@@ -51,9 +62,11 @@ function sourceLink(project) {
 
 /* ---------- The full entry: the back of every flip card ---------- */
 
-function fullCard(project, number) {
-    return make("article", "index-card",
-        metaLine(project, number, true),
+// control: what goes on the right of the title bar (the back's close box)
+function fullCard(project, number, control) {
+    return make("article", `index-card is-${statusKey(project.status)}`,
+        titleBar(project, number, true, control),
+        statusLamp(project.status),
         make("h3", "ic-title", project.title),
         make("p", "ic-desc", project.description || project.blurb || ""),
         toolChips(project.tools),
@@ -73,23 +86,28 @@ function flipCard(project, number) {
     open.setAttribute("aria-expanded", "false");
     open.setAttribute("aria-controls", backId);
 
-    const hint = make("span", "flip-hint", "Flip ↻");
+    const hint = make("span", "flip-hint", "Flip ↻");   // sits in the front's title bar
     hint.setAttribute("aria-hidden", "true"); // decoration: the button already says what it does
 
-    const front = make("article", "index-card flip-face flip-front",
-        metaLine(project, number, false),
+    // is-wip / is-live / is-archived on the card: the CSS gives work in progress a hazard trim
+    const front = make("article", `index-card flip-face flip-front is-${statusKey(project.status)}`,
+        titleBar(project, number, false, hint),
+        statusLamp(project.status),
         make("h3", "ic-title", open),
         make("p", "ic-desc", project.blurb || ""),
-        hint
+        readout(project)
     );
 
-    const close = make("button", "flip-close", "Flip back");
+    // The close box in the back's title bar. It shows only "✕", so aria-label gives it a
+    // name to speak ("Flip back, button"); title is the same words as a tooltip for mice
+    const close = make("button", "flip-close", "✕");
     close.type = "button";
+    close.setAttribute("aria-label", "Flip back");
+    close.title = "Flip back";
 
-    const back = fullCard(project, number);
+    const back = fullCard(project, number, close);
     back.classList.add("flip-face", "flip-back");
     back.id = backId;
-    back.querySelector(".ic-links").append(close);
     back.querySelector(".ic-title").tabIndex = -1; // focusable by script only (not by Tab)
     // `inert` removes a whole subtree from Tab and from screen readers.
     // The back starts turned away, so it starts inert
