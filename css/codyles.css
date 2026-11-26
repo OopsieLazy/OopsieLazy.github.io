@@ -1,107 +1,112 @@
-/* Code Portfolio page (R3, D40): a library catalog of every code project.
-   The cards are built by js/codcript.js from data/code.json; this file only styles them.
+/* Code Portfolio page (O8, the workshop): the full-screen pixel room, its parchment scroll and the every-project table.
+   Everything is built by js/codcript.js from data/code.json; js/workcript.js draws the room.
    Shared header, tokens and footer live in styles.css */
 
 /* =========================================================
-   TOKENS (K6): every number this page uses, in one place.
+   TOKENS: every number this page uses, in one place.
    To change the look, change a value here; the rules below only read these.
    Colours come from styles.css roles, so both themes keep working
    ========================================================= */
 
-/* The cards are cream card stock in BOTH themes (owner's pick A, 2026-11-10), so inside a card
-   the day colours apply (color-scheme: light, below). But two things belong to the PAGE, not
-   the card: the punched hole shows the page through it, and the focus ring sits on the page.
-   A normal custom property is only text: var(--color-bg) inside the card would be worked out
-   with the card's light scheme (white hole on a dark page). @property registers these as real
-   <color>s, so they're worked out ONCE on the page's <body> and inherited as finished colours */
-@property --page-color {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: white;
-}
-
-@property --page-ring {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: black;
-}
-
 .thecodepage {
-  --page-color: var(--color-bg);       /* resolved here, on the page, then inherited as-is */
-  --page-ring: var(--color-accent);
+  /* The workshop band. Its colours are the ROOM's (the picture's darkest stone), not the
+     page's: the room is the same picture in both themes, like a photo */
+  --workshop-band: #1E1915;            /* the room's darkest stone, so the canvas melts into the band */
+  --workshop-ink: #D8CFC2;             /* text on the band: 11.3 on it */
+  --workshop-muted: #A99F92;           /* the credit line: 6.7 on it */
+  --workshop-ring: #FFFFFF;            /* the outline round an object you point at */
+  --workshop-ring-shadow: #1E1915;     /* a dark line outside it, so it shows on light stone too */
+  --spot-tag-bg: #1E1915;
+  --spot-tag-ink: #FFFFFF;
+  --spot-tag-size: var(--step--2);     /* the type scale's tiny-label step: never under 11.5px */
+  --spot-tag-pad: var(--space-1) var(--space-2);
+
+  /* Touch targets: 44px is the size a fingertip hits reliably (WCAG 2.5.5, Apple's guide).
+     styles.css has no token for it, so it's named here once instead of typed in three rules */
+  --target-touch: 2.75rem;             /* 44px */
+  --target-small: 2.25rem;             /* 36px: the table's filter buttons, a mouse-sized target */
+
   /* Page layout */
-  --code-section-gap: var(--space-7);  /* space between the Featured row and All projects */
-  --code-featured-min: 19rem;          /* featured cards: narrowest width before the row drops a column */
-  --code-featured-gap: var(--space-6);
-  --code-card-min: 15rem;              /* flip cards: narrowest width (4 across at 1440, 2 on tablets, 1 on phones) */
-  --code-card-gap: var(--space-4);
+  --code-section-gap: var(--space-7);
 
-  /* The catalog card: everything is placed on the ruled lines.
-     Ruled lines sit at --ic-top + n × --ic-line (n = 0, 1, 2 …) */
-  --ic-line: 1.55rem;                  /* one ruled line = one line of text */
-  --ic-bar: var(--space-6);            /* the pine title bar across the top (O7a) */
-  --ic-top: calc(var(--ic-bar) + var(--space-2)); /* top padding = where ruled line 0 sits: just under the bar */
-  --ic-pad-x: var(--space-5);          /* left and right padding */
-  --ic-pad-bottom: var(--space-7);     /* bottom padding: room for the punched hole */
-  --ic-ruled-ink: 5%;                  /* strength of the blue ruled lines: faint, so they guide, not decorate (8% until D-e, 2026-11-23) */
-  --ic-hole: 1.1rem;                   /* the punched hole's size */
-  --ic-title-tracking: 0;              /* letter spacing of the titles (0.06em while they were typed capitals) */
-  --ic-chip-radius: 3px;
+  /* The full-screen frame (O8 v2) */
+  --frame-shade: rgb(0 0 0 / 0.6);     /* the shadow behind the header, so its light text reads */
+  --room-dim: rgb(0 0 0 / 0.45);       /* the room behind an open scroll */
 
-  /* Quiet paper (sleek pass, owner's pick B, 2026-11-11): cream card stock with one soft
-     shadow. The grain, tilt and red header rule of the first paper look (pick A) were removed;
-     they're in git history (commit 3c710ff) if you ever want them back */
-  --paper-radius: 0;                   /* square, like a window (O7a; card stock had 3px) */
-  /* Declutter (D-e, 2026-11-23): no shadow at rest. 26 shadowed cards were 26 boxes in a row;
-     flat card stock lets the titles lead. The lift on hover stays: it says "this one turns over".
-     (The resting shadow was: 0 1px 2px rgb(0 0 0 / 0.08), 0 6px 14px -6px rgb(0 0 0 / 0.14)) */
-  --paper-shadow: none;
-  --paper-shadow-lift:                 /* picked up a little (hover): the shadow spreads */
-    0 2px 4px rgb(0 0 0 / 0.10),
-    0 12px 22px -8px rgb(0 0 0 / 0.18);
+  /* The parchment scroll: the open shelf. Its colours are the PAPER's, the same in both themes */
+  --parchment: #EADBB8;
+  --parchment-edge: #C9B48A;           /* the aged edges (decoration) */
+  --parchment-ink: #3A2A1C;            /* text: 10.0 on the parchment */
+  --parchment-muted: #6A5034;          /* secondary text: 5.45 */
+  --parchment-link: #2F4A42;           /* links, a deep pine: 7.0 */
+  --parchment-line: #CDB98F;           /* the hairline between rows (decoration) */
+  --scroll-rod: #6E4A30;               /* the wooden rods at the top and bottom */
+  --scroll-rod-dark: #47301F;
+  --scroll-knob: #B98B3E;              /* their brass ends */
+  --scroll-rod-size: 0.875rem;         /* 14px */
+  --scroll-width: 26rem;
+  --scroll-time: 420ms;                /* how long it takes to unroll */
 
   /* Status dots (colours: --color-status-* in styles.css) */
   --status-dot: 0.8rem;
   --status-ring: 2px;
-
-  /* Retro details (O7a, owner's pick A "instrument panel", 2026-11-24) */
-  --bevel: 2px;                        /* the raised edge: light top-left, dark bottom-right */
-  --hazard: 5px;                       /* the striped trim along the bottom of work in progress */
-  --hazard-stripe: 5px;                /* the width of each stripe in it */
-
-  /* Flip cards (K8) */
-  --flip-front-lines: 6;               /* a closed card is this many ruled lines tall, so fronts line up:
-                                          lamp, title (up to 2 lines), blurb (up to 2), readout */
-  --flip-time: 500ms;                  /* how long the flip takes */
-  --flip-depth: 1200px;                /* perspective: smaller = a more dramatic 3D turn */
-  --flip-lift: 3px;                    /* how far a front lifts on hover */
-
-  /* "Hand-written" stamp (projects from before AI) */
-  --stamp-tracking: 0.08em;
 }
 
 /* =========================================================
-   PAGE HEAD AND SECTIONS
+   NO MENU BAR: on this page all navigation is IN the workshop (owner, 2026-11-26, after
+   Ash's room). The map on the wall lists every page; the printer, camera and coat of arms
+   lead to CAD, Art and About. The site's skip link still comes first for keyboards
    ========================================================= */
-.code-head {
-  margin-block: 0 var(--space-6);      /* the top comes from --page-top (styles.css) */
+.thecodepage .site-header {
+  display: none;
 }
 
-.code-head h1 {
-  margin: 0 0 var(--space-2);
+.code-main {
+  padding-top: 0;                      /* the room starts at the very top of the window */
 }
 
-.code-head p {
-  margin: 0;
-}
-
-.code-section + .code-section {
+.every,
+.code-ask {
   margin-top: var(--code-section-gap);
 }
 
-/* The section names are <h2>s (screen readers can jump to them) dressed as .retro-label */
-.code-section-label {
-  margin: 0 0 var(--space-4);
+/* =========================================================
+   ONLY THE SHOP, AT FIRST (owner, 2026-11-26): the page is the workshop and nothing else,
+   so there's nothing to scroll. Picking an object unfolds the part below the room and the
+   footer (codcript.js puts .shows-below on <body>); they fold away again once the room is
+   closed and fully back in view. .has-room is added only when the room really drew, so
+   without JavaScript, or if drawing fails, the table and footer just stay open
+   ========================================================= */
+.has-room:not(.shows-below) .code-below,
+.has-room:not(.shows-below) .site-footer {
+  display: none;
+}
+
+.has-room:not(.shows-below) .code-main {
+  padding-bottom: 0;                   /* the page's usual bottom space would be 64px to scroll */
+}
+
+/* Unfolding: the part below rises into place as it appears */
+@media (prefers-reduced-motion: no-preference) {
+  .shows-below .code-below {
+    animation: below-in var(--speed-slow) var(--ease-smooth) both;
+  }
+}
+
+@keyframes below-in {
+  from {
+    opacity: 0;
+    translate: 0 var(--space-6);
+  }
+}
+
+/* The hidden attribute works through the browser's own "display: none", the weakest rule
+   there is: any class that sets display (.scroll is a grid) quietly overrides it and
+   the element shows anyway. styles.css has no global [hidden] rule, so this puts it back for
+   everything codcript.js hides on this page (the stage, the scroll, the table, the Pause button).
+   Two selectors' worth of weight (0,2,0) beats a one-class rule like .scroll */
+.code-main [hidden] {
+  display: none;
 }
 
 /* Shown only if code.json fails to load (codcript.js fills it) */
@@ -110,207 +115,552 @@
 }
 
 /* =========================================================
-   GRIDS: as many columns as fit, no media queries.
-   min(…, 100%) stops the minimum from overflowing a phone narrower than it
+   THE WORKSHOP: the room fills the window (100dvh = the visible height on phones too).
+   The canvas is 384 x 216 pixels; workcript.js scales it to COVER the window (keeping
+   every object on screen), and image-rendering: pixelated keeps the pixels sharp
    ========================================================= */
-.code-catalog {
-  /* Each list is a CONTAINER, so an open card can ask "is there room for two columns?"
-     with @container below. A media query would measure the window, not the list */
-  container: catalog / inline-size;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(var(--code-card-min), 100%), 1fr));
-  gap: var(--code-card-gap);
-  align-items: start;                  /* an open (tall) card doesn't stretch its neighbours */
-  grid-auto-flow: dense;               /* later cards fill the hole an open card leaves */
-  margin: 0 0 var(--space-8);
+.workshop {
+  position: relative;                  /* the stage, the scroll and Pause sit against it */
+  height: 100vh;                       /* older browsers */
+  height: 100dvh;
+  overflow: hidden;
+  background-color: var(--workshop-band);   /* shows only in thin bands on odd window shapes */
+  color: var(--workshop-ink);
+  color-scheme: dark;
+}
+
+/* "Skip to every project": the site's .skip-link (styles.css) appears top-left when focused */
+.workshop-skip {
+  z-index: 6;
+}
+
+.workshop-skip:focus {
+  outline: 2px solid var(--workshop-ring);
+  outline-offset: 2px;
+}
+
+/* The stage is the whole window. The room sits in its middle; when it's bigger than the
+   window (it covers it) the edges are simply cut off by overflow: hidden */
+.workshop-stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.workshop-room {
+  position: absolute;                  /* the objects are placed against this box */
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;                /* centred on its own size, even when wider than the window */
+  transition: opacity var(--speed-slow) ease;
+}
+
+/* Until the art packs' pictures arrive (workcript.js), the room is hidden, then it fades in
+   whole: never a half-drawn room. visibility also keeps its buttons out of the Tab order */
+.is-loading .workshop-room {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Narrow or upright screens (workcript.js adds .is-panning): the room keeps a readable
+   size and scrolls sideways, until the tower layout (O8m) replaces this */
+.workshop-stage.is-panning {
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-color: var(--workshop-muted) transparent;
+}
+
+.is-panning .workshop-room {
+  position: relative;
+  left: auto;
+  top: auto;
+  translate: none;
+  flex: none;
+}
+
+.workshop-room canvas {
+  display: block;
+  image-rendering: pixelated;          /* scale up without blurring: square pixels */
+}
+
+/* A tall monitor (workcript.js adds .is-letterboxed): the room fits the width and sits in the
+   middle; its ceiling and floor fade into the dark band instead of ending in a hard line.
+   A mask only changes what shows, not where the objects are, so clicks still line up */
+.is-letterboxed .workshop-room canvas {
+  mask-image: linear-gradient(transparent, #000 12%, #000 88%, transparent);
+}
+
+.workshop-spots {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
-/* Featured: the same flip cards, bigger. Its own container name, because its
-   "room for two columns" width is different (see @container featured below) */
-.code-catalog.is-featured {
-  container-name: featured;
-  grid-template-columns: repeat(auto-fill, minmax(min(var(--code-featured-min), 100%), 1fr));
-  gap: var(--code-featured-gap);
+/* One object you can click: an invisible box over its picture, sized in % of the room */
+.spot {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--w);
+  height: var(--h);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
 }
 
-.is-featured .flip-front .ic-title {
-  font-size: var(--step-1);            /* still one ruled line tall (line-height: --ic-line) */
+/* No box: workcript.js draws the outline on the canvas around the object's own shape
+   (1 px of air, a light line, a dark line), for hover, keyboard focus and the open shelf */
+.spot:focus-visible {
+  outline: none;
+}
+
+/* The name tag, in the pixel font: above the object, or below it near the top edge */
+.spot-tag {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + var(--space-2));
+  translate: -50% 0;
+  z-index: 2;
+  padding: var(--spot-tag-pad);
+  background: var(--spot-tag-bg);
+  color: var(--spot-tag-ink);
+  font: var(--spot-tag-size) / 1.2 var(--font-pixel);
+  letter-spacing: var(--tracking-caps); /* the pixel font is all capitals: same spacing as the mono labels */
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--speed-fast) ease;
+}
+
+.tag-below .spot-tag {
+  top: calc(100% + var(--space-2));
+  bottom: auto;
+}
+
+.spot:hover .spot-tag,
+.spot:focus-visible .spot-tag,
+.spot[aria-pressed="true"] .spot-tag {
+  opacity: 1;
+}
+
+/* A link out of the room says so: a dashed tag */
+.spot.is-link .spot-tag {
+  background: var(--spot-tag-ink);
+  color: var(--spot-tag-bg);
+  outline: 1px dashed var(--spot-tag-bg);
+  outline-offset: -3px;
+}
+
+/* Pause sits in the frame's top-right corner, small, like a game's settings button.
+   WCAG 2.2.2: anything that moves for more than 5 seconds needs a way to stop it */
+.workshop-pause {
+  position: absolute;
+  z-index: 3;
+  top: var(--space-4);
+  right: var(--space-4);
+  min-height: var(--space-6);          /* 32px: a comfortable target */
+  padding: 0 var(--space-4);
+  border: 1px solid var(--workshop-muted);
+  border-radius: var(--radius-pill);
+  background: var(--frame-shade);      /* a dark backing, so it reads on pale stone */
+  color: var(--workshop-ink);
+  font: var(--step--1) var(--font-mono);
+  cursor: pointer;
+}
+
+.workshop-pause:hover,
+.workshop-pause[aria-pressed="true"] {
+  border-color: var(--workshop-ink);
+}
+
+.workshop-pause:focus-visible,
+.workshop-list :focus-visible {
+  outline: 2px solid var(--workshop-ring);
+  outline-offset: 2px;
+}
+
+/* The same objects as a list: only where the room is wider than the screen (phones, small
+   tablets), until the tower layout replaces the sideways pan (O8m) */
+.workshop-list {
+  display: none;
+}
+
+@media (max-width: 50rem) {
+  .workshop-list {
+    position: absolute;                /* along the bottom of the frame, over the floor */
+    inset: auto 0 0;
+    z-index: 2;
+    background: linear-gradient(transparent, var(--frame-shade));
+    display: flex;
+    gap: var(--space-2);
+    overflow-x: auto;
+    margin: var(--space-3) 0 0;
+    padding: 0 var(--gutter) var(--space-2);
+    list-style: none;
+    scroll-snap-type: x proximity;
+  }
+
+  .workshop-list li {
+    scroll-snap-align: start;
+  }
+
+  .shelf-button,
+  .shelf-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--target-touch);
+    padding: 0 var(--space-3);
+    border: 1px solid var(--workshop-muted);
+    background: none;
+    color: var(--workshop-ink);
+    font: var(--step--1) var(--font-mono);
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .shelf-link {
+    border-style: dashed;
+  }
+
+  .shelf-button[aria-pressed="true"] {
+    background: var(--workshop-ink);
+    color: var(--workshop-band);
+  }
+}
+
+/* The art credit, in the room's bottom-left corner: small, but always on screen (the
+   CLAUDE.md image rule: pack art and code-drawn art carry a visible credit) */
+.workshop-credit {
+  position: absolute;
+  z-index: 2;
+  left: var(--space-4);
+  bottom: var(--space-3);
+  max-width: min(36rem, calc(100% - 2 * var(--space-4)));
+  margin: 0;
+  padding: var(--space-1) var(--space-2);
+  background: var(--frame-shade);      /* a dark backing, so it reads on pale stone */
+  color: var(--workshop-muted);
+  font-size: var(--step--2);
+  line-height: 1.4;
+}
+
+.workshop-credit a {
+  color: var(--workshop-ink);
+}
+
+.workshop-credit a:focus-visible {
+  outline: 2px solid var(--workshop-ring);
+  outline-offset: 2px;
+}
+
+/* On phones the object list runs along the bottom, so the credit moves to the top-left,
+   clear of Pause in the top-right */
+@media (max-width: 50rem) {
+  .workshop-credit {
+    top: var(--space-3);
+    bottom: auto;
+    max-width: calc(100% - 9rem);
+  }
 }
 
 /* =========================================================
-   THE CATALOG CARD: a real index card. It's an object, not part of the page,
-   so it keeps its own colours in both themes (like the Blueprint card on Home):
-   - color-scheme: light makes every light-dark() role inside the card pick its DAY value
-   - the printed ink (blue ruled lines, red header rule) uses fixed PALETTE colours
+   THE SCROLL (O8 v2, owner's pick): the open shelf, unrolled over the room.
+   Two wooden rods with brass ends, parchment between them. It unrolls by animating the
+   sheet's grid row from 0fr to 1fr: a grid row CAN animate to "its content's height",
+   which height: auto can't. color-scheme: light makes the roles inside (chips, status
+   colours) take their day values, because parchment is light in both themes
    ========================================================= */
-.index-card {
-  --ic-ruled: color-mix(in srgb, var(--color-gunjo) var(--ic-ruled-ink), transparent);
-  /* The bevel (Cartoon Network's raised panels): light where the light comes from (top left),
-     shade on the far sides. Real borders, not shadows: Windows High Contrast mode removes
-     shadows but keeps borders, so the card's edge survives there */
-  --bevel-light: var(--color-paper);
-  --bevel-dark: color-mix(in srgb, var(--color-cardstock), var(--color-sumi) 22%);
-  --lamp-bezel: color-mix(in srgb, var(--color-cardstock), var(--color-sumi) 14%);
-
+.scroll {
+  position: absolute;
+  z-index: 4;
+  top: calc(var(--space-4) + var(--space-6) + var(--space-3));   /* just under Pause */
+  right: var(--gutter);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  width: min(var(--scroll-width), calc(100% - 2 * var(--gutter)));
+  max-height: calc(100% - 7rem);
   color-scheme: light;
-  /* Text colour is INHERITED from the page, already worked out (light grey at night).
-     Setting it here makes the card look it up again, under its own light scheme */
-  color: var(--color-ink);
-  position: relative;
-  padding: var(--ic-top) var(--ic-pad-x) var(--ic-pad-bottom);
-  border: var(--bevel) solid;
-  border-color: var(--bevel-light) var(--bevel-dark) var(--bevel-dark) var(--bevel-light);
-  border-radius: var(--paper-radius);
-  background-color: var(--color-cardstock);
-  /* The ruled lines: a gradient whose pattern is EXACTLY one --ic-line tall, with the 1px
-     line at its start. (The pattern repeats every "last stop": ending at --ic-line + 1px
-     would make each repeat 1px too tall, and the lines would drift off the text.)
-     background-position puts line 0 at the top padding edge, where the text starts */
-  background-image: repeating-linear-gradient(var(--ic-ruled) 0 1px, transparent 1px var(--ic-line));
-  background-position: 0 var(--ic-top);
-  box-shadow: var(--paper-shadow);
-  font-family: var(--font-mono);
-  font-size: var(--step--1);
+  color: var(--parchment-ink);
+  filter: drop-shadow(0 0.75rem 1.5rem var(--frame-shade));
 }
 
-/* The punched hole: a circle filled with the PAGE colour (--page-color, worked out on the
-   page, see @property at the top), so it looks cut through. The inner shadow is the hole's
-   wall: the cut edge of the card catching the light */
-.index-card::after {
+/* A rod: a wooden dowel a little wider than the paper, with a brass knob at each end */
+.scroll-rod {
+  position: relative;
+  height: var(--scroll-rod-size);
+  margin-inline: calc(var(--space-2) * -1);
+  border-radius: var(--radius-pill);
+  background: linear-gradient(var(--scroll-rod), var(--scroll-rod-dark));
+}
+
+.scroll-rod::before,
+.scroll-rod::after {
   content: "";
   position: absolute;
-  bottom: var(--space-3);
-  left: 50%;
-  width: var(--ic-hole);
-  height: var(--ic-hole);
-  translate: -50% 0;                   /* centre it on its own width */
+  top: 50%;
+  width: calc(var(--scroll-rod-size) + 4px);
+  height: calc(var(--scroll-rod-size) + 4px);
+  translate: 0 -50%;
   border-radius: 50%;
-  background: var(--page-color);
-  box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.35);
+  background: var(--scroll-knob);
 }
 
-.index-card p {
+.scroll-rod::before { left: calc(var(--space-2) * -1); }
+.scroll-rod::after { right: calc(var(--space-2) * -1); }
+
+.scroll-sheet {
+  display: grid;
+  grid-template-rows: 0fr;             /* rolled up */
+  min-height: 0;
+  margin-inline: var(--space-1);
+  background-color: var(--parchment);
+  /* aged edges: darker toward the left and right, like paper that's been handled */
+  box-shadow:
+    inset var(--space-2) 0 var(--space-3) calc(var(--space-2) * -1) var(--parchment-edge),
+    inset calc(var(--space-2) * -1) 0 var(--space-3) calc(var(--space-2) * -1) var(--parchment-edge);
+  transition: grid-template-rows var(--scroll-time) ease;
+}
+
+.scroll.is-open .scroll-sheet {
+  grid-template-rows: 1fr;             /* unrolled */
+}
+
+.scroll-inner {
+  min-height: 0;
+  overflow-y: auto;                    /* a long shelf scrolls inside the parchment */
+  padding: var(--space-3) var(--space-5) var(--space-4);
+}
+
+.scroll-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: 0 var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--parchment-line);
+}
+
+.scroll-crumb {
+  grid-column: 1;
   margin: 0;
+  color: var(--parchment-muted);
+  font: var(--step--2) var(--font-pixel);
+  letter-spacing: var(--tracking-caps);
 }
 
-/* THE TITLE BAR (O7a, from 2Advanced's floating windows): a pine strip across the top with the
-   number on the left and one control on the right. It's absolutely placed over the top padding,
-   so the ruled lines and everything on them stay exactly where they were */
-.ic-bar {
-  position: absolute;
-  inset: 0 0 auto;                     /* top, left and right edges; height below */
-  height: var(--ic-bar);
-  display: flex;
-  justify-content: space-between;
+.scroll-shelf {
+  grid-column: 1;
+  margin: 0;
+  color: var(--parchment-ink);
+  font-size: var(--step-1);
+}
+
+.scroll-shelf:focus {
+  outline: none;                       /* focused by script so a screen reader reads it; not a control */
+}
+
+.scroll-close {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  display: grid;
+  place-items: center;
+  width: var(--space-6);
+  height: var(--space-6);
+  padding: 0;
+  border: 1px solid var(--parchment-muted);
+  background: none;
+  color: var(--parchment-ink);
+  font: inherit;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.scroll-close:hover {
+  background-color: var(--parchment-ink);
+  color: var(--parchment);
+}
+
+.scroll :focus-visible {
+  outline: 2px solid var(--parchment-ink);
+  outline-offset: 2px;
+}
+
+.scroll-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.scroll-list > li {
+  border-bottom: 1px solid var(--parchment-line);
+}
+
+.scroll-row-head {
+  margin: 0;
+  font-size: var(--step-0);
+}
+
+/* One project's row: lamp, name, year. The whole row is the button */
+.scroll-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: var(--space-3);
-  padding-inline: var(--ic-pad-x) var(--space-3);   /* room on the right for the close box's focus ring */
-  background-color: var(--color-pine);
-  color: var(--color-paper);           /* white on pine: 7.8 */
-  font-size: var(--step--2);
+  width: 100%;
+  padding: var(--space-3) 0;
+  border: 0;
+  background: none;
+  color: var(--parchment-ink);
+  font: 600 var(--step-0) var(--font-body);
+  text-align: left;
+  cursor: pointer;
+}
+
+.scroll-row:hover .scroll-row-title {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.scroll-row-year {
+  color: var(--parchment-muted);
+  font: var(--step--1) var(--font-mono);
+}
+
+/* In a row only the bulb shows: the word is in hidden text before it ("Status: Live") */
+.scroll-row .ic-lamp {
+  font-size: 0;
+}
+
+.scroll-detail {
+  padding: 0 0 var(--space-4) calc(var(--status-dot) + var(--space-3));
+}
+
+.scroll-number {
+  margin: 0 0 var(--space-2);
+  color: var(--parchment-muted);
+  font: var(--step--2) var(--font-mono);
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
 }
 
-.ic-no {
-  white-space: nowrap;
-}
-
-/* The status lamp fills the band between ruled lines 0 and 1.
-   Exactly one line tall + align-items: center = the lamp sits in the middle of the band */
-.ic-meta {
-  display: flex;
-  align-items: center;
-  height: var(--ic-line);
-}
-
-.ic-lamp {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  color: var(--color-muted);           /* the word in grey (5.4): the amber fails as small text */
-  font-size: var(--step--2);
-  letter-spacing: var(--tracking-caps);
-  text-transform: uppercase;
-}
-
-/* The title, in the body sans (D-e, 2026-11-23: it was the mono font in capitals, so the whole
-   card was one typewriter voice and the names didn't stand out). Mono stays for the number and
-   blurb, the card's metadata. It sits on the band right under the lamp and fills exactly
-   one band, so the description below starts on the grid too */
-.ic-title {
+.scroll-desc {
+  max-width: 60ch;
   margin: 0;
-  line-height: var(--ic-line);
-  font-family: var(--font-body);
-  font-size: var(--step-0);
-  font-weight: 600;
-  letter-spacing: var(--ic-title-tracking);
 }
 
-.ic-desc {
-  line-height: var(--ic-line);         /* text sits on the ruled lines */
-}
-
-.ic-chips {
+.scroll .ic-chips {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
   margin: var(--space-3) 0 0;
   padding: 0;
   list-style: none;
-  font-size: var(--step--2);
+  font: var(--step--2) var(--font-mono);
 }
 
-.ic-chips li {
+.scroll .ic-chips li {
   padding: 1px var(--space-2);
-  border: 1px solid var(--color-line);
-  border-radius: var(--ic-chip-radius);
-  background: var(--color-cardstock);  /* covers the ruled line behind the chip */
-  color: var(--color-muted);
+  border: 1px solid var(--parchment-edge);
+  color: var(--parchment-muted);
 }
 
-/* .index-card .ic-links (0,2,0) beats .index-card p (0,1,1), so this margin wins
-   without !important */
-.index-card .ic-links {
+.scroll-links {
+  margin: var(--space-3) 0 0;
+  font: var(--step--1) var(--font-mono);
+}
+
+.scroll-links a {
+  color: var(--parchment-link);
+  text-underline-offset: 3px;
+}
+
+.scroll .ic-private {
+  color: var(--parchment-muted);
+}
+
+/* The map's places: one link per page, the name over a short note */
+.scroll-place {
+  display: grid;
+  gap: 2px;
+  padding: var(--space-3) 0;
+  color: var(--parchment-ink);
+  text-decoration: none;
+}
+
+.scroll-place-name {
+  font-weight: 600;
+}
+
+.scroll-place-note {
+  color: var(--parchment-muted);
+  font-size: var(--step--1);
+}
+
+.scroll-place:hover .scroll-place-name {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* The scroll's last line: the way down to the full table below the room */
+.scroll-foot {
   display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--space-4);
-  margin-top: var(--space-3);
+  align-items: center;
+  min-height: var(--target-touch);
+  margin-top: var(--space-2);
+  border-top: 1px solid var(--parchment-line);
+  color: var(--parchment-link);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  text-underline-offset: 4px;
 }
 
-/* A private repo has no public page, so it gets a plain note instead of a dead link */
-.ic-private {
-  color: var(--color-muted);
-}
-
-/* Stamp for projects written before AI ("handWritten": true in code.json) */
-.ic-stamp {
+.scroll-foot::after {
+  content: "\2193";                    /* a down arrow: the table is below */
+  content: "\2193" / "";               /* the same, with empty alt text: screen readers skip it */
   margin-left: var(--space-2);
-  padding: 0 var(--space-1);
-  border: 1px solid currentColor;      /* white in the pine bar, like the number */
+}
+
+/* Phones: the scroll spans the frame's width and sits low, like a sheet pulled up */
+@media (max-width: 40rem) {
+  .scroll {
+    top: auto;
+    bottom: var(--space-4);
+    left: var(--gutter);
+    width: auto;
+    max-height: 75dvh;
+  }
+}
+
+/* The status word next to a lamp (in the table) */
+.ic-lamp {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-muted);
+  font-family: var(--font-mono);
   font-size: var(--step--2);
-  letter-spacing: var(--stamp-tracking);
+  letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
 }
 
 /* =========================================================
-   STATUS DOTS. Colour alone would fail WCAG 1.4.1 (colour-blind visitors couldn't
-   tell them apart), so each status also has its own SHAPE:
-   filled = live, half = in progress, ring = archived. currentColor is the status
-   colour, used by both the ring and the fill. The word lives in hidden text for
-   screen readers, and the key at the top of the page explains the shapes
+   STATUS DOTS. Colour alone would fail WCAG 1.4.1, so each status also has its own
+   SHAPE: filled = live, half = in progress, ring = archived. The word is always shown
    ========================================================= */
 .ic-status {
   display: inline-block;
-  flex: none;                          /* never squashed by a long card number */
+  flex: none;
   width: var(--status-dot);
   height: var(--status-dot);
   border: var(--status-ring) solid currentColor;
   border-radius: 50%;
-  vertical-align: middle;
 }
 
 .ic-status.is-live {
@@ -318,7 +668,6 @@
   background: currentColor;
 }
 
-/* Half filled: a hard-edged gradient, left half colour, right half empty */
 .ic-status.is-wip {
   color: var(--color-status-wip);
   background: linear-gradient(90deg, currentColor 50%, transparent 50%);
@@ -329,233 +678,204 @@
   background: transparent;
 }
 
-/* The key under the intro line: dot + word, in a wrapping row */
-.status-key {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2) var(--space-5);
-  margin: var(--space-4) 0 0;
-  padding: 0;
-  list-style: none;
-  font-family: var(--font-mono);
-  font-size: var(--step--1);
-  color: var(--color-muted);
-}
-
-.status-key .ic-status {
-  margin-right: var(--space-1);
-}
-
-/* On the cards the dots become LAMPS: a bezel ring round each one, and the live one lit
-   (a pale hot spot top-left, and a soft glow). The shapes stay: full, half, ring */
-.index-card .ic-status {
-  box-shadow: 0 0 0 2px var(--lamp-bezel);
-}
-
-.index-card .ic-status.is-live {
+/* On the scroll the live dot is a LIT lamp: a pale hot spot and a soft glow */
+.scroll .ic-status.is-live {
   background: radial-gradient(circle at 35% 30%, color-mix(in srgb, currentColor, white 55%), currentColor 60%);
-  box-shadow: 0 0 0 2px var(--lamp-bezel), 0 0 6px currentColor;
-}
-
-/* The readout line along the bottom of a front (it fills the last ruled line, the front's
-   bottom padding). One line only: a long tool name ends in "..." instead of wrapping */
-.ic-readout {
-  position: absolute;
-  inset-inline: var(--ic-pad-x);
-  bottom: 0;
-  overflow: hidden;
-  line-height: var(--ic-line);
-  color: var(--color-muted);
-  font-size: var(--step--2);
-  letter-spacing: var(--tracking-caps);
-  text-transform: uppercase;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* Work in progress gets a hazard trim along the bottom edge (2Advanced, Conspiracy): diagonal
-   amber stripes, "under construction". The status word says it too, so it's decoration only */
-.index-card.is-wip::before {
-  content: "";
-  position: absolute;
-  inset: auto 0 0;                     /* the bottom edge, full width */
-  height: var(--hazard);
-  background-image: repeating-linear-gradient(-45deg,
-    var(--color-status-wip) 0 var(--hazard-stripe),
-    transparent var(--hazard-stripe) calc(var(--hazard-stripe) * 2));
+  box-shadow: 0 0 6px currentColor;
 }
 
 /* =========================================================
-   FLIP CARDS (K8, preview A). Each <li> holds a .flip-inner with two faces:
-   the front (title + one line) and the back (the full entry).
-   Opening: the card turns over (rotateY) and grows to two columns.
-   Only the face you can see takes up space; the other is laid over it
-   (position: absolute) and made `inert` by the script, so Tab and
-   screen readers skip it
+   EVERY PROJECT: one table, sorted by the column buttons, filtered by status
    ========================================================= */
-.flip-item {
-  perspective: var(--flip-depth);      /* the 3D "camera": makes the turn look deep, not flat */
+.every-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
 }
 
-.flip-inner {
-  position: relative;
-  transform-style: preserve-3d;        /* the faces keep their own 3D turn inside the turning card */
-  transition: transform var(--flip-time) ease;
+.every-head h2 {
+  margin: 0;
 }
 
-.flip-face {
-  backface-visibility: hidden;         /* a face turned away from you is invisible */
+.every-count {
+  color: var(--color-muted);
+  font-weight: 400;
 }
 
-/* The back starts turned away (180deg), so it shows when the whole card turns 180deg */
-.flip-back {
-  transform: rotateY(180deg);
+.every-filters {
+  display: inline-flex;
+  flex-wrap: wrap;
+  border: 1px solid var(--color-line);
 }
 
-/* Closed: the front sets the size; the back lies on top of it, the same size */
-.flip-item:not(.is-open) .flip-back,
-.flip-item.is-open .flip-front {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-}
-
-.flip-item.is-open .flip-inner {
-  transform: rotateY(180deg);
-}
-
-/* Open cards take two columns, but only when the catalog HAS two columns:
-   on a one-column phone, "span 2" would add a second column and push the page sideways.
-   31.5rem = 2 × --code-card-min + --code-card-gap (a container query can't read var()) */
-@container catalog (min-width: 31.5rem) {
-  .flip-item.is-open {
-    grid-column: span 2;
-  }
-}
-
-/* 40rem = 2 × --code-featured-min + --code-featured-gap */
-@container featured (min-width: 40rem) {
-  .flip-item.is-open {
-    grid-column: span 2;
-  }
-}
-
-/* The whole open back is clickable (it flips the card over again), so say so */
-.flip-item.is-open .flip-back {
+.every-filters button {
+  min-height: var(--target-small);
+  padding: 0 var(--space-3);
+  border: 0;
+  background: none;
+  color: var(--color-ink);
+  font: var(--step--1) var(--font-mono);
   cursor: pointer;
 }
 
-/* The front: shorter, no punched hole. The min-height is whole ruled lines, so every
-   front is the same height and the lines stay on the grid */
-.flip-front {
-  /* Whole ruled lines, plus the bevel at the top and bottom: min-height includes the border
-     (box-sizing: border-box), so without it the fullest fronts would come out 4px taller */
-  min-height: calc(var(--ic-top) + var(--flip-front-lines) * var(--ic-line) + 2 * var(--bevel));
-  padding-bottom: var(--ic-line);      /* the last ruled line is kept free for the readout */
-  transition: translate var(--speed-fast) ease, box-shadow var(--speed-fast) ease;
+.every-filters button + button {
+  border-left: 1px solid var(--color-line);
 }
 
-.flip-front::after {
-  display: none;
+.every-filters button[aria-pressed="true"] {
+  background: var(--color-ink);
+  color: var(--color-bg);
 }
 
-/* The title IS the button (like Home's stretched link, D29): a screen reader hears
-   "INV.OS, button, collapsed", and ::after stretches it over the whole front, so the
-   whole card is clickable. Its own look is reset to the title's */
-.flip-open {
+.every-scroll {
+  overflow-x: auto;                    /* only the table scrolls on a narrow screen */
+}
+
+.every-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--step--1);
+}
+
+.every-table th,
+.every-table td {
+  padding: var(--space-3) var(--space-3) var(--space-3) 0;
+  border-bottom: 1px solid var(--color-line);
+  text-align: left;
+  vertical-align: baseline;
+}
+
+.every-table thead th {
+  color: var(--color-muted);
+  font: 400 var(--step--2) var(--font-mono);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+.every-table thead button {
   padding: 0;
   border: 0;
   background: none;
   color: inherit;
   font: inherit;
   letter-spacing: inherit;
-  text-align: left;
   text-transform: inherit;
   cursor: pointer;
 }
 
-.flip-open::after {
-  content: "";
-  position: absolute;
-  inset: 0;
+/* The sorted column: darker, with an arrow that says which way */
+.every-table th[aria-sort] button {
+  color: var(--color-ink);
 }
 
-.flip-open:focus-visible {
-  outline: none;                       /* the ring goes round the whole card instead (below) */
+/* CSS text counts as part of the button's name, so a screen reader would say "Year up arrow".
+   The part after the slash is the ALTERNATIVE text: empty, because aria-sort already says
+   "sorted ascending". Browsers without the slash syntax skip the line: no arrow, no harm */
+.every-table th[aria-sort="ascending"] button::after { content: " ↑" / ""; }
+.every-table th[aria-sort="descending"] button::after { content: " ↓" / ""; }
+
+.every-project-cell {
+  font-weight: 400;
 }
 
-.flip-front:has(.flip-open:focus-visible) {
-  outline: 2px solid var(--page-ring);  /* the ring sits on the PAGE, so it uses the page's colour */
-  outline-offset: 3px;
-}
-
-/* Hover: the card lifts off the desk a little, and its shadow spreads */
-.flip-front:hover {
-  translate: 0 calc(var(--flip-lift) * -1);
-  box-shadow: var(--paper-shadow-lift);
-}
-
-/* "Flip ↻" on the right of the title bar, so it's clear the card turns over.
-   It takes the bar's white, and lines up with the back's close box */
-.flip-hint {
-  padding-right: var(--space-2);
-}
-
-/* Quiet: where a mouse can hover, the hint only shows on hover or keyboard focus.
-   (hover: hover) is false on touch screens, which have no hover, so phones always see it */
-@media (hover: hover) {
-  .flip-hint {
-    opacity: 0;
-    transition: opacity var(--speed-fast) ease;
-  }
-
-  .flip-front:hover .flip-hint,
-  .flip-front:has(.flip-open:focus-visible) .flip-hint {
-    opacity: 1;
-  }
-}
-
-/* The back's title gets focus when the card opens (so a screen reader reads it);
-   it isn't a control, so it needs no ring */
-.flip-back .ic-title:focus {
-  outline: none;
-}
-
-/* The close box on the right of the back's title bar (a window's ✕). 24px square: the
-   smallest target WCAG 2.2 allows (2.5.8). Hover fills it white; keyboard focus adds a ring */
-.flip-close {
-  display: grid;
-  place-items: center;
-  width: var(--space-5);
-  height: var(--space-5);
+.every-name {
   padding: 0;
-  border: 1px solid color-mix(in srgb, currentColor 60%, transparent);
+  border: 0;
   background: none;
-  color: inherit;
-  font: inherit;
-  line-height: 1;
+  color: var(--color-ink);
+  font: 600 var(--step-0) var(--font-body);
+  text-align: left;
   cursor: pointer;
 }
 
-.flip-close:hover {
-  background-color: var(--color-paper);
-  color: var(--color-pine);
+.every-name:hover {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
-.flip-close:focus-visible {
-  outline: 2px solid currentColor;
-  outline-offset: 2px;
+.every-blurb {
+  display: block;
+  color: var(--color-muted);
 }
 
-/* Reduced motion: the card swaps faces with no turn and no hover lift */
-@media (prefers-reduced-motion: reduce) {
-  .flip-inner,
-  .flip-front,
-  .flip-hint {
-    transition: none;
+.every-shelf,
+.every-tools {
+  color: var(--color-muted);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+}
+
+/* The year column (heading and cells) lines up on the right edge. "table" in the selector
+   gives it the weight to beat the .every-table th, td padding and alignment above */
+.every-table .every-year {
+  padding-right: 0;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.every-table tr.is-current > * {
+  background-color: var(--color-surface);
+}
+
+.every-empty {
+  color: var(--color-muted);
+}
+
+/* On a phone: drop Shelf and Built with, and the blurbs, so the rest fits 320px */
+@media (max-width: 40rem) {
+  .every-shelf,
+  .every-tools,
+  .every-blurb {
+    display: none;
   }
+}
 
-  .flip-front:hover {
-    translate: none;
+/* =========================================================
+   ASK STRIP: most repos are private, so say how to see one
+   ========================================================= */
+.code-ask {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-block: var(--space-5);
+  border-top: 1px solid var(--color-line);
+}
+
+.code-ask p {
+  max-width: 52ch;
+  margin: 0;
+}
+
+.code-ask-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-touch);
+  padding: 0 var(--space-5);
+  border: 1px solid currentColor;
+  border-radius: var(--radius-pill);
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  text-decoration: none;
+}
+
+.code-ask-link:hover {
+  background-color: var(--color-accent);
+  color: var(--color-bg);
+}
+
+/* Reduced motion: the tags appear without a fade (the room itself is paused by workcript.js) */
+@media (prefers-reduced-motion: reduce) {
+  .spot-tag,
+  .scroll-sheet,
+  .workshop-room {
+    transition: none;
   }
 }

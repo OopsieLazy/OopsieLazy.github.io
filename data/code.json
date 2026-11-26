@@ -11,6 +11,7 @@
       "PyInstaller"
     ],
     "status": "wip",
+    "shelf": "desk",
     "year": "2026",
     "source": null,
     "featured": true,
@@ -28,6 +29,7 @@
       "PyInstaller"
     ],
     "status": "live",
+    "shelf": "desk",
     "year": "2026",
     "source": null,
     "featured": true,
@@ -45,6 +47,7 @@
       "pandas"
     ],
     "status": "archived",
+    "shelf": "market",
     "year": "2026",
     "source": null,
     "featured": true,
@@ -62,6 +65,7 @@
       "PyAutoGUI"
     ],
     "status": "archived",
+    "shelf": "voice",
     "year": "2026",
     "source": null,
     "featured": true,
@@ -78,6 +82,7 @@
       "SQLite"
     ],
     "status": "wip",
+    "shelf": "terminal",
     "year": "2026",
     "source": "https://github.com/OopsieLazy/INV.OS",
     "featured": true,
@@ -94,6 +99,7 @@
       "yfinance"
     ],
     "status": "live",
+    "shelf": "market",
     "year": "2026",
     "source": "https://github.com/OopsieLazy/GEXG",
     "featured": true,
@@ -110,6 +116,7 @@
       "JavaScript"
     ],
     "status": "wip",
+    "shelf": "web",
     "year": "2026",
     "source": "https://github.com/OopsieLazy/Project-Website",
     "featured": false,
@@ -127,6 +134,7 @@
       "yfinance"
     ],
     "status": "archived",
+    "shelf": "market",
     "year": "2026",
     "source": null,
     "featured": false,
@@ -141,6 +149,7 @@
       "Python"
     ],
     "status": "archived",
+    "shelf": "terminal",
     "year": "2026",
     "source": null,
     "featured": false,
@@ -158,6 +167,7 @@
       "Beautiful Soup"
     ],
     "status": "archived",
+    "shelf": "books",
     "year": "2026",
     "source": null,
     "featured": false,
@@ -173,6 +183,7 @@
       "FastAPI"
     ],
     "status": "archived",
+    "shelf": "books",
     "year": "2026",
     "source": null,
     "featured": false,
@@ -188,6 +199,7 @@
       "PyQt6"
     ],
     "status": "archived",
+    "shelf": "market",
     "year": "2026",
     "source": null,
     "featured": false,
@@ -205,6 +217,7 @@
       "PyInstaller"
     ],
     "status": "archived",
+    "shelf": "radio",
     "year": "2026",
     "source": null,
     "featured": false,
@@ -220,6 +233,7 @@
       "pygame"
     ],
     "status": "archived",
+    "shelf": "games",
     "year": "2026",
     "source": null,
     "featured": false,
@@ -235,6 +249,7 @@
       "pygame"
     ],
     "status": "archived",
+    "shelf": "games",
     "year": "2026",
     "source": null,
     "featured": false,
@@ -250,6 +265,7 @@
       "PyQt6"
     ],
     "status": "archived",
+    "shelf": "desk",
     "year": "2026",
     "source": null,
     "featured": false,
@@ -264,6 +280,7 @@
       "Python"
     ],
     "status": "archived",
+    "shelf": "market",
     "year": "2026",
     "source": null,
     "featured": false,
@@ -280,6 +297,7 @@
       "SQLite"
     ],
     "status": "archived",
+    "shelf": "market",
     "year": "2026",
     "source": null,
     "featured": false,
@@ -296,6 +314,7 @@
       "pygame"
     ],
     "status": "archived",
+    "shelf": "desk",
     "year": "2026",
     "source": null,
     "featured": false,
@@ -311,6 +330,7 @@
       "PyInstaller"
     ],
     "status": "archived",
+    "shelf": "toolbox",
     "year": "2026",
     "source": null,
     "featured": false,
@@ -326,6 +346,7 @@
       "Requests"
     ],
     "status": "archived",
+    "shelf": "radio",
     "year": "2026",
     "source": null,
     "featured": false,
@@ -341,6 +362,7 @@
       "Selenium"
     ],
     "status": "archived",
+    "shelf": "market",
     "year": "2025",
     "source": null,
     "featured": false,
@@ -356,6 +378,7 @@
       "Pillow"
     ],
     "status": "archived",
+    "shelf": "toolbox",
     "year": "2026",
     "source": null,
     "featured": false,
@@ -370,6 +393,7 @@
       "Python"
     ],
     "status": "archived",
+    "shelf": "toolbox",
     "year": "2026",
     "source": null,
     "featured": false,
@@ -384,6 +408,7 @@
       "Python"
     ],
     "status": "archived",
+    "shelf": "terminal",
     "year": "2026",
     "source": null,
     "featured": false,
@@ -398,6 +423,7 @@
       "Python"
     ],
     "status": "archived",
+    "shelf": "terminal",
     "year": "2026",
     "source": null,
     "featured": false,
@@ -415,6 +441,7 @@
       "Selenium"
     ],
     "status": "archived",
+    "shelf": "box",
     "year": "2020–25",
     "source": null,
     "featured": false,
@@ -429,6 +456,7 @@
       "Python"
     ],
     "status": "archived",
+    "shelf": "radio",
     "year": "2026",
     "source": "https://github.com/OopsieLazy/AUDA",
     "featured": false,
