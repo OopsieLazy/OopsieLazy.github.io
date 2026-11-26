@@ -173,10 +173,22 @@ function spotControl(spot, inList) {
         control.setAttribute("aria-label", label);
         // Tags near the top of the room open downward, so they don't fall off the edge
         if (spot.y < 30) control.classList.add("tag-below");
-        control.style.cssText = `--x:${(spot.x / Workshop.W) * 100}%;--y:${(spot.y / Workshop.H) * 100}%;` +
-            `--w:${(spot.w / Workshop.W) * 100}%;--h:${(spot.h / Workshop.H) * 100}%`;
     }
-    return make("li", "", control);
+    const item = make("li", "", control);
+    item.spot = spot;   // placeSpots() reads it to put the button on its object
+    return item;
+}
+
+// Each button sits over its object, in % of the picture. The wide room and the phone tower
+// (O8m) put the same objects in different places, so workcript.js calls this again whenever
+// the layout changes. The Tab order is re-sorted too, so it always follows what you see
+function placeSpots() {
+    const items = [...$("#workshop-spots").children].map((item) => ({ item, at: Workshop.view(item.spot) }));
+    items.forEach(({ item, at }) => {
+        item.firstChild.style.cssText = `--x:${at.x}%;--y:${at.y}%;--w:${at.w}%;--h:${at.h}%`;
+    });
+    items.sort((a, b) => a.at.order - b.at.order);
+    $("#workshop-spots").replaceChildren(...items.map(({ item }) => item));
 }
 
 // The art never arrived (a missing file, a failed download): no room, so the page is the
@@ -195,7 +207,7 @@ function buildRoom() {
     const stage = $("#workshop-stage");
     // Shown BEFORE mounting, so the stage has a real size to fit the room into
     stage.hidden = false;
-    Workshop.mount({ canvas: $("#workshop-canvas"), pauseButton: $("#workshop-pause"), stage, spots: $("#workshop-spots"), onError: roomFailed });
+    Workshop.mount({ canvas: $("#workshop-canvas"), pauseButton: $("#workshop-pause"), stage, spots: $("#workshop-spots"), onError: roomFailed, onLayout: placeSpots });
 }
 
 /* ---------- 2. The scroll ---------- */

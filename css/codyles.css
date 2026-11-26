@@ -162,22 +162,48 @@
   visibility: hidden;
 }
 
-/* Narrow or upright screens (workcript.js adds .is-panning): the room keeps a readable
-   size and scrolls sideways, until the tower layout (O8m) replaces this */
-.workshop-stage.is-panning {
-  display: flex;
-  align-items: center;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  scrollbar-color: var(--workshop-muted) transparent;
+/* THE TOWER (O8m): on a phone-width window workcript.js adds .is-tower and draws the room as
+   three floors stacked in a tower, as wide as the screen and as tall as it needs. So the frame
+   stops being one window high: it grows to the tower's height and the PAGE scrolls down through
+   the floors, never sideways. :has() lets the section react to a class on its child */
+.workshop:has(.is-tower) {
+  height: auto;
 }
 
-.is-panning .workshop-room {
+.workshop-stage.is-tower {
+  position: relative;
+}
+
+.is-tower .workshop-room {
   position: relative;
   left: auto;
   top: auto;
   translate: none;
-  flex: none;
+}
+
+/* In the tower every object is on screen and big enough to tap, so the list of the same
+   objects (made for the old sideways pan) would only repeat them: it goes. The smallest
+   objects (the dice board) still get a 24 x 24 px target, WCAG 2.5.8's minimum */
+.workshop:has(.is-tower) .workshop-list {
+  display: none;
+}
+
+.is-tower .spot {
+  min-width: var(--space-5);
+  min-height: var(--space-5);
+}
+
+/* Under the tower, in the page's flow: the art credit, which leaves the sky clear for the roof */
+.workshop:has(.is-tower) .workshop-credit {
+  position: static;
+  max-width: none;
+  margin: var(--space-4) var(--gutter) var(--space-5);
+}
+
+/* The scroll opens over whichever floor you're looking at: fixed to the screen, not to the
+   top of a tower that may be a long way up */
+.workshop:has(.is-tower) .scroll {
+  position: fixed;
 }
 
 .workshop-room canvas {

@@ -316,13 +316,36 @@ const Workshop = (() => {
         const k = (WIN.y + WIN.arch - y) / WIN.arch;
         return Math.round(hw * Math.sqrt(Math.max(0, 1 - k * k)));
     }
+    // The frame, built like the bookshelf's arch (owner, 2026-11-26: "repair the window like the
+    // bookshelf"): a ring of grey voussoirs over the opening with a keystone, then jambs of
+    // dressed stone down the sides, long and short blocks in turn so they key into the wall
     function windowFrame() {
-        const cx = WIN.x + WIN.w / 2;
-        for (let y = WIN.y - 5; y < WIN.y + WIN.h + 1; y++) {
-            const w = (y < WIN.y + WIN.arch ? windowRow(y + 0) : WIN.w / 2) + 5;
-            R(cx - w, y, 2 * w, 1, (y - WIN.y) % 7 === 0 ? C.stoneLo : "#8A847A");
+        const cx = WIN.x + WIN.w / 2, hw = WIN.w / 2, ring = 6;
+        const cy = WIN.y + WIN.arch, bottom = WIN.y + WIN.h;
+        const face = "#8C8882", lit = "#A29E96";
+        for (let y = WIN.y - ring; y < cy; y++) {            // the ring, an ellipse ring-thick
+            const k = (cy - y) / (WIN.arch + ring);
+            const w = Math.round((hw + ring) * Math.sqrt(Math.max(0, 1 - k * k)));
+            R(cx - w, y, 2 * w, 1, face);
         }
-        R(WIN.x - 6, WIN.y + WIN.h, WIN.w + 12, 4, C.stoneHi); hl(WIN.x - 6, WIN.y + WIN.h + 4, WIN.w + 12, C.ink);
+        for (let a = 0; a <= 8; a++) {                         // the joints, fanning out from the middle
+            const ang = Math.PI + (a / 8) * Math.PI;
+            line(Math.round(cx + hw * Math.cos(ang)), Math.round(cy + WIN.arch * Math.sin(ang)),
+                Math.round(cx + (hw + ring) * Math.cos(ang)), Math.round(cy + (WIN.arch + ring) * Math.sin(ang)), C.stoneLo);
+        }
+        for (let y = cy, n = 0; y < bottom; y += 7, n++) {     // the jambs: blocks 7 rows high
+            const reach = n % 2 === 0 ? 7 : 5, h = Math.min(7, bottom - y);
+            [cx - hw - reach, cx + hw].forEach((x) => {
+                R(x, y, reach, h, face);
+                hl(x, y, reach, C.stoneLo);                    // the joint above the block
+                hl(x, y + 1, reach, lit);                      // its top catches the light
+            });
+            vl(cx - hw - reach, y, h, C.stoneLo); vl(cx + hw + reach - 1, y, h, C.stoneLo);
+        }
+        R(cx - 3, WIN.y - ring - 1, 6, ring + 3, lit); hl(cx - 3, WIN.y - ring - 1, 6, "#BAB6AE");   // keystone
+        vl(cx - 3, WIN.y - ring - 1, ring + 3, C.stoneLo); vl(cx + 2, WIN.y - ring - 1, ring + 3, C.stoneLo);
+        R(WIN.x - 8, bottom, WIN.w + 16, 4, C.stoneHi); hl(WIN.x - 8, bottom, WIN.w + 16, "#BAB6AE");      // the sill
+        hl(WIN.x - 8, bottom + 4, WIN.w + 16, C.ink);
     }
     function windowSky(phase, t) {
         const P = PHASES[phase], cx = WIN.x + WIN.w / 2;
@@ -341,8 +364,13 @@ const Workshop = (() => {
         }
         // Hills outside, like the artificer room: the same green, darker as the day ends
         for (let x = WIN.x; x < WIN.x + WIN.w; x++) { const hh = Math.round(7 + 3 * Math.sin(x / 6) + 2 * Math.sin(x / 2.6)); R(x, WIN.y + WIN.h - hh, 1, hh, P.hills); }
-        // The bars, again on top: iron, 2 px wide, one cross bar
-        for (let x = WIN.x + 3; x < WIN.x + WIN.w - 1; x += 6) { R(x, WIN.y, 2, WIN.h, C.iron); vl(x, WIN.y, WIN.h, C.ironLight); }
+        // The bars, again on top: iron, 2 px wide, one cross bar. Each starts where the arch's
+        // opening reaches it, so none sticks up into the stone at the top corners
+        for (let x = WIN.x + 3; x < WIN.x + WIN.w - 1; x += 6) {
+            let y = WIN.y;
+            while (Math.max(Math.abs(x - cx), Math.abs(x + 2 - cx)) > windowRow(y)) y++;
+            R(x, y, 2, WIN.y + WIN.h - y, C.iron); vl(x, y, WIN.y + WIN.h - y, C.ironLight);
+        }
         R(WIN.x, WIN.y + 30, WIN.w, 2, C.iron); hl(WIN.x, WIN.y + 30, WIN.w, C.ironLight);
     }
     // Light through the grate: one beam per gap between the bars, falling down to the right,
@@ -588,9 +616,11 @@ const Workshop = (() => {
         for (let i = 216; i < 230; i += 4) R(i, 114, 2, 2, C.woodDark);
         R(234, 113, 4, 4, C.candle); P1(235, 114, C.ink); P1(236, 115, C.ink);
         R(232, 116, 2, 2, C.red);
-        sprite("globe", 240, 103);                                                       // Manu_Art's globe
         R(180, 112, 3, 6, C.candle); addCandle(181, 110);
     }
+    // Manu_Art's globe sits beside the dice board but is its own thing: drawn apart, so the
+    // board's outline (SPOT_ART) stops at the board instead of wrapping the globe too
+    function globe() { sprite("globe", 240, 103); }
     function anvil() {
         R(272, 154, 14, 16, C.woodDark); hl(272, 158, 14, C.wood); hl(272, 164, 14, C.wood);
         // kanmandev's anvil (hot steel and all) and the quench bucket are in room-layer.png
@@ -688,7 +718,7 @@ const Workshop = (() => {
         inRoom(() => {
             place("books", bookAlcove); windowFrame(); horn(); place("map", map); place("blueprint", blueprint); place("scales", scales);
             place("toolbox", toolRack); place("lute", lute); place("lantern", lantern); place("herbs", herbs); place("broom", broom);
-            place("printer", printer); bench(); runeTablet(); diceBoard(); lectern(); place("anvil", anvil); camera();
+            place("printer", printer); bench(); runeTablet(); diceBoard(); globe(); lectern(); place("anvil", anvil); camera();
             place("box", chest); place("arms", shield);
         });
         drawLayer(); foreground();
@@ -765,11 +795,144 @@ const Workshop = (() => {
         baked = null;
     }
 
+    /* ======================= The tower (O8m): phones get the room as floors ======================= */
+    // A phone is too narrow for a wide room, so the same picture is cut into three slices where
+    // nothing stands and stacked floor on floor inside drawn stone walls, a turret and roof on top,
+    // like a cutaway tower: you scroll DOWN through it, never sideways (owner, 2026-11-26, after a
+    // tower painting). Only where each slice lands changes, so the sprites, the light, the
+    // animation and the outlines all come along without a second drawing of the room
+    const FY0 = 56, FH = 208;                  // each floor shows the picture's rows 56 to 264
+    const SKY = 26, ROOF = 50, SLAB = 10, BASE = 26;
+    const TW = 224;                            // the tower's width, in the same pixels as the room
+    const FLOORS = [                           // top to bottom, each a slice [x0, x0 + w) of the picture
+        { x0: 20, w: 136 },                    // the turret: bookshelf, chest, coat of arms
+        { x0: 156, w: 203 },                   // the study: printer, window, desk, maps
+        { x0: 359, w: 208 },                   // the ground floor: tool rack, anvil, forge (heavy things low)
+    ];
+    let floorTop = SKY + ROOF;
+    FLOORS.forEach((f) => { f.tx = Math.floor((TW - f.w) / 2); f.ty = floorTop; floorTop += FH + SLAB; });
+    const TH = floorTop - SLAB + BASE;
+    const TURRET = [FLOORS[0].tx - 8, FLOORS[0].tx + FLOORS[0].w + 8];   // its outer walls, 8 thick
+    const LEDGE = FLOORS[0].ty + FH;          // the walk round the turret, on top of the wide tower
+
+    // The time of day's multiply, worked out per colour (the walls are drawn on their own canvas,
+    // so the room's shade() can't reach them): "#808080" times "#FF8000" = "#804000"
+    const mul = (a, b) => {
+        if (!b) return a;
+        const ch = (hex, i) => parseInt(hex.slice(1 + 2 * i, 3 + 2 * i), 16);
+        return "#" + [0, 1, 2].map((i) => Math.round((ch(a, i) * ch(b, i)) / 255).toString(16).padStart(2, "0")).join("");
+    };
+    const shellLayer = Object.assign(document.createElement("canvas"), { width: TW, height: TH });
+    let shellPhase = null;
+    // Everything round the floors: sky, roof, walls, the floors between them, the hill. It never
+    // moves, so it's drawn once per time of day, like the room's cache
+    function buildShell(phase) {
+        const screen = g;
+        g = shellLayer.getContext("2d");
+        g.clearRect(0, 0, TW, TH);
+        const P = PHASES[phase], T = (c) => mul(c, P.ambient);
+        const mortar = T("#3A3632"), stone = T("#5A554F"), stoneTop = T("#6E6860"), cutFace = T("#8C867C"), shadow = T("#2A2622");
+        // Stone courses 5 pixels high, the joints staggered every other row
+        function stones(x, y, w, h) {
+            R(x, y, w, h, stone);
+            for (let yy = y; yy < y + h; yy += 5) {
+                hl(x, yy, w, mortar);
+                for (let bx = x - (Math.floor(yy / 5) % 2) * 6; bx < x + w; bx += 12) {
+                    if (bx > x) R(bx, yy, 1, Math.min(5, y + h - yy), mortar);
+                    if (hash(bx, yy) % 3 === 0) hl(Math.max(x, bx + 1), yy + 1, Math.min(10, x + w - bx - 1), stoneTop);
+                }
+            }
+        }
+        // The sky and far hills, behind the roof and either side of the turret
+        const sky = g.createLinearGradient(0, 0, 0, LEDGE);
+        sky.addColorStop(0, P.skyTop); sky.addColorStop(1, P.skyLow);
+        g.fillStyle = sky; g.fillRect(0, 0, TW, LEDGE);
+        if (phase === "night") for (let i = 0; i < 40; i++) P1(hash(i, 1) % TW, hash(i, 2) % (LEDGE - 40), "#DDE6EE");
+        for (let x = 0; x < TW; x++) {
+            const top = LEDGE - 16 - Math.round(5 * Math.sin(x / 19) + 3 * Math.sin(x / 7));
+            R(x, top, 1, LEDGE - top, P.hills);
+        }
+        // The walls beside each floor. The turret's stand alone; the tower's run to the edges
+        FLOORS.forEach((f, i) => {
+            const left = i === 0 ? TURRET[0] : 0, right = i === 0 ? TURRET[1] : TW;
+            stones(left, f.ty, f.tx - left, FH);
+            stones(f.tx + f.w, f.ty, right - f.tx - f.w, FH);
+            // A round tower: its outer edge turns away from the light into shadow
+            vl(left, f.ty, FH, shadow); vl(right - 1, f.ty, FH, shadow);
+            // The cut: a pale face where the wall was sliced open, then a dark line into the room
+            vl(f.tx - 2, f.ty, FH, cutFace); vl(f.tx - 1, f.ty, FH, C.ink);
+            vl(f.tx + f.w, f.ty, FH, C.ink); vl(f.tx + f.w + 1, f.ty, FH, cutFace);
+            // An arrow slit in each wall
+            R(left + 3, f.ty + 70, 2, 12, C.recessLo); R(right - 5, f.ty + 120, 2, 12, C.recessLo);
+        });
+        // The floors between the floors: a dark line, the floorboards' ends, stone, and a hatch
+        // with a ladder (the way up) at alternate ends
+        function slab(y, hatchX) {
+            R(0, y, TW, SLAB, stone);
+            stones(0, y + 4, TW, SLAB - 5);
+            hl(0, y, TW, C.ink);
+            R(0, y + 1, TW, 2, T(C.wood)); hl(0, y + 3, TW, T(C.woodDark));
+            hl(0, y + SLAB - 1, TW, C.ink);
+            R(hatchX, y + 1, 12, SLAB - 2, C.recessLo);
+            vl(hatchX + 2, y + 1, SLAB - 2, T(C.woodLight)); vl(hatchX + 9, y + 1, SLAB - 2, T(C.woodLight));
+            [3, 6].forEach((dy) => hl(hatchX + 2, y + dy, 8, T(C.woodLight)));
+        }
+        slab(LEDGE, FLOORS[0].tx + FLOORS[0].w - 24);
+        slab(FLOORS[1].ty + FH, FLOORS[1].tx + 14);
+        // Battlements on the walk round the turret
+        for (let x = 1; x < TW; x += 10) {
+            if (x + 6 > TURRET[0] - 2 && x < TURRET[1] + 2) continue;
+            R(x, LEDGE - 6, 6, 6, stone); hl(x, LEDGE - 6, 6, stoneTop);
+            vl(x, LEDGE - 6, 6, C.ink); vl(x + 5, LEDGE - 6, 6, C.ink); hl(x, LEDGE - 7, 6, C.ink);
+        }
+        // The roof: a slate cone over the turret, lit from the left, a lit dormer and a pennant
+        const cx = TW / 2, eave = FLOORS[0].ty, half = 84;
+        for (let y = SKY; y < eave; y++) {
+            const k = (y - SKY) / (eave - SKY);
+            const hw = Math.round(4 + (half - 4) * Math.pow(k, 1.4));
+            const dark = Math.floor((y - SKY) / 4) % 2 === 1;
+            R(cx - hw, y, hw * 2, 1, T(dark ? "#34404A" : "#3C4750"));
+            R(cx - hw + 1, y, Math.floor(hw * 0.6), 1, T(dark ? "#46535D" : "#4E5B66"));
+            if (y % 4 === 3) for (let x = cx - hw + ((y >> 2) % 2) * 3; x < cx + hw; x += 6) P1(x, y, T("#232B31"));
+            P1(cx - hw, y, C.ink); P1(cx + hw - 1, y, C.ink);
+        }
+        R(cx - half - 2, eave - 3, 2 * half + 4, 3, T(C.woodDark)); hl(cx - half - 2, eave - 3, 2 * half + 4, T(C.wood));
+        box(cx - 5, eave - 24, 10, 10, "#F3C97A", C.ink); vl(cx, eave - 23, 8, C.ink);
+        vl(cx, SKY - 10, 10, C.ink); R(cx + 1, SKY - 10, 7, 3, T(C.red));
+        // The foot of the tower: a stone plinth on a grassy hill
+        const foot = FLOORS[2].ty + FH;
+        R(0, foot, TW, TH - foot, T("#3E352B"));
+        stones(0, foot, TW, 6); hl(0, foot, TW, C.ink);
+        for (let x = 0; x < TW; x++) {
+            const top = foot + 7 + Math.round(3 + 2 * Math.sin(x / 13));
+            R(x, top, 1, TH - top, T("#4F6B3A")); P1(x, top, T("#6E8C4E"));
+        }
+        g = screen;
+        shellPhase = phase;
+    }
+    // Where an object (in picture pixels) lands in the tower: on the floor its middle is over
+    function inTower(spot) {
+        const mid = spot.x + spot.w / 2;
+        const i = Math.max(0, FLOORS.findIndex((f) => mid >= f.x0 && mid < f.x0 + f.w));
+        const f = FLOORS[i];
+        return { x: f.tx + spot.x - f.x0, y: f.ty + spot.y - FY0, w: spot.w, h: spot.h, floor: i };
+    }
+    let towerMode = false;   // set by fit(): true on phones
+    // An object's button, in % of whatever is showing (the room or the tower), plus its place in
+    // the Tab order: reading order, top to bottom then left to right, floor by floor in the tower
+    function view(spot) {
+        const r = towerMode ? inTower(spot) : spot;
+        const cw = towerMode ? TW : RW, ch = towerMode ? TH : RH;
+        const order = (towerMode ? r.floor * 1e6 : 0) + Math.round(spot.y / 50) * 1000 + spot.x;
+        return { x: (r.x / cw) * 100, y: (r.y / ch) * 100, w: (r.w / cw) * 100, h: (r.h / ch) * 100, order };
+    }
+    const composed = Object.assign(document.createElement("canvas"), { width: RW, height: RH });
+
     /* ======================= Mounting it on the page ======================= */
     // canvas: the <canvas>; pauseButton: a <button> that stops and starts the motion;
     // stage: the box that holds it; spots: the list of buttons laid over the room;
     // onPhase(words): tells the page the time of day
-    function mount({ canvas, pauseButton, stage, spots, onPhase, onError }) {
+    function mount({ canvas, pauseButton, stage, spots, onPhase, onError, onLayout }) {
         const out = canvas.getContext("2d");
         g = frameLayer.getContext("2d");   // the room is drawn here; out shows it in the window
         // ?sky=night previews a time of day. Object.hasOwn, not PHASES[query]: every object
@@ -782,22 +945,29 @@ const Workshop = (() => {
         let saved = null;
         try { saved = localStorage.getItem("workshop-motion"); } catch (e) { /* storage blocked: fine */ }
         let paused = saved ? saved === "off" : reduce.matches;
-        let visible = true, t = 0, scale = 0, centred = false;
+        let visible = true, t = 0, scale = 0;
         let lit = [], dim = false;
         let ready = false;   // nothing is drawn until the art packs' pictures have arrived
         canvas.width = RW; canvas.height = RH;
 
         // Put the finished frame on the page: the room, the dimming, then the outlines (after the
         // dimming, so the open object stays bright while the room goes dark)
+        // In the tower the frame is put together off screen first, then cut into its floors
         function present() {
             if (!ready) return;
-            out.drawImage(frameLayer, 0, 0);
-            if (dim) { out.fillStyle = "rgba(0,0,0,0.45)"; out.fillRect(0, 0, RW, RH); }
+            const c = towerMode ? composed.getContext("2d") : out;
+            c.drawImage(frameLayer, 0, 0);
+            if (dim) { c.fillStyle = "rgba(0,0,0,0.45)"; c.fillRect(0, 0, RW, RH); }
             lit.forEach((name) => {
                 const spot = SPOTS.find((s) => s.name === name);
                 const [dx, dy] = (spot && SHIFT[spot.group]) || [0, 0];
-                if (outlines[name]) out.drawImage(outlines[name], OX + dx, OY + dy);
+                if (outlines[name]) c.drawImage(outlines[name], OX + dx, OY + dy);
             });
+            if (!towerMode) return;
+            if (shellPhase !== phase) buildShell(phase);
+            out.drawImage(shellLayer, 0, 0);
+            if (dim) { out.fillStyle = "rgba(0,0,0,0.45)"; out.fillRect(0, 0, TW, TH); }
+            FLOORS.forEach((f) => out.drawImage(composed, f.x0, FY0, f.w, FH, f.tx, f.ty, f.w, FH));
         }
         function render(still) { if (ready) { draw(t, phase, still); present(); } }
 
@@ -807,32 +977,28 @@ const Workshop = (() => {
         // spare wall, ceiling and floor around it get cropped, so no shape of window shows bands.
         // The scale needn't be a whole number here (Ash's room does the same); image-rendering:
         // pixelated keeps the edges sharp, though some pixel rows come out a pixel wider.
-        // Narrow or upright screens keep a whole-number scale and pan sideways, until the tower
-        // layout (O8m) takes over there
+        // A phone-width window gets the tower instead: as wide as the screen, as tall as it needs,
+        // and the page scrolls down through it. A tall monitor doesn't: the room fits its width and
+        // sits in the middle with a dark band above and below, so the page never scrolls (owner, 2026-11-26)
         function fit() {
             const width = stage.clientWidth, height = stage.clientHeight;
-            if (!width || !height) return;   // not laid out yet: the ResizeObserver calls again
-            // Only a phone-width window pans sideways (the tower layout, O8m, will replace it). A tall
-            // monitor doesn't: the room fits its width and sits in the middle, with the dark band
-            // above and below, so the page never scrolls (owner, 2026-11-26)
-            const panning = width < 700;
-            const s = panning
-                ? Math.max(2, Math.floor(height / RH))
+            if (!width) return;   // not laid out yet: the ResizeObserver calls again
+            const tower = width < 700;
+            if (!tower && !height) return;
+            const s = tower ? width / TW
                 : Math.min(Math.max(width / RW, height / RH), width / (W + 16), height / (H + 12));
-            stage.classList.toggle("is-panning", panning);
-            // A tall window shows dark bands above and below the room: its edges fade into them
-            stage.classList.toggle("is-letterboxed", !panning && RH * s < height - 1);
-            if (s === scale) return;
+            stage.classList.toggle("is-tower", tower);
+            stage.classList.toggle("is-letterboxed", !tower && RH * s < height - 1);
+            if (s === scale && tower === towerMode) return;
+            const changed = tower !== towerMode || scale === 0;   // or the first fit
             scale = s;
-            canvas.style.width = `${RW * s}px`;
-            canvas.style.height = `${RH * s}px`;
+            towerMode = tower;
+            const cw = tower ? TW : RW, ch = tower ? TH : RH;
+            if (canvas.width !== cw) { canvas.width = cw; canvas.height = ch; }
+            canvas.style.width = `${cw * s}px`;
+            canvas.style.height = `${ch * s}px`;
             render(paused);
-            // A phone shows the middle of the room first (the forge is the focal point)
-            if (panning && !centred) {
-                centred = true;
-                const extra = stage.scrollWidth - width;
-                if (extra > 0) stage.scrollLeft = extra / 2;
-            }
+            if (changed && onLayout) onLayout();   // the buttons move to the objects' new places
         }
         // A toggle button keeps ONE name and says its state with aria-pressed (pressed = paused).
         // Changing the words too would make a screen reader say "Play motion, pressed": two
@@ -890,5 +1056,5 @@ const Workshop = (() => {
         const [dx, dy] = SHIFT[spot.group] || [0, 0];
         return { ...spot, x: spot.x + OX + dx, y: spot.y + OY + dy };
     });
-    return { W: RW, H: RH, SPOTS: PAGE_SPOTS, mount, highlight: (names, dimmed) => highlight(names, dimmed) };
+    return { W: RW, H: RH, SPOTS: PAGE_SPOTS, mount, view, highlight: (names, dimmed) => highlight(names, dimmed) };
 })();
