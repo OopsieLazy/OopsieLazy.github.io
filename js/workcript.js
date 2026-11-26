@@ -254,8 +254,11 @@ const Workshop = (() => {
         const r = atlasMap[name];
         if (r) g.drawImage(atlas, r[0], r[1], r[2], r[3], x, y, r[2], r[3]);
     }
+    // After tools/workshop.py rebuilds the art, change this (and the four preload links in
+    // code.html to match): a new address makes every browser fetch the new pictures
+    const ART_VERSION = "?v=20261126";
     function loadSprites(done, failed) {
-        fetch("assets/images/workshop/sprites.json")
+        fetch(`assets/images/workshop/sprites.json${ART_VERSION}`)
             .then((response) => (response.ok ? response.json() : Promise.reject(new Error(response.status))))
             .then((map) => {
                 const img = new Image(), layer = new Image(), wall = new Image();
@@ -266,9 +269,9 @@ const Workshop = (() => {
                 };
                 img.onload = ready; layer.onload = ready; wall.onload = ready;
                 img.onerror = failed; layer.onerror = failed; wall.onerror = failed;
-                img.src = "assets/images/workshop/sprites.png";
-                layer.src = "assets/images/workshop/room-layer.png";
-                wall.src = "assets/images/workshop/wall-layer.png";
+                img.src = `assets/images/workshop/sprites.png${ART_VERSION}`;
+                layer.src = `assets/images/workshop/room-layer.png${ART_VERSION}`;
+                wall.src = `assets/images/workshop/wall-layer.png${ART_VERSION}`;
             })
             .catch(failed);   // no art, no room: the page shows the project table instead
     }

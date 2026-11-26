@@ -12,7 +12,10 @@ const PROJECTS_URL = "data/projects.json";
 // `async` lets us write `await` instead of chaining .then() calls.
 // Takes the URL so every data file shares it: projects.json (CAD) and code.json (Code page, D40)
 async function fetchJson(url) {
-    const response = await fetch(url);
+    // cache: "no-cache" doesn't mean "never save": the browser keeps its copy but asks the server
+    // each time whether it changed (a tiny "304 Not Modified" when it hasn't), so the projects
+    // and photos are never out of date after a deploy
+    const response = await fetch(url, { cache: "no-cache" });
     // fetch() only fails on network errors; a missing file (404) still "succeeds", so check it
     if (!response.ok) {
         throw new Error(`${url} answered ${response.status}`);
