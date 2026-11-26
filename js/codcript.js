@@ -106,7 +106,8 @@ function sourceLink(project) {
     return make("span", "ic-private", "Private repo");
 }
 
-const shelfSpot = (shelf) => Workshop.SPOTS.find((spot) => spot.shelf === shelf);
+// No room script (workcript.js failed to load): no objects, so no spot, and the scroll still opens
+const shelfSpot = (shelf) => typeof Workshop === "undefined" ? null : Workshop.SPOTS.find((spot) => spot.shelf === shelf);
 const inShelf = (shelf) => state.projects.filter((p) => p.shelf === shelf)
     .sort((a, b) => STATUS_ORDER[statusKey(a.status)] - STATUS_ORDER[statusKey(b.status)] || a.index - b.index);
 
@@ -118,7 +119,9 @@ const lit = { hover: null, focus: null };
 function syncOutlines() {
     if (typeof Workshop === "undefined") return;
     const isOpen = !$("#code-viewer").hidden;
-    const open = !isOpen ? null : state.map ? "Map" : state.shelf ? shelfSpot(state.shelf).name : null;
+    // A shelf with no object in the room (a typo in code.json) simply has nothing to outline
+    const spot = state.shelf ? shelfSpot(state.shelf) : null;
+    const open = !isOpen ? null : state.map ? "Map" : spot ? spot.name : null;
     Workshop.highlight([lit.hover, lit.focus, open].filter(Boolean), isOpen);
 }
 
@@ -188,18 +191,25 @@ function placeSpots() {
         item.firstChild.style.cssText = `--x:${at.x}%;--y:${at.y}%;--w:${at.w}%;--h:${at.h}%`;
     });
     items.sort((a, b) => a.at.order - b.at.order);
+    // Moving a node out of the page and back blurs it, so a keyboard user's place would be lost
+    // (a phone turned sideways, a window dragged past 700px): put focus back where it was
+    const focused = document.activeElement;
     $("#workshop-spots").replaceChildren(...items.map(({ item }) => item));
+    if (focused && focused !== document.activeElement && document.contains(focused)) focused.focus({ preventScroll: true });
 }
 
-// The art never arrived (a missing file, a failed download): no room, so the page is the
-// project table instead, the same as when drawing fails
+// No room (the art never arrived, workcript.js didn't load, or drawing threw): the page becomes
+// the project table. Only the room's own parts go (.no-room in the CSS); the section stays,
+// because the scroll lives in it and the table's project buttons still open it
 function roomFailed() {
-    $("#workshop").hidden = true;
-    document.body.classList.remove("has-room");
+    $("#workshop").classList.add("no-room");
+    $("#workshop-stage").hidden = true;
+    document.body.classList.remove("has-room", "shows-below");
 }
 
+// true once the room is mounted; false when there's nothing to draw it with
 function buildRoom() {
-    if (!$("#workshop") || typeof Workshop === "undefined") return;
+    if (!$("#workshop") || typeof Workshop === "undefined") return false;
     // Tab order follows the room like a page: top row first, left to right
     const order = [...Workshop.SPOTS].sort((a, b) => (Math.round(a.y / 50) - Math.round(b.y / 50)) || (a.x - b.x));
     $("#workshop-spots").replaceChildren(...order.map((spot) => spotControl(spot, false)));
@@ -208,6 +218,7 @@ function buildRoom() {
     // Shown BEFORE mounting, so the stage has a real size to fit the room into
     stage.hidden = false;
     Workshop.mount({ canvas: $("#workshop-canvas"), pauseButton: $("#workshop-pause"), stage, spots: $("#workshop-spots"), onError: roomFailed, onLayout: placeSpots });
+    return true;
 }
 
 /* ---------- 2. The scroll ---------- */
@@ -229,7 +240,10 @@ function scrollRow(project) {
     toggle.setAttribute("aria-controls", detailId);
     // Click an open row to roll it up again; click another to open that one instead
     toggle.addEventListener("click", () => {
-        if (state.id === project.id) { state.id = null; renderScroll(); focusRow(project.id); markRows(); }
+        if (state.id === project.id) {
+            state.id = null; renderScroll(); focusRow(project.id); markRows();
+            try { history.replaceState(null, "", location.pathname + location.search); } catch (e) { /* fine */ }
+        }
         else openScroll(project.id, { focus: "row" });
     });
     const detail = make("div", "scroll-detail",
@@ -272,17 +286,24 @@ function openMap(from) {
     pressOnly((control) => control.dataset.nav === "map");
     $("#scroll-foot").hidden = true;   // the map already lists "Every project"
     showBelow();
-    const scroll = $("#code-viewer");
-    if (scroll.hidden) {
-        scroll.hidden = false;
-        requestAnimationFrame(() => requestAnimationFrame(() => scroll.classList.add("is-open")));
-    }
+    unroll($("#code-viewer"));
     $("#workshop").classList.add("is-reading");
     syncOutlines();
     $("#scroll-shelf").focus({ preventScroll: true });
 }
 
-const focusRow = (id) => { const row = $(`.scroll-row[data-id="${CSS.escape(id)}"]`); if (row) row.focus(); };
+// preventScroll: the scroll is already on screen, and a plain focus() would cut short the
+// smooth glide back up to the room (pickFromTable)
+const focusRow = (id) => { const row = $(`.scroll-row[data-id="${CSS.escape(id)}"]`); if (row) row.focus({ preventScroll: true }); };
+
+// Show the scroll rolled up, then unroll it two frames later (so the browser has drawn it rolled
+// up first and the CSS transition runs). The check inside: if it was closed again within those two
+// frames, it mustn't be marked open while hidden, or the next open would skip the unroll
+function unroll(scroll) {
+    if (!scroll.hidden) return;
+    scroll.hidden = false;
+    requestAnimationFrame(() => requestAnimationFrame(() => { if (!scroll.hidden) scroll.classList.add("is-open"); }));
+}
 
 // Open the scroll on a project (its shelf unrolled, that row open). focus: "shelf" lands on
 // the heading (a shelf was picked), "row" on the project's own row (a project was picked)
@@ -295,12 +316,7 @@ function openScroll(id, { focus = "shelf" } = {}) {
     renderScroll();
     markRows();
     showBelow();
-    const scroll = $("#code-viewer");
-    if (scroll.hidden) {
-        scroll.hidden = false;
-        // Two frames later, so the browser has drawn it rolled up before it unrolls (CSS transition)
-        requestAnimationFrame(() => requestAnimationFrame(() => scroll.classList.add("is-open")));
-    }
+    unroll($("#code-viewer"));
     $("#workshop").classList.add("is-reading");
     syncOutlines();   // dims the room behind the scroll and outlines the open object
     try { history.replaceState(null, "", `#p-${id}`); } catch (e) { /* the page still works */ }
@@ -319,7 +335,10 @@ function closeScroll({ returnFocus = true } = {}) {
     syncOutlines();
     pressOnly(() => false);
     markRows();
-    hideBelowIfIdle();
+    // Opened from the table? Then the table stays unfolded: focus goes back to its button, and a
+    // folded-away (display: none) button can't take focus, so the visitor would land on <body>
+    const backToTable = returnFocus && opener && $("#code-below").contains(opener);
+    if (!backToTable) hideBelowIfIdle();
     try { history.replaceState(null, "", location.pathname + location.search); } catch (e) { /* fine */ }
     // Back to where the visitor was, so a keyboard user isn't dropped at the top of the page
     if (returnFocus && opener && document.contains(opener)) opener.focus({ preventScroll: false });
@@ -338,7 +357,7 @@ function pickShelf(shelf, from) {
 // From the table below the room: bring the room back into view, then open the project
 function pickFromTable(id, from) {
     opener = from;
-    $("#workshop").scrollIntoView({ behavior: reduceMotion.matches ? "auto" : "smooth", block: "start" });
+    if (!$("#workshop").classList.contains("no-room")) $("#workshop").scrollIntoView({ behavior: reduceMotion.matches ? "auto" : "smooth", block: "start" });
     openScroll(id, { focus: "row" });
 }
 
@@ -422,12 +441,13 @@ function renderCode(projects) {
     // in workcript.js), log it and leave the room hidden. The viewer and table still work.
     // Only a room that drew folds the part below away (.has-room): without it, all stays open
     try {
-        buildRoom();
-        document.body.classList.add("has-room");
-        wireBelow();
+        if (buildRoom()) {
+            document.body.classList.add("has-room");
+            wireBelow();
+        } else roomFailed();
     } catch (error) {
         console.error(error);
-        $("#workshop").hidden = true;
+        roomFailed();
     }
     // The scroll stays rolled up until something is picked (owner, 2026-11-25), except on a
     // shared link (#p-inv-os), which opens straight on that project

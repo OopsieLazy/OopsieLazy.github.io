@@ -45,7 +45,7 @@
   --scroll-knob: #B98B3E;              /* their brass ends */
   --scroll-rod-size: 0.875rem;         /* 14px */
   --scroll-width: 26rem;
-  --scroll-time: 420ms;                /* how long it takes to unroll */
+  --scroll-time: var(--speed-slow);                /* how long it takes to unroll */
 
   /* Status dots (colours: --color-status-* in styles.css) */
   --status-dot: 0.8rem;
@@ -160,6 +160,23 @@
 .is-loading .workshop-room {
   opacity: 0;
   visibility: hidden;
+}
+
+/* NO ROOM (codcript.js adds .no-room when the art or the drawing fails): the page is the
+   project table. The section stays (the scroll lives in it) but shrinks to nothing, and the
+   scroll opens fixed to the screen over the table */
+.workshop.no-room {
+  height: auto;
+}
+
+.no-room .workshop-list,
+.no-room .workshop-pause,
+.no-room .workshop-credit {
+  display: none;
+}
+
+.no-room .scroll {
+  position: fixed;
 }
 
 /* THE TOWER (O8m): on a phone-width window workcript.js adds .is-tower and draws the room as
