@@ -17,6 +17,7 @@
 ## Review notes
 - [ ] PLAN.md checkboxes updated
 - [ ] No secrets, no stray debug code (`console.log`)
+- [ ] Changed a CSS or JS file? Its `?v=` is bumped on every page that links it (D56)
 - [ ] Screenshots added if the look changed
 
 <!-- 🎲 Who wrote it: Claude / me (dice roll) -->
