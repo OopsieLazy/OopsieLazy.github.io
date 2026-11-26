@@ -838,6 +838,34 @@ hr {
   }
 }
 
+/* =========================================================
+   PAGE TRANSITIONS (owner, 2026-11-26): going from page to page, say from the Code
+   workshop to CAD, cross-fades instead of flashing blank. A cross-document View
+   Transition: when BOTH pages opt in with this rule (all of them load styles.css,
+   except thelab.html), the browser snapshots the old page and fades it into the new.
+   Browsers without it (Firefox, for now) just change page as before. Links to other
+   sites never fade. A fade isn't movement, so it stays for reduced-motion users too
+   ========================================================= */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: page-out var(--speed) ease both;
+}
+
+::view-transition-new(root) {
+  animation: page-in var(--speed-slow) var(--ease-smooth) both;
+}
+
+@keyframes page-out {
+  to { opacity: 0; }
+}
+
+@keyframes page-in {
+  from { opacity: 0; }
+}
+
 /* ---------- THE THEME BUTTON ----------
    A plain <button>: Enter, Space, click and screen readers work for free.
    Never set display on it, or the hidden attribute stops working (no JS = no button).

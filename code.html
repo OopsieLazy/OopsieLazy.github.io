@@ -18,9 +18,17 @@
         <link rel="icon" href="favicon.svg" type="image/svg+xml">
         <link rel="stylesheet" href="css/styles.css">
         <link rel="stylesheet" href="css/codyles.css">
+        <!-- The workshop waits for its art before it shows: start downloading it now, alongside the
+             scripts, instead of after them. crossorigin on the JSON matches how fetch() asks for it -->
+        <link rel="preload" href="assets/images/workshop/sprites.json" as="fetch" crossorigin>
+        <link rel="preload" href="assets/images/workshop/sprites.png" as="image">
+        <link rel="preload" href="assets/images/workshop/room-layer.png" as="image">
+        <link rel="preload" href="assets/images/workshop/wall-layer.png" as="image">
         <script src="js/script.js" defer></script>
         <!-- datacript.js holds the shared JSON helpers, so it loads before codcript.js (defer keeps this order) -->
         <script src="js/datacript.js" defer></script>
+        <!-- workcript.js draws the workshop; codcript.js lays the buttons over it, so the room loads first -->
+        <script src="js/workcript.js" defer></script>
         <script src="js/codcript.js" defer></script>
         <!-- No defer on purpose: it sets the saved theme before the page is drawn (no white flash) -->
         <script src="js/themcript.js"></script>
@@ -108,41 +116,113 @@
                 </button>
             </header>
 
-            <!-- Landmarks: screen readers can jump straight to main or footer. The skip link targets #content -->
-            <main id="content" class="site-main wrapper">
-                <!-- Code Portfolio (R3, D40): a library catalog of every project.
-                     The cards are built by js/codcript.js from data/code.json:
-                     to add, edit or feature a project, change only that file -->
-                <header class="code-head">
-                    <h1>Code Portfolio</h1>
-                    <!-- CONTENT: one line about the code you write (drafted by Claude: rewrite it in your words) -->
-                    <p>Tools I build for my own workshop and hobbies: small, offline, and made to be used every day.</p>
-                    <!-- Key for the status dots on the cards. The dots are drawn by CSS (codyles.css) -->
-                    <ul class="status-key" role="list" aria-label="Status key">
-                        <li><span class="ic-status is-live" aria-hidden="true"></span> Live</li>
-                        <li><span class="ic-status is-wip" aria-hidden="true"></span> In progress</li>
-                        <li><span class="ic-status is-archived" aria-hidden="true"></span> Archived</li>
-                    </ul>
-                </header>
+            <!-- Landmarks: screen readers can jump straight to main or footer. The skip link targets #content.
+                 No .wrapper on main: the workshop band runs the full width; each section below is its own .wrapper -->
+            <main id="content" class="site-main code-main">
+                <!-- Code Portfolio (O8, the workshop). Everything below the intro is built by js/codcript.js
+                     from data/code.json: to add or edit a project, change only that file (its "shelf" says
+                     which object in the room holds it). js/workcript.js draws the room itself -->
+                <!-- THE WORKSHOP (O8 v2): the room fills the window. The site header sits on top of it
+                     (css/codyles.css), the title and Pause sit in its lower corners, and clicking an
+                     object unrolls a parchment scroll inside the frame -->
+                <section class="workshop" id="workshop" aria-labelledby="code-title">
+                    <!-- The room holds about 13 stops for the Tab key: this link jumps past them.
+                         Invisible until it gets focus -->
+                    <a class="skip-link screen-reader-text workshop-skip" href="#every-project">Skip to every project</a>
+                    <!-- hidden until codcript.js runs: without JavaScript only the title and the note below show -->
+                    <div class="workshop-stage" id="workshop-stage" hidden>
+                        <div class="workshop-room" id="workshop-room">
+                            <canvas id="workshop-canvas" role="img" aria-label="A stone workshop: a forge, a bookshelf built into the wall, a barred window, a workbench, and a 3D printer with a smaller printer strapped on top"></canvas>
+                            <!-- list-style: none makes Safari drop the list meaning, so role="list" adds it back -->
+                            <ul class="workshop-spots" id="workshop-spots" role="list" aria-label="Things in the workshop"></ul>
+                        </div>
+                    </div>
 
-                <!-- Featured: projects with "featured": true, on bigger flip cards. The label borrows
-                     Cartoon Network's "Now featuring" (O7a); not "Now building", as some are finished -->
-                <section class="code-section" aria-labelledby="featured-label">
-                    <h2 class="retro-label code-section-label" id="featured-label">Now featuring</h2>
-                    <!-- list-style: none makes Safari drop the list meaning, so role="list" adds it back -->
-                    <ul class="code-catalog is-featured" id="code-featured" role="list"></ul>
+                    <!-- No visible title (owner, 2026-11-26: the room says it), but the page keeps its h1 for
+                         screen readers and search engines -->
+                    <div class="workshop-intro screen-reader-text">
+                        <h1 id="code-title">Code Portfolio</h1>
+                        <!-- CONTENT: one line about the code you write (drafted by Claude: rewrite it in your words) -->
+                        <p>Tools I build for my own workshop and hobbies: small, offline, and made to be used every day. Pick up anything in the room.</p>
+                    </div>
+                    <!-- WCAG 2.2.2: anything that moves for more than 5 seconds needs a way to stop it -->
+                    <button class="workshop-pause" id="workshop-pause" type="button" aria-pressed="false" hidden>Pause motion</button>
+
+                    <!-- The same objects as a plain list: shown on phones until the tower layout (O8m) -->
+                    <ul class="workshop-list" id="workshop-list" role="list" aria-label="Shelves in the workshop"></ul>
+
+                    <!-- THE SCROLL: the open shelf, unrolled over the room. Each project is a row that opens
+                         in place. A non-modal dialog: the room stays usable, so another object switches shelves -->
+                    <div class="scroll" id="code-viewer" role="dialog" aria-labelledby="scroll-shelf" hidden>
+                        <div class="scroll-rod" aria-hidden="true"></div>
+                        <div class="scroll-sheet">
+                            <div class="scroll-inner">
+                                <div class="scroll-head">
+                                    <p class="scroll-crumb" id="scroll-crumb"></p>
+                                    <h2 class="scroll-shelf" id="scroll-shelf" tabindex="-1">Projects</h2>
+                                    <!-- Only "✕" shows, so aria-label gives it a name to speak -->
+                                    <button class="scroll-close" id="scroll-close" type="button" aria-label="Close the scroll">&#10005;</button>
+                                </div>
+                                <ul class="scroll-list" id="scroll-list" role="list"></ul>
+                                <!-- The way down to the table, which unfolds below the room -->
+                                <a class="scroll-foot" id="scroll-foot" href="#every-project">Every project, in one table</a>
+                            </div>
+                        </div>
+                        <div class="scroll-rod" aria-hidden="true"></div>
+                    </div>
+                    <p class="screen-reader-text" id="viewer-status" role="status"></p>
+
+                    <!-- Owner, 2026-11-25: say plainly how the art was made. It sits IN the room, so it's on
+                         screen even while the rest of the page is folded away. CC BY-SA and CC BY need the
+                         credit and a link to the license: both are in CREDITS.md, made by tools/workshop.py -->
+                    <p class="workshop-credit">Pixel art by Manu_Art, kanmandev, karsiori and Crumpaloo, recoloured; the rest is drawn in code by Claude to my direction. No image generator was used. <a href="assets/images/workshop/CREDITS.md">Art credits</a></p>
                 </section>
 
-                <!-- Everything else as small flip cards: pick one to turn it over -->
-                <section class="code-section" aria-labelledby="catalog-label">
-                    <h2 class="retro-label code-section-label" id="catalog-label">All projects</h2>
-                    <ul class="code-catalog" id="code-catalog" role="list"></ul>
-                </section>
+                <!-- BELOW THE ROOM (owner, 2026-11-26): at first the page is only the workshop, with nothing
+                     to scroll to. Picking an object unfolds this part (codcript.js adds .shows-below to
+                     <body>), and it folds away again once the room is closed and back in full view.
+                     Without JavaScript, or if the room fails to draw, it simply stays open -->
+                <div class="code-below" id="code-below">
+                    <!-- EVERY PROJECT: one table, sortable and filterable. The map on the wall links here -->
+                    <section class="every wrapper" id="every-project" aria-labelledby="every-label" hidden>
+                        <div class="every-head">
+                            <h2 id="every-label" tabindex="-1">Every project <span class="every-count" id="every-count"></span></h2>
+                            <div class="every-filters" role="group" aria-label="Show">
+                                <button type="button" data-filter="all" aria-pressed="true">All</button>
+                                <button type="button" data-filter="live" aria-pressed="false">Live</button>
+                                <button type="button" data-filter="wip" aria-pressed="false">In progress</button>
+                                <button type="button" data-filter="archived" aria-pressed="false">Archived</button>
+                            </div>
+                        </div>
+                        <!-- Only the table scrolls sideways on a narrow screen, never the page -->
+                        <div class="every-scroll">
+                            <table class="every-table">
+                                <caption class="screen-reader-text">Every project. The column headings sort the table.</caption>
+                                <thead>
+                                    <tr>
+                                        <th scope="col"><button type="button" data-sort="title">Project</button></th>
+                                        <th scope="col" class="every-shelf"><button type="button" data-sort="shelf">Shelf</button></th>
+                                        <th scope="col"><button type="button" data-sort="status">Status</button></th>
+                                        <th scope="col" class="every-tools">Built with</th>
+                                        <th scope="col" class="every-year"><button type="button" data-sort="year">Year</button></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="every-rows"></tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <!-- Most repos are private: an honest way in -->
+                    <section class="code-ask wrapper" aria-label="Source code">
+                        <p>Most of these live in private repos. If one is useful to you, ask, and I'll walk you through it or share the code.</p>
+                        <a class="code-ask-link" href="contact.html#email">Ask about a project</a>
+                    </section>
+                </div>
 
                 <!-- Filled by codcript.js only if data/code.json fails to load -->
-                <p class="code-note" id="code-note" role="status"></p>
+                <p class="code-note wrapper" id="code-note" role="status"></p>
                 <noscript>
-                    <p>The project list needs JavaScript. My public code is on <a href="https://github.com/OopsieLazy">GitHub</a>.</p>
+                    <p class="wrapper">The workshop and the project list need JavaScript. My public code is on <a href="https://github.com/OopsieLazy">GitHub</a>.</p>
                 </noscript>
             </main>
 

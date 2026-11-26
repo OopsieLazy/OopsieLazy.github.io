@@ -17,3 +17,8 @@ node_modules/
 
 # Private design references (other people's copyrighted images): kept on this computer only, never pushed
 references/
+
+# Raw art packs downloaded for the Code page workshop (O8n). Their licenses allow USING them
+# in a site but not sharing the files, so they stay on this computer. tools/workshop.py turns
+# them into the finished images in assets/images/workshop/, which are committed instead
+assets-src/
