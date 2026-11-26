@@ -3,6 +3,11 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
+        <!-- Security (L2): a Content Security Policy. GitHub Pages can't send headers, so it rides in a
+             meta tag, first in <head> because it only covers what comes after it. Every script, style,
+             font, picture and fetch must come from this site: an injected <script> or a tag pointing at
+             another server simply won't load. No page uses inline code, so nothing needs 'unsafe-inline' -->
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- CONTENT: the tab title and the text search engines and link previews show -->
         <title>Contact and Resume · Zach Nott</title>
