@@ -16,12 +16,15 @@
         <meta name="robots" content="noindex">
         <!-- The five stripes; an SVG icon stays sharp at any size and switches to greys in dark mode -->
         <link rel="icon" href="favicon.svg" type="image/svg+xml">
-        <link rel="stylesheet" href="css/styles.css">
-        <link rel="stylesheet" href="css/contyles.css">
-        <script src="js/script.js" defer></script>
+        <!-- Each CSS and JS link carries ?v=<date it last changed>. A browser keeps files it has
+             downloaded; a new ?v makes the address new, so it fetches the new file instead of
+             mixing a new page with old styles or scripts. Change a file: bump its ?v on every page -->
+        <link rel="stylesheet" href="css/styles.css?v=20261126">
+        <link rel="stylesheet" href="css/contyles.css?v=20261126">
+        <script src="js/script.js?v=20261126" defer></script>
         <!-- No defer on purpose: it sets the saved theme before the page is drawn (no white flash) -->
-        <script src="js/themcript.js"></script>
-        <script src="js/contcript.js" defer></script>
+        <script src="js/themcript.js?v=20261126"></script>
+        <script src="js/contcript.js?v=20261126" defer></script>
     </head>
     
     <body class="thecontactpage">
