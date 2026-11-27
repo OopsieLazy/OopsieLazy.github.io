@@ -46,5 +46,63 @@
     "detail": "female hairy woodpecker",
     "year": 2026,
     "alt": "A black-and-white woodpecker in profile on a slim trunk, looking up and to the left, with dark branches, hanging berries and soft leaves crowding the frame against a pale sky."
+  },
+  {
+    "id": "rose-2024",
+    "kind": "journal",
+    "src": "assets/images/art/rose-2024.jpg",
+    "w": 2000,
+    "h": 1600,
+    "title": "Rose",
+    "detail": "acrylic, photographed on iPhone 14 Pro",
+    "year": 2024,
+    "alt": "A loose acrylic painting of a single pink-red rose with one leaf on a dark stem, against a swirling teal and deep blue sky with lilac clouds, a green hill at the bottom right."
+  },
+  {
+    "id": "streetlight-in-fog-2026",
+    "kind": "photo",
+    "src": "assets/images/art/streetlight-in-fog-2026.jpg",
+    "w": 1350,
+    "h": 1990,
+    "title": "Streetlight in fog",
+    "detail": "iPhone Air, f/1.6, 1/20 s, ISO 400",
+    "year": 2026,
+    "alt": "A streetlight glowing through thick night fog with a soft rainbow ring around it, a line of smaller lights fading away below it and the dark shape of a tree on the right.",
+    "area": "Light"
+  },
+  {
+    "id": "figure-in-ink-2025",
+    "kind": "journal",
+    "src": "assets/images/art/figure-in-ink-2025.jpg",
+    "w": 1346,
+    "h": 2000,
+    "title": "Figure in ink",
+    "detail": "ink drawing, photographed on iPhone 15 Pro",
+    "year": 2025,
+    "alt": "A loose black ink drawing of a figure lying on its side with closed eyes and wild, flowing hair, one arm reaching across the page, drawn in quick hatched strokes on cream paper."
+  },
+  {
+    "id": "jasmine-tea-2025",
+    "kind": "photo",
+    "src": "assets/images/art/jasmine-tea-2025.jpg",
+    "w": 1612,
+    "h": 2000,
+    "title": "Jasmine tea",
+    "detail": "iPhone 15 Pro, f/2.2, 1/99 s, ISO 160",
+    "year": 2025,
+    "alt": "Looking down into a white bowl of steeped green tea leaves with a few white jasmine buds and small bubbles, a shaft of sunlight across the leaves.",
+    "area": "Light"
+  },
+  {
+    "id": "red-wings-2025",
+    "kind": "photo",
+    "src": "assets/images/art/red-wings-2025.jpg",
+    "w": 2000,
+    "h": 1390,
+    "title": "Red wings",
+    "detail": "snow sculpture by the Hôtel de Glace sculptors, Québec; iPhone 15 Pro, f/1.78, 1/105 s, ISO 200",
+    "year": 2025,
+    "alt": "A carved snow relief of a young winged figure with curly hair looking upward, arms spread along huge feathered wings, all lit deep red.",
+    "area": "Light"
   }
 ]
