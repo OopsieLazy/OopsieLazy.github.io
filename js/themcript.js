@@ -61,30 +61,20 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // aria-pressed marks the word in use (the CSS underlines it, and on phones hides the others).
-    // The scroll button: data-mode picks the picture, the word under it, and its spoken name,
-    // which also says what a press will do next
+    // The scroll button: data-mode picks the picture; its spoken name (and the hover tip)
+    // says the theme in use and what a press will do next
     function show() {
         choices.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.choice === theme)));
         if (cycler) {
             cycler.dataset.mode = theme;
-            cycler.querySelector(".theme-word").textContent = THEME_NAMES[theme];
             cycler.setAttribute("aria-label", `Theme: ${THEME_NAMES[theme]}. Press for ${THEME_NAMES[NEXT[theme]]}`);
+            cycler.title = cycler.getAttribute("aria-label");
         }
     }
 
-    // Click, tap, Enter and Space all arrive here: that's what a <button> gives for free
-    choices.forEach((button) => button.addEventListener("click", () => {
-        // On phones only the word in use shows (the others are display: none, so offsetParent is
-        // null). Then pressing it moves on to the next, and focus follows to the word now showing,
-        // or it would be lost on a hidden button. With all three showing, a press picks that word
-        const onlyOne = choices.every((other) => other === button || other.offsetParent === null);
-        if (onlyOne && button.dataset.choice === theme) {
-            choose(NEXT[theme]);
-            choices.find((other) => other.dataset.choice === theme).focus();
-        } else {
-            choose(button.dataset.choice);
-        }
-    }));
+    // Click, tap, Enter and Space all arrive here: that's what a <button> gives for free.
+    // A press picks that word (all three always show, side by side)
+    choices.forEach((button) => button.addEventListener("click", () => choose(button.dataset.choice)));
     cycler?.addEventListener("click", () => choose(NEXT[theme]));
 
     show();

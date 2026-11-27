@@ -31,13 +31,10 @@ html {
   }
 }
 
-/* The title in the body font (O3 brings this to every page): one voice on the page, no Cinzel */
+/* The page title, bigger than other pages' (it IS the hero); font and weight come from styles.css (O3) */
 .cad-intro h1 {
   margin: 0 0 var(--space-2);
-  font-family: var(--font-body);
   font-size: var(--step-4);
-  font-weight: 600;
-  letter-spacing: -0.01em;
   line-height: 1.05;
 }
 
@@ -138,7 +135,7 @@ html {
   display: none;
 }
 
-/* The Pause button's row, at the top right of the carousel (its heading is screen-reader only) */
+/* "Spin On Off", at the top right of the carousel (its heading is screen-reader only) */
 .ring-head {
   align-self: stretch;
   display: flex;

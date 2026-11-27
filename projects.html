@@ -19,12 +19,12 @@
         <!-- Each CSS and JS link carries ?v=<date it last changed>. A browser keeps files it has
              downloaded; a new ?v makes the address new, so it fetches the new file instead of
              mixing a new page with old styles or scripts. Change a file: bump its ?v on every page -->
-        <link rel="stylesheet" href="css/styles.css?v=20261127">
+        <link rel="stylesheet" href="css/styles.css?v=20261127-2">
         <script src="js/script.js?v=20261127" defer></script>
         <!-- No defer on purpose: it sets the saved theme before the page is drawn (no white flash) -->
-        <script src="js/themcript.js?v=20261127"></script>
-        <link rel="stylesheet" href="css/projyles.css?v=20261127">
-        <script src="js/projcript.js?v=20261127"></script>
+        <script src="js/themcript.js?v=20261127-2"></script>
+        <link rel="stylesheet" href="css/projyles.css?v=20261127-2">
+        <script src="js/projcript.js?v=20261127-2"></script>
         <!-- CAD sections (task 2.5): datacript.js first, deferred scripts run in this order -->
         <script src="js/datacript.js?v=20261126-2" defer></script>
         <script src="js/sectcript.js?v=20261127" defer></script>
@@ -120,11 +120,16 @@
                         <!-- The carousel (R2d, no frame since O5): js/projcript.js builds one sheet per project.
                              Hidden until the script has built it: without JS there's no empty space -->
                         <section id="slideshow" class="cad-ring" aria-labelledby="ring-title" hidden>
-                          <!-- Pause/play for the spin (task 1.15c). It comes first, so keyboard users reach
-                               Pause before the sheets. The heading is for screen readers only -->
+                          <!-- Stop and start the spin (task 1.15c; words since the owner's pick M1, 2026-11-27:
+                               "Spin On Off", the state in use underlined, styles.css MOTION WORDS). It comes first,
+                               so keyboard users reach it before the sheets. The heading is for screen readers only -->
                           <div class="ring-head">
                             <h2 id="ring-title" class="screen-reader-text">Assembly view</h2>
-                            <button type="button" class="sheet-button" id="spin-toggle">Pause spin</button>
+                            <div class="motion-words" id="ring-motion" role="group" aria-labelledby="ring-motion-label">
+                              <span class="motion-label" id="ring-motion-label">Spin</span>
+                              <button type="button" class="motion-choice" data-motion="on">On</button>
+                              <button type="button" class="motion-choice" data-motion="off">Off</button>
+                            </div>
                           </div>
                           <div class="entire-content">
                             <div class="content-carrousel" id="carousel-c"></div>

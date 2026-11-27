@@ -932,7 +932,7 @@ const Workshop = (() => {
     const composed = Object.assign(document.createElement("canvas"), { width: RW, height: RH });
 
     /* ======================= Mounting it on the page ======================= */
-    // canvas: the <canvas>; pauseButton: a <button> that stops and starts the motion;
+    // canvas: the <canvas>; pauseButton: the "Motion On Off" group (two .motion-choice buttons);
     // stage: the box that holds it; spots: the list of buttons laid over the room;
     // onPhase(words): tells the page the time of day
     function mount({ canvas, pauseButton, stage, spots, onPhase, onError, onLayout }) {
@@ -1003,18 +1003,19 @@ const Workshop = (() => {
             render(paused);
             if (changed && onLayout) onLayout();   // the buttons move to the objects' new places
         }
-        // A toggle button keeps ONE name and says its state with aria-pressed (pressed = paused).
-        // Changing the words too would make a screen reader say "Play motion, pressed": two
-        // signals that contradict each other (WCAG 4.1.2)
+        // "Motion On Off" (owner's pick M1, 2026-11-27): two word buttons that keep their names;
+        // aria-pressed marks the one in use (the CSS underlines it), one clear signal (WCAG 4.1.2)
+        const motionChoices = [...pauseButton.querySelectorAll(".motion-choice")];
         function setPaused(p) {
             paused = p;
-            pauseButton.setAttribute("aria-pressed", String(p));
+            motionChoices.forEach((button) =>
+                button.setAttribute("aria-pressed", String((button.dataset.motion === "off") === p)));
             render(p);
         }
-        pauseButton.addEventListener("click", () => {
-            setPaused(!paused);
+        motionChoices.forEach((button) => button.addEventListener("click", () => {
+            setPaused(button.dataset.motion === "off");
             try { localStorage.setItem("workshop-motion", paused ? "off" : "on"); } catch (e) { /* fine */ }
-        });
+        }));
         // The room stays invisible (.is-loading) until the art arrives, then fades in whole.
         // If it never comes (a missing file, a failed download), onError tells the page
         stage.classList.add("is-loading");

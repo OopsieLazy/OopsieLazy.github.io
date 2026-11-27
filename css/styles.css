@@ -5,13 +5,6 @@
    font-display: swap shows fallback text right away instead of invisible text
    ========================================================= */
 @font-face {
-  font-family: "Cinzel";
-  src: url("../assets/fonts/cinzel-latin-wght-normal.woff2") format("woff2");
-  font-weight: 400 900;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
   font-family: "Instrument Sans";
   src: url("../assets/fonts/instrument-sans-latin-wght-normal.woff2") format("woff2");
   font-weight: 400 700;
@@ -138,7 +131,6 @@
   --faux-bold: 0.04em 0 0 currentColor, -0.04em 0 0 currentColor, 0 0 0.6em var(--color-glow);
 
   /* Fonts: every stack ends in fallbacks in case a file fails to load */
-  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
   --font-body: "Instrument Sans", system-ui, "Segoe UI", Roboto, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
   --font-pixel: "Silkscreen", "Courier New", monospace;
@@ -273,12 +265,16 @@ h3 {
   text-wrap: balance;              /* evens out line lengths in multi-line headings */
 }
 
-/* Daz pass X2 (D44): only the page title wears Cinzel, so one thing on the page stands out.
-   Section headings use the body font. Headings that want Cinzel (the CAD entry titles)
-   ask for it by class */
-h1 { font-family: var(--font-display); }
+/* O3 (2026-11-27): one voice. Every heading uses the body font; the page title stands out by
+   size and weight alone. (Cinzel, the old display font, was removed with its file: git log -S "Cinzel") */
+h1,
 h2,
 h3 { font-family: var(--font-body); }
+
+h1 {
+  font-weight: 600;
+  letter-spacing: -0.01em;             /* big sans type looks loose at its default spacing */
+}
 
 h1 { font-size: var(--step-3); }
 h2 { font-size: var(--step-2); }
@@ -529,7 +525,7 @@ hr {
 /* No band and no hairline (O1, D51): the header sits on the page colour, like the reference,
    so the first thing under it is the work. (It was a white band with a hairline, D43) */
 .site-header {
-  position: relative;                  /* the theme button is placed inside it (see THEME BUTTON) */
+  position: relative;                  /* desktop: the theme switch is placed inside it (THE THEME SWITCH) */
   padding-block: var(--space-4);
 }
 
@@ -789,13 +785,12 @@ hr {
    (aria-pressed, set by js/themcript.js), the same mark as the current page in the nav.
    The group starts with the hidden attribute (no JS = no switch, the site follows the OS),
    so display is only set once it's shown (:not([hidden])).
-   Phones: in the empty cell left of the name, level with the Menu button, and only the word
-   in use shows (pressing it moves on). Desktop: all three, at the right end of the header row */
+   All three words always show, side by side (owner, 2026-11-27).
+   Phones and tablets: a centred row under the name (the left cell beside the name is too
+   narrow for three words). Desktop: at the right end of the header row */
 .theme-switch {
-  position: absolute;
-  top: calc(var(--space-4) + var(--header-row) / 2);   /* the middle of the top row */
-  left: var(--gutter);
-  translate: 0 -50%;
+  justify-content: center;
+  margin-top: var(--space-2);
 }
 
 .theme-switch:not([hidden]) {
@@ -826,16 +821,54 @@ hr {
   text-underline-offset: 0.4em;
 }
 
-@media (width < 64rem) {
-  .theme-choice[aria-pressed="false"] {
-    display: none;
+@media (min-width: 64rem) {
+  .theme-switch {
+    position: absolute;
+    top: 50%;
+    right: var(--gutter);
+    translate: 0 -50%;
+    margin-top: 0;
   }
 }
 
-@media (min-width: 64rem) {
-  .theme-switch {
-    top: 50%;
-    left: auto;
-    right: var(--gutter);
-  }
+/* ---------- MOTION WORDS (owner's pick M1, 2026-11-27) ----------
+   The pause control as words, like the theme switch: "Spin  On  Off", the state in use
+   underlined. Two buttons with aria-pressed inside a labelled group, so a screen reader hears
+   "Spin, group. Off, toggle button, pressed". Used by the CAD carousel (Spin) and the Code
+   workshop (Motion, restyled in codyles.css). Starts hidden (no JS = nothing to pause) */
+.motion-words:not([hidden]) {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+
+.motion-label,
+.motion-choice {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+.motion-label {
+  color: var(--color-muted);
+}
+
+.motion-choice {
+  padding: var(--space-1) 0;           /* small words, but a 24px+ tap target (WCAG 2.5.8) */
+  border: 0;
+  background: none;
+  color: var(--color-muted);
+  cursor: pointer;
+}
+
+.motion-choice:hover,
+.motion-choice[aria-pressed="true"] {
+  color: var(--color-ink);
+}
+
+.motion-choice[aria-pressed="true"] {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.4em;
 }

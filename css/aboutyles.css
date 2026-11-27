@@ -105,7 +105,7 @@
 
 /* =========================================================
    TEXT: a bigger lead, then quiet section headings (body font,
-   text colour). Only the page title is Cinzel and pine (D44)
+   text colour). Only the page title is pine (D44; Cinzel went in O3)
    ========================================================= */
 .story-lead {
   font-size: var(--step-1);
@@ -133,7 +133,7 @@
 
 .story-quote p {
   margin: 0 auto;
-  font-family: var(--font-display);
+  font-weight: 600;                    /* O3: the body font; the quote stands out by size and weight */
   font-size: var(--step-2);
   color: var(--color-accent);
 }

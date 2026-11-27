@@ -19,8 +19,8 @@
         <!-- Each CSS and JS link carries ?v=<date it last changed>. A browser keeps files it has
              downloaded; a new ?v makes the address new, so it fetches the new file instead of
              mixing a new page with old styles or scripts. Change a file: bump its ?v on every page -->
-        <link rel="stylesheet" href="css/styles.css?v=20261127">
-        <link rel="stylesheet" href="css/codyles.css?v=20261127">
+        <link rel="stylesheet" href="css/styles.css?v=20261127-2">
+        <link rel="stylesheet" href="css/codyles.css?v=20261127-2">
         <!-- The workshop waits for its art before it shows: start downloading it now, alongside the
              scripts, instead of after them. crossorigin on the JSON matches how fetch() asks for it -->
         <link rel="preload" href="assets/images/workshop/sprites.json?v=20261126" as="fetch" crossorigin>
@@ -31,10 +31,10 @@
         <!-- datacript.js holds the shared JSON helpers, so it loads before codcript.js (defer keeps this order) -->
         <script src="js/datacript.js?v=20261126-2" defer></script>
         <!-- workcript.js draws the workshop; codcript.js lays the buttons over it, so the room loads first -->
-        <script src="js/workcript.js?v=20261126" defer></script>
+        <script src="js/workcript.js?v=20261127-2" defer></script>
         <script src="js/codcript.js?v=20261126-2" defer></script>
         <!-- No defer on purpose: it sets the saved theme before the page is drawn (no white flash) -->
-        <script src="js/themcript.js?v=20261127"></script>
+        <script src="js/themcript.js?v=20261127-2"></script>
     </head>
     
     <body class="thecodepage">
@@ -122,15 +122,19 @@
                     <!-- The room's two controls, top right. WCAG 2.2.2: anything that moves for more than
                          5 seconds needs a way to stop it (Pause). The theme (owner, 2026-11-27: "Scrolls for Code"):
                          one button that goes Auto, Day, Night like the other pages' words. The red-ribbon scroll is
-                         Day, the blue one Night, both together Auto; the word underneath says it too.
-                         js/themcript.js fills in its spoken name ("Theme: Auto. Press for Day") -->
+                         Day, the blue one Night, both together Auto. Just the scrolls, no box (owner, 2026-11-27).
+                         js/themcript.js fills in its spoken name and hover tip ("Theme: Auto. Press for Day").
+                         Motion: "Motion On Off" words (owner's pick M1), like the CAD page's "Spin On Off" -->
                     <div class="workshop-controls">
                         <button class="theme-cycle" id="workshop-theme" type="button" data-mode="auto" hidden>
                             <img class="scroll-day" src="assets/images/workshop/scroll-day.png" alt="" width="32" height="32">
                             <img class="scroll-night" src="assets/images/workshop/scroll-night.png" alt="" width="32" height="32">
-                            <span class="theme-word" aria-hidden="true">Auto</span>
                         </button>
-                        <button class="workshop-pause" id="workshop-pause" type="button" aria-pressed="false" hidden>Pause motion</button>
+                        <div class="motion-words workshop-pause" id="workshop-pause" role="group" aria-labelledby="workshop-motion-label" hidden>
+                            <span class="motion-label" id="workshop-motion-label">Motion</span>
+                            <button type="button" class="motion-choice" data-motion="on">On</button>
+                            <button type="button" class="motion-choice" data-motion="off">Off</button>
+                        </div>
                     </div>
 
                     <!-- The same objects as a plain list: shown on phones until the tower layout (O8m) -->

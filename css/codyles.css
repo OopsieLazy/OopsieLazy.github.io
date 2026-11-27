@@ -313,28 +313,23 @@
   gap: var(--space-3);
 }
 
-/* THE THEME SCROLL (owner, 2026-11-27: "Scrolls for Code"). Pixel art from Idylwild's Arcanum,
-   shown at 2x with image-rendering: pixelated so the pixels stay crisp squares, never blurred.
+/* THE THEME SCROLL (owner, 2026-11-27: "Scrolls for Code", then "just the scrolls, not a button
+   square"). Pixel art from Idylwild's Arcanum at 1.5x, image-rendering: pixelated so the pixels stay
+   crisp squares. It's still a <button> (keyboard and screen readers work), with its box taken away.
    data-mode (set by js/themcript.js) picks the scroll: Day = red ribbon, Night = blue, Auto = both */
 .theme-cycle {
-  display: grid;
-  grid-template-columns: auto auto;
-  justify-items: center;
-  padding: var(--space-1) var(--space-2);
-  border: 1px solid var(--workshop-muted);
-  border-radius: var(--radius-soft);
-  background: var(--frame-shade);      /* the same dark backing as Pause */
-  color: var(--workshop-ink);
+  display: flex;
+  gap: var(--space-1);
+  padding: 0;
+  border: 0;
+  background: none;
   cursor: pointer;
+  filter: drop-shadow(0 1px 0 rgb(0 0 0 / 0.6));   /* a hard pixel shadow, so they read on pale stone too */
 }
 
-/* hidden (no JS) must win over display: grid above */
+/* hidden (no JS) must win over display: flex above */
 .theme-cycle[hidden] {
   display: none;
-}
-
-.theme-cycle:hover {
-  border-color: var(--workshop-ink);
 }
 
 .theme-cycle img {
@@ -343,16 +338,14 @@
   image-rendering: pixelated;
 }
 
+/* Hover: the scrolls lift a little, the only sign it can be pressed */
+.theme-cycle:hover img {
+  translate: 0 -2px;
+}
+
 .theme-cycle[data-mode="day"] .scroll-night,
 .theme-cycle[data-mode="lantern"] .scroll-day {
   display: none;
-}
-
-.theme-word {
-  grid-column: 1 / -1;                 /* the word sits under the scroll(s) */
-  font-family: var(--font-pixel);
-  font-size: var(--step--2);
-  text-transform: uppercase;
 }
 
 .theme-cycle:focus-visible {
@@ -360,23 +353,36 @@
   outline-offset: 2px;
 }
 
+/* "Motion On Off" in the room: the shared MOTION WORDS (styles.css) in the workshop's pixel
+   font and colours, on the same dark backing the credit uses, so it reads on pale stone */
 .workshop-pause {
   min-height: var(--space-6);          /* 32px: a comfortable target */
-  padding: 0 var(--space-4);
-  border: 1px solid var(--workshop-muted);
-  border-radius: var(--radius-pill);
-  background: var(--frame-shade);      /* a dark backing, so it reads on pale stone */
+  padding: 0 var(--space-3);
+  background: var(--frame-shade);
+  border-radius: var(--radius-soft);
+}
+
+.workshop-pause .motion-label,
+.workshop-pause .motion-choice {
+  font-family: var(--font-pixel);
+  font-size: var(--step--2);
+  letter-spacing: 0.06em;
+}
+
+.workshop-pause .motion-label {
+  color: var(--workshop-muted);
+}
+
+.workshop-pause .motion-choice {
+  color: var(--workshop-muted);
+}
+
+.workshop-pause .motion-choice:hover,
+.workshop-pause .motion-choice[aria-pressed="true"] {
   color: var(--workshop-ink);
-  font: var(--step--1) var(--font-mono);
-  cursor: pointer;
 }
 
-.workshop-pause:hover,
-.workshop-pause[aria-pressed="true"] {
-  border-color: var(--workshop-ink);
-}
-
-.workshop-pause:focus-visible,
+.workshop-pause :focus-visible,
 .workshop-list :focus-visible {
   outline: 2px solid var(--workshop-ring);
   outline-offset: 2px;
