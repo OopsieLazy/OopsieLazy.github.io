@@ -2,7 +2,8 @@
    Shared header, tokens and footer live in styles.css */
 
 /* One ruled box. Phones: one column, a rule between cells.
-   Wider: two columns (2fr 1fr), and the last cell spans both */
+   Wider: three rows. The name spans the top, then Email | Resume (2fr 1fr), then
+   Elsewhere spans the bottom (.tb-wide). The Status cell went on 2026-11-27 (owner) */
 .title-block {
   display: grid;
   max-width: 56rem;
@@ -26,12 +27,9 @@
     grid-template-columns: 2fr 1fr;
   }
 
-  .tb-cell:nth-child(2) {
-    border-top: 0;                     /* top row: the outer border is enough */
-  }
-
-  /* Left-column cells draw the vertical rule */
-  .tb-cell:nth-child(odd):not(.tb-wide) {
+  /* The one cell with a neighbour on its right draws the rule between them. Named by id,
+     not by position (nth-child), so adding or removing a cell can't move the rule */
+  #email {
     border-right: 1px solid var(--color-accent);
   }
 

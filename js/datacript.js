@@ -49,11 +49,12 @@ function projectHref(project) {
     return project.id ? `projects.html#${encodeURIComponent(project.id)}` : "projects.html";
 }
 
-// Joins short facts with " · " (R1b). The space BEFORE each dot is a no-break space ( ),
-// so a dot stays at the end of its line and never starts the next one.
-// A part that already holds dots ("Instrument · Hardware") is split first, so its dots get the same treatment
+// Joins short facts with an EN SPACE (U+2002, a space about twice as wide as a normal one), never a
+// bullet: owner, 2026-11-26, "just simple spaces". The wider gap still shows where one fact ends
+// ("CAD  2025"). Anything still written with a middle dot is split there first, so no dot reaches the page
+const GAP = "\u2002";
 function joinMeta(parts) {
-    return parts.filter(Boolean).flatMap((part) => String(part).split(" · ")).join(" · ");
+    return parts.filter(Boolean).flatMap((part) => String(part).split(/\s*\u00B7\s*/)).join(GAP);
 }
 
 /* ---------- Drag a project out (R2, D32) ----------

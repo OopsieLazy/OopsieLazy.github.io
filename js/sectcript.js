@@ -1,8 +1,9 @@
 // CAD page sections (task 2.5): one entry per project from data/projects.json (D26).
-// (The row of jump links above them was removed in the sleek pass, 2026-11-11: it repeated
-// the carousel and the entries' own titles.) Each entry has the project's JSON id, so
-// projects.html#bridge-guitar opens straight at that project (the home page links here).
-// Since 2026-11-24 it also builds the index of tiles above the entries (buildIndexTile).
+// Each entry has the project's JSON id, so projects.html#bridge-guitar opens straight at that
+// project (the home page links here). Since O5 (owner, 2026-11-27: "A2, with A1 below"):
+// - the LIST beside the carousel: one row per project (buildIndexRow)
+// - each ENTRY reads like a daz product page: a big gallery on the left, the facts on the
+//   right (buildEntry): number, name, one line, a spec table, MakerWorld and "Next project"
 // Loaded with `defer` after js/datacript.js (loadProjects, make, makeImage, twoDigits).
 // The carousel above (projcript.js) reads the same JSON; its DWG numbers match these entries.
 
@@ -23,21 +24,24 @@ function usableId(id) {
     return true;
 }
 
-// The stats as a description list: <dt> is the label, <dd> the value. Screen readers
-// announce it as a list of pairs. Missing stats are left out instead of showing a dash
-function buildStats(stats = {}) {
+// What the "tool" short names in the JSON stand for. Add a line here for a new program
+const TOOL_NAMES = { F360: "Fusion 360", SW: "SolidWorks", OS: "Onshape" };
+
+// The specs as a description list: <dt> is the label, <dd> the value. Screen readers announce
+// it as pairs ("Parts, 5"). The CSS draws it as a ruled table, like daz's product facts.
+// Missing values are left out instead of showing a dash, so only what's true appears
+function buildStats(stats = {}, tool) {
     const list = make("dl", "cad-stats");
     const add = (label, value) => {
-        if (value === undefined || value === null) return;
+        if (value === undefined || value === null || value === "") return;
         list.append(make("div", "", make("dt", "", label), make("dd", "", value)));
     };
-    // The stats read as a sentence now ("1 iteration · 2 parts"), so the label follows the number
-    const word = (n, one, many) => (n === 1 ? one : many);
-    add(word(stats.iterations, "Iteration", "Iterations"), stats.iterations);
-    add(word(stats.parts, "Part", "Parts"), stats.parts);
-    add("Print", stats.printHours != null ? `${stats.printHours} h` : null);
+    add("Versions", stats.iterations);
+    add("Parts", stats.parts);
+    add("Print time", stats.printHours != null ? `${stats.printHours} h` : null);
+    add("Filament", stats.filament);                  // optional, e.g. "PETG, 85 g"
     if (stats.difficulty != null) {
-        const level = Math.min(5, Math.max(0, stats.difficulty)); // keep it within 0–5
+        const level = Math.min(5, Math.max(0, stats.difficulty)); // keep it within 0 to 5
         // Stars are for the eyes; a screen reader would say "black star, black star…",
         // so it gets the plain words instead
         add("Difficulty", make("span", "",
@@ -45,6 +49,7 @@ function buildStats(stats = {}) {
             make("span", "screen-reader-text", `${level} out of 5`)
         ));
     }
+    add("Made in", TOOL_NAMES[tool] || tool);
     return list;
 }
 
@@ -70,13 +75,18 @@ function buildGallery(project) {
     const main = makeImage(pictures[0].src, pictures[0].alt || "");
     main.loading = "lazy";   // below the fold: the browser fetches it only when it's close to the screen
     const tag = make("span", "cad-tag");
+    const count = make("span", "cad-count");            // "1 / 4", like daz (hidden with one picture)
     const caption = make("figcaption", "cad-caption");
+    const art = make("div", "cad-art", main, tag, count);
     // <figure> + <figcaption>: the caption is tied to the picture for screen readers
-    const figure = make("figure", "cad-figure", make("div", "cad-art", main, tag), caption);
+    const figure = make("figure", "cad-figure", art, caption);
 
     const buttons = [];
+    let current = 0;
     function show(i) {
+        current = i;
         const picture = pictures[i];
+        count.textContent = `${i + 1} / ${pictures.length}`;
         main.src = picture.src;
         main.alt = picture.alt || "";
         tag.textContent = KIND_LABEL[picture.kind] || "";
@@ -87,8 +97,19 @@ function buildGallery(project) {
         buttons.forEach((button, k) => button.setAttribute("aria-pressed", String(k === i)));
     }
 
-    // Thumbnails only when there is something to switch to
+    // Arrows and thumbnails only when there is something to switch to
+    count.hidden = pictures.length < 2;
     if (pictures.length > 1) {
+        // ‹ › on the picture's sides. They loop like a wheel: after the last picture comes the
+        // first again, so the % (remainder) wraps the number around
+        [[-1, "‹", "Previous"], [1, "›", "Next"]].forEach(([by, symbol, word]) => {
+            const arrow = make("button", `cad-arrow is-${word.toLowerCase()}`, make("span", "", symbol));
+            arrow.type = "button";
+            arrow.firstChild.setAttribute("aria-hidden", "true");   // the label says what it does
+            arrow.setAttribute("aria-label", `${word} picture of ${project.name}`);
+            arrow.addEventListener("click", () => show((current + by + pictures.length) % pictures.length));
+            art.append(arrow);
+        });
         const thumbs = make("ul", "cad-thumbs");
         pictures.forEach((picture, i) => {
             const thumb = makeImage(picture.src);   // alt="" here: the button's name says what it shows
@@ -108,69 +129,59 @@ function buildGallery(project) {
     return figure;
 }
 
-/* ---------- The index (owner, 2026-11-24): clean tiles above the write-ups, like dazprojects ---------- */
+/* ---------- The list beside the carousel (O5, A2) ---------- */
 
-// ‹ › on a tile with more than one picture. They loop like a wheel: after the last picture comes the
-// first again, so the % (remainder) wraps the number around. The tile's link isn't touched
-function pictureArrows(pictures, image, name) {
-    let index = 0;
-    const step = (by) => {
-        index = (index + by + pictures.length) % pictures.length;
-        image.src = pictures[index].src;
-    };
-    return [[-1, "‹", "Previous"], [1, "›", "Next"]].map(([by, symbol, word]) => {
-        // The arrow character is decoration (aria-hidden); the label says what the button does
-        const button = make("button", `index-arrow is-${word.toLowerCase()}`, make("span", "", symbol));
-        button.type = "button";
-        button.firstChild.setAttribute("aria-hidden", "true");
-        button.setAttribute("aria-label", `${word} picture of ${name}`);
-        button.addEventListener("click", () => step(by));
-        return button;
-    });
-}
-
-// One tile: picture on a pale square, the name (a link to the write-up), one meta line.
-// Only the NAME is a link; its ::after stretches over the whole tile (projyles.css), so the tile
-// is clickable while a screen reader hears a short name. alt="" because that name says it all
-function buildIndexTile(project, id) {
-    const pictures = projectImages(project);
-    const image = makeImage(pictures[0].src);
+// One row: a small picture, the name, its DWG number. The whole row is ONE link down to the
+// project's block. alt="" on the picture: the name inside the same link already says it all
+function buildIndexRow(project, index, id) {
+    const image = makeImage(projectImages(project)[0].src);
     image.loading = "lazy";
-    const link = make("a", "", project.name);
+    // The " " between the two spans matters: without it a screen reader hears "Bridge Guitar01"
+    const link = make("a", "index-row", image,
+        make("span", "index-name", project.name), " ",
+        make("span", "index-number", twoDigits(index + 1)));
     link.href = id ? `#${id}` : "#cad-sections";
-    const art = make("div", "index-art", image);
-    if (pictures.length > 1) art.append(...pictureArrows(pictures, image, project.name));
-    return make("li", "", make("article", "index-tile", art,
-        make("h3", "index-name", link),
-        make("p", "index-meta", joinMeta([project.type, project.year]))));
+    return make("li", "", link);
 }
 
-// One entry: square image box on the left, text on the right (layout C, owner's pick)
-function buildEntry(project, index, id) {
-    const number = twoDigits(index + 1);
-    const titleId = id ? `${id}-title` : "";
+/* ---------- One project (O5, A1): the daz product layout ---------- */
 
+// SECURITY: a MakerWorld link from the JSON only becomes a link if it really goes to MakerWorld
+// over https. A typo or a pasted "javascript:..." address can never become a clickable link
+const MAKERWORLD = /^https:\/\/makerworld\.com\//;
+
+function buildEntry(project, index, id, next) {
+    const titleId = id ? `${id}-title` : "";
     const title = make("h3", "cad-title", project.name);
     if (titleId) title.id = titleId;
 
     // "writeup" is optional: a list of paragraphs. [].concat() also accepts a single string
     const writeup = [].concat(project.writeup ?? []).map((text) => make("p", "", text));
 
-    const body = make("div", "cad-body",
-        // joinMeta (datacript.js): a "·" never starts a line
-        make("p", "cad-kicker", joinMeta([number, project.type, project.year, project.tool])),
+    // The buttons under the specs: MakerWorld (when the JSON has a link), then the next project
+    const actions = make("p", "cad-actions");
+    if (MAKERWORLD.test(project.makerworld || "")) {
+        const maker = make("a", "cad-button", "MakerWorld");
+        maker.href = project.makerworld;
+        actions.append(maker);
+    }
+    const onward = make("a", "cad-next", next ? `Next: ${next.name} ›` : "Back to the top ↑");
+    onward.href = next && next.id ? `#${next.id}` : "#content";
+    actions.append(onward);
+
+    // The facts column. On wide screens it stays beside the picture and scrolls on its own
+    // (projyles.css, THE FACTS COLUMN), like daz
+    const info = make("div", "cad-info",
+        make("p", "cad-kicker", joinMeta([twoDigits(index + 1), project.type, project.year])),
         title,
-        make("p", "", project.description || ""),
-        ...writeup,
-        buildStats(project.stats)
+        make("p", "cad-lead", project.description || ""),
+        buildStats(project.stats, project.tool),
+        actions,
+        ...writeup
     );
 
-    const back = make("a", "cad-back", "↑ All projects");
-    back.href = "#cad-index";   // back up to the tiles (the index), not just the top of the write-ups
-    body.append(back);
-
     // <article>: a self-contained piece that makes sense on its own, like a catalog entry
-    const entry = make("article", "cad-entry", buildGallery(project), body);
+    const entry = make("article", "cad-entry", buildGallery(project), info);
     dragOutProject(entry, project); // the whole entry drags out (datacript.js)
     if (id) {
         entry.id = id;
@@ -202,12 +213,14 @@ async function initSections() {
         return;
     }
 
-    const index = document.querySelector("#cad-index-grid");
+    const list = document.querySelector("#cad-index-list");
+    // Check every id BEFORE adding any entry: once it's on the page, it would clash with itself
+    const ids = projects.map((project) => (usableId(project.id) ? project.id : ""));
     projects.forEach((project, i) => {
-        // Check the id BEFORE adding the entry: once it's on the page, it would clash with itself
-        const id = usableId(project.id) ? project.id : "";
-        entries.append(buildEntry(project, i, id));
-        index?.append(buildIndexTile(project, id));
+        // "Next" only when the next project has a usable id to jump to; otherwise "Back to the top"
+        const next = ids[i + 1] ? { id: ids[i + 1], name: projects[i + 1].name } : null;
+        entries.append(buildEntry(project, i, ids[i], next));
+        list?.append(buildIndexRow(project, i, ids[i]));
     });
 
     scrollToHash();

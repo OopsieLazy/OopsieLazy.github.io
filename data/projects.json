@@ -7,7 +7,7 @@
     "images": [
       {"src": "assets/images/bridge-guitar-v8.png", "alt": "Bridge guitar, CAD render", "kind": "cad", "caption": "Version 8, CAD render"}
     ],
-    "type": "Instrument · Hardware",
+    "type": "Instrument, hardware",
     "year": 2025,
     "tool": "F360",
     "featured": true,
@@ -23,7 +23,7 @@
     "images": [
       {"src": "assets/images/geetech-end-stop-cap-v4.png", "alt": "End stop cap for a Geetech 3D printer, CAD render", "kind": "cad", "caption": "Version 4, CAD render"}
     ],
-    "type": "Part · 3D print",
+    "type": "Part, 3D print",
     "year": 2024,
     "tool": "F360",
     "featured": true,
@@ -39,7 +39,7 @@
     "images": [
       {"src": "assets/images/latch-hinge-v1.png", "alt": "Latch hinge, CAD render", "kind": "cad", "caption": "Version 1, CAD render"}
     ],
-    "type": "Mechanism · Print-in-place",
+    "type": "Mechanism, print-in-place",
     "year": 2024,
     "tool": "F360",
     "featured": true,

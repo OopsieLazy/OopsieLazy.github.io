@@ -4,10 +4,15 @@
    until O4: git log -S "home-hero")
    Shared header, tokens and footer live in styles.css; the masonry script in js/datacript.js */
 
-/* The mosaic is a little wider than the site's 72rem, like the reference (about 1200px of pictures).
+/* The mosaic copies brittanybravo.com's measurements (checked 2026-11-27 at 1920, 1440, 1024 and
+   390px wide): a 1200px block of three columns, centred, so a full-screen window has wide white
+   margins (360px each side at 1920). Below 1200px it runs edge to edge with NO side margin, and
+   phones get two columns. --gutter: 0 removes the page's side padding here; the row of links
+   and the cards drawer add their own (below), so only the pictures touch the edges.
    Only <main>: the header keeps the site width */
 .thehomepage .site-main {
-  --content-max: 80rem;
+  --content-max: 75rem;                /* 1200px: three 390px columns and two gaps */
+  --gutter: 0;
   /* Home's own top gap (owner, 2026-11-24: "the gap between the nav bar and the featured cards").
      Other pages open with a big title, which needs room; Home opens with a small row of links
      that belongs right under the nav, so it gets 24px instead of the site's 60-80px */
@@ -15,7 +20,7 @@
 }
 
 /* =========================================================
-   THE MOSAIC: 3 columns, 2 on tablets, 1 on phones (the same steps as the Art grid).
+   THE MOSAIC: 3 columns, 2 on phones, like the reference.
    The gap is the "crisp white border" between pictures: one value both ways.
    Masonry: js/datacript.js adds .is-masonry and gives each tile a row span from its height,
    so tiles stack tightly in their column (D49). Without it: plain rows, still fine
@@ -41,13 +46,22 @@
   padding-bottom: var(--space-4);
 }
 
-@media (width < 56rem) {
+/* Three columns down to tablet width, then two (the reference keeps 3 at 1024px and 2 on a phone).
+   4 and 5 columns were tried on 2026-11-27 and looked busier, not cleaner */
+@media (width < 40rem) {
   .mosaic { grid-template-columns: repeat(2, 1fr); }
 }
 
-@media (width < 37.5rem) {
-  .mosaic { grid-template-columns: 1fr; }
+/* BIG TILES (owner, 2026-11-27: "some rows/columns can combine to house bigger pictures").
+   A tile listed in data/home.json "big" gets .is-big and spans two columns; masonry makes
+   it as tall as its picture needs. "dense" lets later, smaller tiles fill a hole the big one
+   leaves, so the wall has no gaps (Tab still goes in the list order).
+   Only from 56rem: on a 1-column phone a two-column tile would add a column */
+@media (width >= 56rem) {
+  .mosaic { grid-auto-flow: row dense; }
+  .mosaic > .is-big { grid-column: span 2; }
 }
+
 
 /* =========================================================
    ONE TILE: the picture, with its caption laid over it.
@@ -156,17 +170,26 @@
    into CAD, two quiet words centred under the header's name
    ========================================================= */
 .mosaic-links {
+  padding-inline: var(--space-4);      /* Home's main has no side padding (the mosaic touches the edges) */
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: baseline;
-  gap: var(--space-2) var(--space-8);  /* 64px between the two (owner, 2026-11-24: "spread out a bit") */
+  gap: var(--space-2) var(--space-8);  /* 64px between the two on phones (owner, 2026-11-24: "spread out a bit") */
   max-width: none;                     /* styles.css gives every <p> a 65ch reading width; this row spans the page */
   margin: 0 0 var(--space-6);          /* 32px of air before the mosaic (was 16px) */
   font-family: var(--font-mono);
   font-size: var(--step--1);
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
+}
+
+/* Desktop: twice the air (owner, 2026-11-27: "too close to each other in desktop mode").
+   Phones keep 64px, where the screen is narrow */
+@media (min-width: 64rem) {
+  .mosaic-links {
+    column-gap: calc(2 * var(--space-8));   /* 128px */
+  }
 }
 
 /* The drawer's button looks like the link beside it: a quiet underlined word, not a pill */
@@ -211,6 +234,7 @@
 .cards-drawer {
   display: grid;
   grid-template-rows: 0fr;
+  padding-inline: var(--space-4);      /* Home's main has no side padding (the mosaic touches the edges) */
 }
 
 .cards-drawer.is-open {

@@ -30,7 +30,6 @@ Use a local server rather than double-clicking the file, because JS modules (Pha
 | `js/datacript.js` | Shared helpers that load the JSON and build elements safely (home and CAD page) |
 | `projects.html` + `css/projyles.css` + `js/projcript.js` + `js/sectcript.js` | CAD portfolio: the 3D carousel and side popup, then one entry per project (`projects.html#<id>`) |
 | `assets/images/` | All images |
-| `thelab.html` | Laboratory experiment (notebook-on-desk design) |
 | `PLAN.md` | Roadmap, task breakdown, architecture decisions |
 | `TODO.md` | One-screen action list, rebuilt from PLAN.md by the `todo-list` skill (`.claude/skills/`) |
 | `REFERENCES.md` | Design reference notes (dazprojects, SPELUNKR): what we take and what we don't |
@@ -38,12 +37,13 @@ Use a local server rather than double-clicking the file, because JS modules (Pha
 
 ## Add a project
 
-Add one object to `data/projects.json`: the home catalog builds its tile and the CAD page builds its entry:
+Add one object to `data/projects.json`: Home builds its tile, and the CAD page builds its row in the list, its sheet in the carousel and its project block:
 
 - `id`: lowercase-kebab-case, unique. It's the link anchor, `projects.html#bridge-guitar`; a bad or clashing id still shows the entry but gets no link (the console says why)
-- `name`, `image` (path in `assets/images/`), `alt`, `type` (e.g. `"Part · 3D print"`), `year`
+- `name`, `image` (path in `assets/images/`), `alt`, `type` (e.g. `"Part, 3D print"`), `year`
 - `featured`: `true` puts it in Home's "Featured cards" drawer (up to 3)
-- Optional: `tool`, `description`, `flavor`, `stats` (`iterations`, `parts`, `printHours`, `difficulty` 1–5)
+- Optional: `tool` (`F360`, `SW`, `OS`; the names are in `TOOL_NAMES` in `js/sectcript.js`), `description` (the one line under the name), `flavor`, `stats` (`iterations` shown as Versions, `parts`, `printHours`, `filament` like `"PETG, 85 g"`, `difficulty` 1 to 5). Leave out anything that isn't true: a missing value is simply not shown.
+- Optional: `makerworld`, the model's page, e.g. `"https://makerworld.com/en/models/123456"`. It becomes the MakerWorld button; anything not starting with `https://makerworld.com/` is ignored on purpose.
 - Optional: `writeup`, the longer story on the CAD page, as a list of paragraphs: `"writeup": ["First paragraph.", "Second paragraph."]`
 - Optional: `images`, the pictures in the CAD page's gallery (D33). Each one is `{ "src", "alt", "kind", "caption" }`, where `kind` is `"cad"` or `"photo"` (it sets the tag in the corner). The first one shows first; thumbnails appear once there are two or more. `image` stays the single cover used on Home and the cards. New photos go in a folder per project: `assets/images/<id>/`.
 - Picture sizes: the frames are 4:3 (Home rows) and square (Home grid, CAD page, thumbnails), and pictures fill them with `object-fit: cover`, which crops evenly and never stretches. So export every render and photo **square, 1600 × 1600 px**, with the part centred inside the middle 75% (a 4:3 crop trims 12.5% off the top and bottom). Renders as PNG, ideally with a transparent background; photos as JPEG at about 80% quality, with location data stripped.
@@ -52,7 +52,8 @@ JSON is strict: double quotes only, a comma between items but **not after the la
 
 ## Add art
 
-1. Put the photos in `assets/images/art/`. Name them like `journal-3-page-5.jpg` or `harbour-2025.jpg`: a name starting with `journal` goes on the Art journals wall, anything else on Photography, and a 4-digit year becomes the label's year.
+1. Put the photos in `assets/images/art/` straight from the phone: `tools/art.py` reads nothing personal into the site and strips it all. Before it does, note the photo information you want to show (date, camera, f-stop, shutter, ISO: on Windows, right-click the file, Properties, Details) for the `detail` line, e.g. `"iPhone 15 Pro, f/2.2, 1/99 s, ISO 160"`.
+   Name them like `journal-3-page-5.jpg` or `harbour-2025.jpg`: a name starting with `journal` goes on the Art journals wall, anything else on Photography (or change `"kind"` to `"journal"` in `art.json` afterwards, as the paintings have), and a 4-digit year becomes the label's year.
 2. Run `python tools/art.py` (once before: `pip install Pillow`). It strips EXIF/GPS (phone photos carry the place they were taken), turns photos upright, shrinks anything over 2000 px, renames files to lowercase-kebab-case and adds each new photo to `data/art.json`. `--dry-run` shows what it would do.
 3. In `data/art.json`, fix each new piece's `title`, `detail` (e.g. `"page 5"`) and `alt` (search for `TODO`: alt text describes what's in the picture). Each photo shows whole, in its own shape: nothing is cropped.
    Optional `"area": "Nature"` (or Architecture, Portraits, any name) puts a photo under that area's heading on the Photography wall. Areas appear in the order they first occur in the file, each with its own grid; from two areas up, a jump list links to each. Photos without an area share one grid with no heading.
@@ -71,6 +72,19 @@ The order in `art.json` is the order on the page, until a visitor drags photos a
 Ids are the `"id"` values in `data/projects.json` and `data/art.json`. A typo is skipped with a warning in the browser console (F12).
 
 **Trying layouts:** open `index.html?shuffle` and reload until you like one. The console prints that order as ready-to-paste JSON with `"mode": "listed"`; copy it into `home.json`. Visitors who find `?shuffle` only reshuffle their own screen.
+
+## Years that count themselves
+
+Anything that grows with time stores the year it **started**, and the page works out the rest (`js/script.js`):
+
+- `<span data-since="2019">7</span>` shows the years since 2019: 7 in 2026, 8 in 2027.
+- `<span data-year>2026</span>` shows the current year (the footer's ©).
+
+The number inside is only what shows with JavaScript off. To change a count, change the `data-since` year (About's tool years), never the number.
+
+## Big tiles on Home
+
+`"big": ["bridge-guitar"]` in `data/home.json` shows those tiles two columns wide (from tablet width up). Use any id from `data/projects.json` or `data/art.json`. It's empty since 2026-11-27: the even three columns, like brittanybravo.com, looked cleaner.
 
 ## Add About photos
 

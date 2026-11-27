@@ -10,7 +10,7 @@
         <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- CONTENT: the tab title and the text search engines and link previews show -->
-        <title>Code Portfolio · Zach Nott</title>
+        <title>Zach Nott Code Portfolio</title>
         <meta name="description" content="Code projects by Zach Nott: what each one does, its status and the tools behind it.">
         <!-- Staging (L1, D47): search engines skip the site until launch. Removing this line IS the launch (L3) -->
         <meta name="robots" content="noindex">
@@ -19,22 +19,22 @@
         <!-- Each CSS and JS link carries ?v=<date it last changed>. A browser keeps files it has
              downloaded; a new ?v makes the address new, so it fetches the new file instead of
              mixing a new page with old styles or scripts. Change a file: bump its ?v on every page -->
-        <link rel="stylesheet" href="css/styles.css?v=20261126">
-        <link rel="stylesheet" href="css/codyles.css?v=20261126">
+        <link rel="stylesheet" href="css/styles.css?v=20261127">
+        <link rel="stylesheet" href="css/codyles.css?v=20261127">
         <!-- The workshop waits for its art before it shows: start downloading it now, alongside the
              scripts, instead of after them. crossorigin on the JSON matches how fetch() asks for it -->
         <link rel="preload" href="assets/images/workshop/sprites.json?v=20261126" as="fetch" crossorigin>
         <link rel="preload" href="assets/images/workshop/sprites.png?v=20261126" as="image">
         <link rel="preload" href="assets/images/workshop/room-layer.png?v=20261126" as="image">
         <link rel="preload" href="assets/images/workshop/wall-layer.png?v=20261126" as="image">
-        <script src="js/script.js?v=20261126" defer></script>
+        <script src="js/script.js?v=20261127" defer></script>
         <!-- datacript.js holds the shared JSON helpers, so it loads before codcript.js (defer keeps this order) -->
-        <script src="js/datacript.js?v=20261126" defer></script>
+        <script src="js/datacript.js?v=20261126-2" defer></script>
         <!-- workcript.js draws the workshop; codcript.js lays the buttons over it, so the room loads first -->
         <script src="js/workcript.js?v=20261126" defer></script>
-        <script src="js/codcript.js?v=20261126" defer></script>
+        <script src="js/codcript.js?v=20261126-2" defer></script>
         <!-- No defer on purpose: it sets the saved theme before the page is drawn (no white flash) -->
-        <script src="js/themcript.js?v=20261126"></script>
+        <script src="js/themcript.js?v=20261127"></script>
     </head>
     
     <body class="thecodepage">
@@ -82,41 +82,12 @@
                                         <a class="menu-link" href="aboutme.html">About</a></li>
                                     <li class="header-right-item" id="item-contact">
                                         <a class="menu-link" href="contact.html">Contact</a></li>
-                                    <!-- Hidden until The Laboratory is a real page (R1, owner 2026-11-07). Remove "hidden" to bring it back -->
-                                    <li class="header-right-item mega-menu-item" id="item-lab" hidden>
-                                        <a class="menu-link" href="thelab.html">The Laboratory</a>
-                                        <!-- Phone-only toggle for the Lab links: hidden until js/script.js runs, like the Menu button.
-                                             It must come before the list, because the CSS "~" only reaches later siblings -->
-                                        <button class="submenu-toggle" type="button" aria-expanded="true" aria-label="Laboratory links" hidden><span aria-hidden="true">&#9656;</span></button>
-                                        <ul class="mega-sub-menu">
-                                            <li class="mega-menu-item"><a class="menu-link" href="#">Electronics and Circuitry</a></li>
-                                            <li class="mega-menu-item"><a class="menu-link" href="#">Computer Design and Code</a></li>
-                                            <li class="mega-menu-item"><a class="menu-link" href="#">Physical Realm and CAD</a></li>
-                                            <li class="mega-menu-item"><a class="menu-link" href="#">The AI Abode</a></li>
-                                            <li class="mega-menu-item"><a class="menu-link" href="#">In Works</a></li>
-                                            <li class="mega-menu-item"><a class="menu-link" href="#">Complete Projects</a></li>
-                                            <li class="mega-menu-item"><a class="menu-link" href="#">Research Topics</a></li>
-                                        </ul>
-                                    </li>
                                 </ul>
                             </div>
                         </div>
                     </div>
                 </nav>
-                <!-- Theme button (O1, D51; it replaced the drum dimmer, D35-D38): each press goes Auto -> Day -> Night -> Auto.
-                     Hidden until js/themcript.js runs; without JS the site just follows the OS.
-                     The script sets data-mode, and the CSS shows the matching icon (THEME BUTTON in styles.css) -->
-                <button id="theme-button" class="theme-button" type="button" data-mode="auto" hidden>
-                    <svg class="theme-icon" viewBox="-12 -12 24 24" width="20" height="20" aria-hidden="true" focusable="false">
-                        <!-- Auto: a circle, half filled (half day, half night) -->
-                        <g class="icon-auto"><circle r="8"/><path d="M0 -8a8 8 0 0 1 0 16z"/></g>
-                        <!-- Day: a sun -->
-                        <g class="icon-day"><circle r="4"/><path d="M0 -10v2.5M0 7.5v2.5M-10 0h2.5M7.5 0h2.5M-7 -7l1.8 1.8M5.2 5.2l1.8 1.8M-7 7l1.8 -1.8M5.2 -5.2l1.8 -1.8"/></g>
-                        <!-- Night: a crescent moon -->
-                        <g class="icon-night"><path d="M3 -8.5a8.5 8.5 0 1 0 5.5 11a6.5 6.5 0 0 1 -5.5 -11z"/></g>
-                    </svg>
-                    <span class="screen-reader-text">Theme: <span class="theme-name">Auto</span></span>
-                </button>
+                <!-- No theme switch in this header: the Code page has its own in the room, the two scrolls (see below) -->
             </header>
 
             <!-- Landmarks: screen readers can jump straight to main or footer. The skip link targets #content.
@@ -148,8 +119,19 @@
                         <!-- CONTENT: one line about the code you write (drafted by Claude: rewrite it in your words) -->
                         <p>Tools I build for my own workshop and hobbies: small, offline, and made to be used every day. Pick up anything in the room.</p>
                     </div>
-                    <!-- WCAG 2.2.2: anything that moves for more than 5 seconds needs a way to stop it -->
-                    <button class="workshop-pause" id="workshop-pause" type="button" aria-pressed="false" hidden>Pause motion</button>
+                    <!-- The room's two controls, top right. WCAG 2.2.2: anything that moves for more than
+                         5 seconds needs a way to stop it (Pause). The theme (owner, 2026-11-27: "Scrolls for Code"):
+                         one button that goes Auto, Day, Night like the other pages' words. The red-ribbon scroll is
+                         Day, the blue one Night, both together Auto; the word underneath says it too.
+                         js/themcript.js fills in its spoken name ("Theme: Auto. Press for Day") -->
+                    <div class="workshop-controls">
+                        <button class="theme-cycle" id="workshop-theme" type="button" data-mode="auto" hidden>
+                            <img class="scroll-day" src="assets/images/workshop/scroll-day.png" alt="" width="32" height="32">
+                            <img class="scroll-night" src="assets/images/workshop/scroll-night.png" alt="" width="32" height="32">
+                            <span class="theme-word" aria-hidden="true">Auto</span>
+                        </button>
+                        <button class="workshop-pause" id="workshop-pause" type="button" aria-pressed="false" hidden>Pause motion</button>
+                    </div>
 
                     <!-- The same objects as a plain list: shown on phones until the tower layout (O8m) -->
                     <ul class="workshop-list" id="workshop-list" role="list" aria-label="Shelves in the workshop"></ul>
@@ -177,8 +159,14 @@
 
                     <!-- Owner, 2026-11-25: say plainly how the art was made. It sits IN the room, so it's on
                          screen even while the rest of the page is folded away. CC BY-SA and CC BY need the
-                         credit and a link to the license: both are in CREDITS.md, made by tools/workshop.py -->
-                    <p class="workshop-credit">Pixel art by Manu_Art, kanmandev, karsiori and Crumpaloo, recoloured; the rest is drawn in code by Claude to my direction. No image generator was used. <a href="assets/images/workshop/CREDITS.md">Art credits</a></p>
+                         credit and a link to the license: both are in CREDITS.md, made by tools/workshop.py.
+                         Owner, 2026-11-27: fold it into a button. <details> opens and shuts with no script:
+                         <summary> is the button (always on screen, so the credit stays visible), the rest
+                         shows when it's opened. Keyboard: Tab to it, Enter or Space -->
+                    <details class="workshop-credit">
+                        <summary>Pixel art credits</summary>
+                        <p>Pixel art by Manu_Art, kanmandev, karsiori, Crumpaloo and Idylwild's Arcanum, recoloured; the rest is drawn in code by Claude to my direction. No image generator was used. <a href="assets/images/workshop/CREDITS.md">Licenses</a></p>
+                    </details>
                 </section>
 
                 <!-- BELOW THE ROOM (owner, 2026-11-26): at first the page is only the workshop, with nothing
@@ -257,7 +245,7 @@
                             </ul>
                         </div>
                     </div>
-                    <p class="footer-copy">&copy; 2026 <span class="footer-name">Zach Nott</span></p>
+                    <p class="footer-copy">&copy; <span data-year>2026</span> <span class="footer-name">Zach Nott</span></p>
                 </div>
             </footer>
         </div>

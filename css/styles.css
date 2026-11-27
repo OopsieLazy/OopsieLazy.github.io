@@ -181,7 +181,6 @@
   --radius-soft: 6px;      /* photos and floating panels: About's pictures, the profile card popover */
   --radius-pill: 999px;    /* fully round ends (the outline buttons): any value over half the height works */
   --golden: 1.618;         /* φ, the golden ratio: used for spacing that should feel "just right" */
-  --theme-size: 2.5rem;    /* the round theme button in the header (40px: an easy tap, still small) */
   --header-row: var(--space-7);   /* the header's top row on phones: the Menu button's 48px height */
 
   /* Where every page's content starts below the header (owner's pick B, 2026-11-08):
@@ -411,7 +410,7 @@ hr {
    It was a full pine band (D38), then one quiet line on the page colour (O2, D51);
    the owner wanted the pine back, but slimmer. Everything is centred, like the
    header, so the page opens and closes the same way:
-     GITHUB · MAKERWORLD · EMAIL · RESUME
+     GITHUB  MAKERWORLD  EMAIL  RESUME
               © 2026 Zach Nott
                         ▔▔▔▔▔▔▔▔▔  <- the stripe mark, exactly as wide as the name
    Declutter (D-a, 2026-11-23): it holds only what the header doesn't, the
@@ -469,15 +468,13 @@ hr {
   text-transform: uppercase;
 }
 
-/* From 40rem the four links fit on one line, so a dot goes between them. (On phones
-   they may wrap, and a dot at the start of a line looks like a mistake, so no dots there.)
-   It's decoration from CSS, so screen readers skip it (content: "·" / "" speaks nothing) */
+/* The footer's links are told apart by space alone: no dots between them (owner, 2026-11-26:
+   bullets between words read as machine-made). So from 40rem, where they fit on one line,
+   the gap grows from 16px to 32px; phones keep 16px, where the two groups wrap */
 @media (min-width: 40rem) {
-  .footer-extras li + li::before,
-  .footer-extras .footer-group + .footer-group li:first-child::before {
-    content: "·" / "";
-    margin-right: var(--space-4);
-    opacity: 0.6;
+  .footer-extras,
+  .footer-list {
+    column-gap: var(--space-6);
   }
 }
 
@@ -520,7 +517,7 @@ hr {
 
 /* =========================================================
    HEADER: the same markup is copied into every page.
-   Order: frame, links, Menu button, Lab dropdown, then one phone block
+   Order: frame, links, Menu button, then one phone block
    and one desktop block at the end, so every screen-size change for the
    header lives in one place.
    Use classes here, never a bare "header" selector: projects.html has a second
@@ -635,13 +632,6 @@ hr {
 }
 
 /* Phones: one link per row, and the padding makes each row a big tap target */
-/* The Lab link is hidden until the Lab exists (R1). The desktop block below gives
-   .header-right-item a display value, which would beat the hidden attribute,
-   so this rule says it again with a stronger selector (an id beats a class) */
-#item-lab[hidden] {
-  display: none;
-}
-
 .header-left-item,
 .header-right-item {
   padding: var(--space-4);         /* was 15px: now on the spacing scale */
@@ -649,7 +639,7 @@ hr {
 }
 
 /* ---------- Menu button (phones) ----------
-   Both buttons start with the hidden attribute (see js/script.js).
+   The button starts with the hidden attribute (see js/script.js).
    Never set display on them outside the desktop block, or hidden stops
    working and a dead button shows when JS is off */
 .menu-toggle {
@@ -682,52 +672,12 @@ hr {
   }
 }
 
-/* ---------- Lab dropdown ----------
-   Phones: a ▸ button folds the sub-links open and shut inside the Menu.
-   Desktop: the sub-links float in a panel that opens on hover or keyboard focus */
-.mega-sub-menu {
-  list-style: none;
-  margin: 0;
-  padding-inline-start: var(--space-4);   /* indented under "The Laboratory" */
-}
-
-.mega-sub-menu li {
-  padding-block: var(--space-2);
-}
-
-/* No underlines: a stack of them looked clunky */
-.mega-sub-menu .menu-link {
-  text-decoration: none;
-}
-
-.submenu-toggle {
-  min-width: var(--space-7);           /* 48px tap target */
-  min-height: var(--space-7);
-  border: none;
-  background: none;
-  color: var(--color-ink);
-  font-size: var(--step-2);            /* the ▸ character is drawn small, so size it up */
-  cursor: pointer;
-}
-
-/* transform needs a box, and an inline span isn't one, hence inline-block */
-.submenu-toggle span {
-  display: inline-block;
-  transition: transform var(--speed-fast);
-}
-
-/* Points down when open */
-.submenu-toggle[aria-expanded="true"] span {
-  transform: rotate(90deg);
-}
-
 /* ---------- Phones only: closed states ----------
-   "~" means "any later sibling", so each button must come before what it hides.
+   "~" means "any later sibling", so the button must come before what it hides.
    (width < 64rem) ends exactly where the desktop block begins */
 @media (width < 64rem) {
   .menu-toggle[aria-expanded="false"] ~ .header-column-left,
-  .menu-toggle[aria-expanded="false"] ~ .header-column-right,
-  .submenu-toggle[aria-expanded="false"] ~ .mega-sub-menu {
+  .menu-toggle[aria-expanded="false"] ~ .header-column-right {
     display: none;
   }
 }
@@ -752,41 +702,9 @@ hr {
     display: inline-block;
   }
 
-  /* Hover and focus do the opening here, so no buttons */
-  .menu-toggle,
-  .submenu-toggle {
+  /* Every link fits in the row here, so no Menu button */
+  .menu-toggle {
     display: none;
-  }
-
-  /* The panel measures its position from this li (its nearest positioned ancestor) */
-  #item-lab {
-    position: relative;
-  }
-
-  /* top: 100% puts the panel flush under the li. The li's own padding is
-     part of the li, so the mouse never crosses a gap where :hover would end */
-  .mega-sub-menu {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    z-index: 10;                       /* above the page content */
-    padding: var(--space-3) var(--space-5);
-    background: var(--color-bg);
-    border: 1px solid var(--color-sage);
-    border-top: 3px solid var(--color-accent);   /* a pine strip, like a vintage label */
-  }
-
-  /* Tighter rows than on phones: a mouse doesn't need a finger-sized target */
-  .mega-sub-menu li {
-    padding-block: var(--space-1);
-  }
-
-  /* :focus-within = this li or anything inside it has focus, so tabbing
-     through the sub-links keeps the panel open, and tabbing out closes it */
-  #item-lab:hover .mega-sub-menu,
-  #item-lab:focus-within .mega-sub-menu {
-    display: block;
   }
 }
 
@@ -841,8 +759,8 @@ hr {
 /* =========================================================
    PAGE TRANSITIONS (owner, 2026-11-26): going from page to page, say from the Code
    workshop to CAD, cross-fades instead of flashing blank. A cross-document View
-   Transition: when BOTH pages opt in with this rule (all of them load styles.css,
-   except thelab.html), the browser snapshots the old page and fades it into the new.
+   Transition: when BOTH pages opt in with this rule (all of them load styles.css),
+   the browser snapshots the old page and fades it into the new.
    Browsers without it (Firefox, for now) just change page as before. Links to other
    sites never fade. A fade isn't movement, so it stays for reduced-motion users too
    ========================================================= */
@@ -866,62 +784,58 @@ hr {
   from { opacity: 0; }
 }
 
-/* ---------- THE THEME BUTTON ----------
-   A plain <button>: Enter, Space, click and screen readers work for free.
-   Never set display on it, or the hidden attribute stops working (no JS = no button).
-   Phones: in the empty cell left of the name, level with the Menu button.
-   Desktop: at the right end of the header row */
-.theme-button {
+/* ---------- THE THEME SWITCH (owner's pick T1, 2026-11-27) ----------
+   Day Night Auto: three quiet words in the nav's mono capitals, the one in use underlined
+   (aria-pressed, set by js/themcript.js), the same mark as the current page in the nav.
+   The group starts with the hidden attribute (no JS = no switch, the site follows the OS),
+   so display is only set once it's shown (:not([hidden])).
+   Phones: in the empty cell left of the name, level with the Menu button, and only the word
+   in use shows (pressing it moves on). Desktop: all three, at the right end of the header row */
+.theme-switch {
   position: absolute;
-  top: calc(var(--space-4) + (var(--header-row) - var(--theme-size)) / 2);   /* centred on the top row */
+  top: calc(var(--space-4) + var(--header-row) / 2);   /* the middle of the top row */
   left: var(--gutter);
-  width: var(--theme-size);
-  height: var(--theme-size);
-  padding: 0;
-  border: 1px solid var(--color-line);
-  border-radius: 50%;
+  translate: 0 -50%;
+}
+
+.theme-switch:not([hidden]) {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.theme-choice {
+  padding: var(--space-1) 0;           /* small words, but a 24px+ tap target (WCAG 2.5.8) */
+  border: 0;
   background: none;
-  color: var(--color-ink);
+  color: var(--color-muted);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
   cursor: pointer;
 }
 
-.theme-button:hover {
-  border-color: var(--color-highlight);
+.theme-choice:hover,
+.theme-choice[aria-pressed="true"] {
+  color: var(--color-ink);
 }
 
-@media (min-width: 64rem) {
-  .theme-button {
-    top: 50%;
-    left: auto;
-    right: var(--gutter);
-    translate: 0 -50%;
+.theme-choice[aria-pressed="true"] {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.4em;
+}
+
+@media (width < 64rem) {
+  .theme-choice[aria-pressed="false"] {
+    display: none;
   }
 }
 
-/* The icon: drawn in the text colour with thin lines, like the rest of the header.
-   All three icons are in the HTML; data-mode (set by the script) shows one */
-.theme-icon {
-  display: block;
-  margin: auto;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.theme-icon g {
-  display: none;
-}
-
-.theme-button[data-mode="auto"] .icon-auto,
-.theme-button[data-mode="day"] .icon-day,
-.theme-button[data-mode="lantern"] .icon-night {
-  display: inline;
-}
-
-/* Auto's filled half */
-.icon-auto path {
-  fill: currentColor;
-  stroke: none;
+@media (min-width: 64rem) {
+  .theme-switch {
+    top: 50%;
+    left: auto;
+    right: var(--gutter);
+  }
 }

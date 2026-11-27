@@ -237,12 +237,30 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Phones: the popup sits above the ring and already takes room, so nothing to do
     function fitSheet(open) {
         slideshow.style.minHeight = "";                     // back to the ring's own height first
+        centreRing(open);
         if (!open || popupTakesRoom()) return;
         const sheet = slideshow.getBoundingClientRect();
         const needed = sidebar.getBoundingClientRect().bottom - sheet.top
             + parseFloat(getComputedStyle(slideshow).paddingBottom);
         if (needed > sheet.height) slideshow.style.minHeight = `${Math.ceil(needed)}px`;
     }
+    // While the popup is open, the shrunken ring sits level with the popup's MIDDLE (owner, 2026-11-27:
+    // "centered vertically on the popup"). offsetTop / offsetHeight are layout sizes, which ignore
+    // transforms, so the numbers are right even halfway through the shrink animation.
+    // The CSS shrinks the ring from its top (transform-origin), so its middle ends up at
+    // top + shrink × height / 2. --ring-drop is how far down to move it so the two middles meet
+    function centreRing(open) {
+        const ring = slideshow.querySelector(".entire-content");
+        if (!open || !ring) {
+            slideshow.style.removeProperty("--ring-drop");
+            return;
+        }
+        const shrink = parseFloat(getComputedStyle(ring).getPropertyValue("--ring-shrink")) || 1;
+        const popupMiddle = sidebar.offsetTop + sidebar.offsetHeight / 2;
+        const ringMiddle = ring.offsetTop + (shrink * ring.offsetHeight) / 2;
+        slideshow.style.setProperty("--ring-drop", `${Math.max(0, Math.round(popupMiddle - ringMiddle))}px`);
+    }
+
     // Resizing the window with the popup open: fit again (it may have moved beside or above the ring)
     window.addEventListener("resize", () => fitSheet(Boolean(selectedFigure)));
 

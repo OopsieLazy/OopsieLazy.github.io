@@ -10,7 +10,7 @@
         <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- CONTENT: the tab title and the text search engines and link previews show -->
-        <title>Browse Art · Zach Nott</title>
+        <title>Zach Nott Art</title>
         <meta name="description" content="Art journals and photography by Zach Nott.">
         <!-- Staging (L1, D47): search engines skip the site until launch. Removing this line IS the launch (L3) -->
         <meta name="robots" content="noindex">
@@ -19,14 +19,14 @@
         <!-- Each CSS and JS link carries ?v=<date it last changed>. A browser keeps files it has
              downloaded; a new ?v makes the address new, so it fetches the new file instead of
              mixing a new page with old styles or scripts. Change a file: bump its ?v on every page -->
-        <link rel="stylesheet" href="css/styles.css?v=20261126">
+        <link rel="stylesheet" href="css/styles.css?v=20261127">
         <link rel="stylesheet" href="css/artyles.css?v=20261126">
-        <script src="js/script.js?v=20261126" defer></script>
+        <script src="js/script.js?v=20261127" defer></script>
         <!-- datacript.js holds the shared JSON helpers, so it loads before artcript.js (defer keeps this order) -->
-        <script src="js/datacript.js?v=20261126" defer></script>
-        <script src="js/artcript.js?v=20261126" defer></script>
+        <script src="js/datacript.js?v=20261126-2" defer></script>
+        <script src="js/artcript.js?v=20261126-2" defer></script>
         <!-- No defer on purpose: it sets the saved theme before the page is drawn (no white flash) -->
-        <script src="js/themcript.js?v=20261126"></script>
+        <script src="js/themcript.js?v=20261127"></script>
     </head>
     
     <body class="theartpage">
@@ -74,41 +74,21 @@
                                         <a class="menu-link" href="aboutme.html">About</a></li>
                                     <li class="header-right-item" id="item-contact">
                                         <a class="menu-link" href="contact.html">Contact</a></li>
-                                    <!-- Hidden until The Laboratory is a real page (R1, owner 2026-11-07). Remove "hidden" to bring it back -->
-                                    <li class="header-right-item mega-menu-item" id="item-lab" hidden>
-                                        <a class="menu-link" href="thelab.html">The Laboratory</a>
-                                        <!-- Phone-only toggle for the Lab links: hidden until js/script.js runs, like the Menu button.
-                                             It must come before the list, because the CSS "~" only reaches later siblings -->
-                                        <button class="submenu-toggle" type="button" aria-expanded="true" aria-label="Laboratory links" hidden><span aria-hidden="true">&#9656;</span></button>
-                                        <ul class="mega-sub-menu">
-                                            <li class="mega-menu-item"><a class="menu-link" href="#">Electronics and Circuitry</a></li>
-                                            <li class="mega-menu-item"><a class="menu-link" href="#">Computer Design and Code</a></li>
-                                            <li class="mega-menu-item"><a class="menu-link" href="#">Physical Realm and CAD</a></li>
-                                            <li class="mega-menu-item"><a class="menu-link" href="#">The AI Abode</a></li>
-                                            <li class="mega-menu-item"><a class="menu-link" href="#">In Works</a></li>
-                                            <li class="mega-menu-item"><a class="menu-link" href="#">Complete Projects</a></li>
-                                            <li class="mega-menu-item"><a class="menu-link" href="#">Research Topics</a></li>
-                                        </ul>
-                                    </li>
                                 </ul>
                             </div>
                         </div>
                     </div>
                 </nav>
-                <!-- Theme button (O1, D51; it replaced the drum dimmer, D35-D38): each press goes Auto -> Day -> Night -> Auto.
-                     Hidden until js/themcript.js runs; without JS the site just follows the OS.
-                     The script sets data-mode, and the CSS shows the matching icon (THEME BUTTON in styles.css) -->
-                <button id="theme-button" class="theme-button" type="button" data-mode="auto" hidden>
-                    <svg class="theme-icon" viewBox="-12 -12 24 24" width="20" height="20" aria-hidden="true" focusable="false">
-                        <!-- Auto: a circle, half filled (half day, half night) -->
-                        <g class="icon-auto"><circle r="8"/><path d="M0 -8a8 8 0 0 1 0 16z"/></g>
-                        <!-- Day: a sun -->
-                        <g class="icon-day"><circle r="4"/><path d="M0 -10v2.5M0 7.5v2.5M-10 0h2.5M7.5 0h2.5M-7 -7l1.8 1.8M5.2 5.2l1.8 1.8M-7 7l1.8 -1.8M5.2 -5.2l1.8 -1.8"/></g>
-                        <!-- Night: a crescent moon -->
-                        <g class="icon-night"><path d="M3 -8.5a8.5 8.5 0 1 0 5.5 11a6.5 6.5 0 0 1 -5.5 -11z"/></g>
-                    </svg>
-                    <span class="screen-reader-text">Theme: <span class="theme-name">Auto</span></span>
-                </button>
+                <!-- Theme switch (O1, D51; three words since the owner's pick T1, 2026-11-27): Day, Night and
+                     Auto, the one in use underlined like the current page in the nav. Each word is a button
+                     with aria-pressed, so a screen reader hears "Night, toggle button, pressed". Phones show
+                     only the word in use, and pressing it moves on to the next (styles.css, THE THEME SWITCH).
+                     Hidden until js/themcript.js runs: without JS the site simply follows the OS -->
+                <div class="theme-switch" role="group" aria-label="Theme" hidden>
+                    <button class="theme-choice" type="button" data-choice="day">Day</button>
+                    <button class="theme-choice" type="button" data-choice="lantern">Night</button>
+                    <button class="theme-choice" type="button" data-choice="auto">Auto</button>
+                </div>
             </header>
 
             <!-- Landmarks: screen readers can jump straight to main or footer. The skip link targets #content -->
@@ -153,7 +133,7 @@
                     <button type="button" id="art-shuffle">Shuffle</button>
                     <button type="button" id="art-reset">Reset</button>
                     <!-- One hint per kind of device (artyles.css, "hover" media feature) -->
-                    <span class="hint-pointer">Drag a photo to rearrange · Alt + arrow keys on a keyboard</span>
+                    <span class="hint-pointer">Drag a photo to rearrange, or use Alt + arrow keys</span>
                     <span class="hint-touch">Press and hold a photo, then drag it</span>
                 </div>
                 <!-- The viewer (R4e-3): a click on a photo opens it large, on the page colour.
@@ -208,7 +188,7 @@
                             </ul>
                         </div>
                     </div>
-                    <p class="footer-copy">&copy; 2026 <span class="footer-name">Zach Nott</span></p>
+                    <p class="footer-copy">&copy; <span data-year>2026</span> <span class="footer-name">Zach Nott</span></p>
                 </div>
             </footer>
         </div>

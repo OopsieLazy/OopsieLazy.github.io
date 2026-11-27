@@ -29,48 +29,50 @@ The museum is an *extra layer*: every page can also be reached through normal na
 | About Me | `aboutme.html` | 2 |
 | Contact & Résumé (info page) | `contact.html` | 2 |
 | Contact form | inside `contact.html` | Later |
-| The Laboratory | `thelab.html` (experiment for now) | Later |
 
 ---
 
-## Roadmap at a glance (rebuilt 2026-11-07, D27)
+## Roadmap (rebuilt 2026-11-27: the full order)
 
-The order we follow. Each step finishes before the next starts; only the drum's sprite art runs alongside.
+One row = one branch and PR (1 to 3 tasks), merged before the next starts. The owner's content (TODO.md) runs alongside and sets the launch date. Details are in each task below.
 
-| Step | Phase | What it gets you | Status |
+**1. Finish and launch.** The launch freeze (D47) holds: nothing from parts 2 to 4 is built before 1.8.
+
+| # | Task | Branch | Status |
 |---|---|---|---|
-| 1 | 0–1: Foundation, responsive shell | Clean repo, tokens, header, themes, carousel on phones | ✅ |
-| 2 | 2: Content-ready templates | Every page exists, with its layout and `CONTENT` slots | ✅ |
-| 3 | R: Refinement | Each page, from Home down, made to look like the finished portfolio; every leftover finished, filled or removed | frozen: owner content + X8 only |
-| 4 | **L: Launch** | Live on GitHub Pages, ready to send to recruiters | ▶ now (2026-11-20) |
-| 5 | 3: Project displays | Film strip, spin reel, grid, display switcher | after launch |
-| 6 | 4: The museum | The walk-through signature feature | after launch |
-| ∥ | Theme drum (1.14b–e) | Built 2026-11-08 (D35); replaced by a round Auto / Day / Night button in O1 (D51) | replaced |
+| 1.1 + 1.2 | Polish round (no dots, L1c, self-counting years, credits button, wider Home, contact sheet with labelled addresses and no status line, two new Art pieces) **combined with O5** (owner, 2026-11-27: one PR, commit later) | `fix/plain-separators` | ▶ built, owner review |
+| 1.3 | O3 headings in sans + X8 one button style + the motion control (pick M1 to M4). The theme switch part (T1 words, scrolls on Code) was built early on `feat/cad-o5`, 2026-11-27 | `feat/type-buttons` | |
+| 1.4 | L1b share tags + L2 `404.html` | `chore/share-tags` | |
+| 1.5 | O6 light pass on About, Contact and the Code page text | `feat/o6-pass` | |
+| 1.6 | L4a automatic checks (links, accessibility, Lighthouse) | `ci/site-checks` | |
+| 1.7 | R7 "How to change things" in README: everything the owner can do without AI | `docs/how-to` | |
+| 1.8 | L3 go live (owner): remove `noindex`, GitHub settings, send the link | `chore/launch` | |
 
-**Launch freeze (owner, 2026-11-20, D47):** nothing new gets built until launch. Allowed: the Phase L tasks, X8 (one button class), R4e (the Art redesign, added by the owner on 2026-11-20, D48), bug fixes, and the owner's content. Everything else goes into Experiments, undated. Each PR stays at about 5 files or fewer (L1 touches all six pages for a line each, the one exception).
+**2. After launch: the workshop** (Code page, O8). 2.1 Tower roof: a steeper spire that isn't flat, an observatory in the cone, a better top window, built from Whimsy Hallow pieces (O8n). 2.2 Day/Night switch drawn as the two bound scrolls (`scroll_bound_1/2`, Idylwild's Arcanum; license confirmed by the owner 2026-11-27: free for any use, attribution appreciated, so credit it anyway). Code page only; the other pages get a cleaner, less modern switch (previews T1 to T3). 2.3 O8f night lab. 2.4 O8g sound. 2.5 Loft (upright tablets). 2.6 O8h real screenshots.
 
-**Guardrail:** Phase R refines what exists; it doesn't add features. New ideas go into Experiments, undated. A Phase 3 or 4 item moves forward only when a page can't be finished without it (e.g. 3.10 for the CAD page) and the owner says so.
+**3. After launch: live features** (Phase P below). Each starts with a plan the owner approves. P1 Code Lens, P2 Bookshelf, P3 CL Buddy terminal, P4 Shop, P5 Print queue (largest, last).
 
-**Where does a note go?** Ask "which page is it about?"
-- A page **not yet refined** → that page's R task, for its audit.
-- A page **already refined** → Phase R's *Polish* line, done in one pass before launch.
-- A **new idea** → Experiments, undated.
-Each change still goes **works → right** (layout, keyboard, phones) **→ nice** (motion, polish).
+**4. Later:** Phase 3 displays, Phase 4 museum (the workshop is its first room in spirit), Experiments.
+
+**Guardrail:** a new idea goes into Experiments or Phase P, undated, never into the current PR. Each change goes **works → right** (layout, keyboard, phones) **→ nice** (motion, polish).
 
 ## ▶ Where we left off (update at the end of every session)
 
-*Last session: 2026-11-26*
-- **Branch:** `feat/code-workshop`: O8 committed. Uncommitted: O8m the phone tower, the globe drawn apart from the dice board (its outline stops at the board). `CNAME` (nottco.ca) waits untracked for its own `chore/cname` PR. Dice rolls are paused at the owner's request (2026-11-10) until they say to roll.
-- **Live (2026-11-26):** nottco.ca serves main over HTTPS (#46, #47: the workshop is live). Domain verification on GitHub was still pending (click Verify again). `fix/cache-busting` (D56) stops browsers mixing a new page with old CSS/JS.
-- **Workshop reviews (2026-11-26):** code review (medium) found 5 bugs, all fixed and checked in Edge: the page without its room now falls back to the table with a working scroll (`.no-room`), focus returns to the table after Escape, focus survives the 700px layout switch, a shelf with no object no longer crashes. Accessibility: axe-core found 0 violations in 6 states (room, scroll, table; 1280 and 390 px); real Tab presses show the outline and the name. #46 put the CSP and CNAME on main: nottco.ca is live (staging).
-- **Security audit (2026-11-26):** all clear for staging; strict CSP added (see L2). Window frame rebuilt like the bookshelf arch.
-- **Hosting (2026-11-26):** live at nottco.ca from this repo (`Project-Website`): a `CNAME` file through a PR (the ruleset blocks GitHub's own commit), Cloudflare DNS only (grey cloud) with GitHub's A/AAAA records and `www` CNAME, "Enforce HTTPS", the domain verified on the account. `noindex` stays until the launch bar is met: this is L3a staging. L1b can start (the address is known).
+*Last session: 2026-11-27*
+- **Live:** https://nottco.ca serves `main` (Cloudflare DNS only). Still `noindex`: staging until the launch bar is met. GitHub domain verification: click Verify again.
+- **Branch:** `fix/plain-separators` (uncommitted, roadmap 1.1): no dots between words; L1c (Lab menu and `thelab.html` deleted); `data-since` / `data-year` count years by themselves (`js/script.js`); the Code credit is a `<details>` button; Home's two links get 128px on desktop, the mosaic reaches the gutters (4 columns from 80rem, 5 from 110rem) with `"big"` tiles from `home.json`; the contact sheet shows the real addresses (PNG and PDF regenerated).
+- **CAD (O5):** owner picked **A + daz** with notes (below, under O5). Next: lettered previews on `feat/cad-o5`.
+- **Stay on track (owner, 2026-11-27: "make note to keep us on track and following plan").** Each request is checked against the Roadmap table before work starts: it either belongs to the current row, waits for its row, or goes to Phase P / Experiments. This PR (1.1 + 1.2) is now the size limit: anything new starts the next branch. After launch rows (part 2 and P) wait for 1.8.
+- **O5 built 2026-11-27 (A2 + A1):** hero with the title, the line and a scrolling project list beside the ring; the popup slides out beside the ring on every width, scaled on phones; each project a daz block (big gallery with arrows and count, sticky facts column with the spec table, MakerWorld button from an optional `"makerworld"` link, "Next"). No frame, no Cinzel. Home: back to 3 columns, 16px margins like brittanybravo.com, every Art piece shown (journals too), no big tiles. Art: 3 more pieces (Figure in Ink, Jasmine Tea, Red Wings) with their photo information; the fog photo moved to a "Light" wall.
+- **Round 3 (2026-11-27, same branch at the owner's call):** art titles come from the file names (`tools/art.py`'s rule); Figure in ink kept as shot, sideways (owner, after trying it upright); Red wings credited to the Hôtel de Glace sculptors (no named artist found). Home copies brittanybravo.com as measured (a 1200px three-column block, centred; edge to edge below 1200px; 2 columns on phones). CAD: the open ring sits level with the popup's middle (`--ring-drop`, projcript.js) and clear of the list; its column runs into the right padding. Theme switch built: T1 words on five pages, the bound scrolls in the Code room (credited). Previews out: motion control M1 to M4.
+- **Owner answers 2026-11-27:** CAD title "Ideas are bulletproof" over "Idea. Line. Button. Poof. Item." (yes). Contact status line removed. CL Buddy stays on Code. Lab deleted. Rose painting (cropped off its glare) and fog photo added to Art. Previews out: O5 A1 / A2 / A3 + phone, theme switch T1 / T2 / T3. New ideas went to Phase P.
+- **Dice rolls** are paused at the owner's request (2026-11-10) until they say to roll.
 - **Merged:** #45 O7a retro flip cards. #44 featured-cards drawer, CAD index, home order, pine footer (O4b, O4c, O2b; D52, D53). #43 header overhaul (O1, O2, O4). #42 lightbox + declutter (D50).
 - **Git lesson (2026-11-24):** deleting a branch before its PR merged only deletes the pointer. The commits came back from the reflog with `git switch -c <branch> <sha>`.
 - **Research:** `references/reports/Retro web design for Code page.md` (git-ignored): borrow early-web density, keep retro to one module; the technical instrument-panel look (2Advanced, Conspiracy, Theory7) suits the site.
-- **Next:** the hosting steps (owner), then O8m the tower layouts (no sideways scroll on phones), O8n sprites the owner can repaint, O8f the night lab, O8g sound, O3, O5, O6.
+- **Next:** the Roadmap table above, row by row.
 - **Polish rule (owner, 2026-11-10):** each polish item gets a done definition first and at most two preview rounds.
-- **Recruiting readiness:** résumé and real email are live. Blocking: not hosted; End Stop Cap and Latch Hinge stats are made up; Art is 56 placeholders. Each R task lists its page's content.
+- **Recruiting readiness:** hosted at nottco.ca, résumé and real email live. Blocking: End Stop Cap and Latch Hinge stats are made up; the CAD, About and Code intros are drafts; Art has 4 real photos. Each R task lists its page's content.
 - **Owner habits:** end every PR with the full git command list (CLAUDE.md). After editing `contact.html` text, regenerate the contact-sheet PDF (README).
 - **Merged so far:** #1 hygiene, #2–#10 and #14–#15 Phase 1, #11–#21 Phase 2, #22 CAD sheets, #23–#25 R1, #26–#31 R2 prep, résumé, page-top, thumbwheel, gallery, #32 R2d/R2e carousel and popup.
 - **Design references:** notes in `REFERENCES.md` (dazprojects = the sleek benchmark, SPELUNKR = the retro-voice benchmark). Screenshots stay in the git-ignored `references/` folder. Delete the old backup bundle once happy.
@@ -200,6 +202,8 @@ Goal (owner, 2026-11-07): go through the site page by page, from Home down, refi
     - [x] **O4b** `feat/home-cards-cad-index` (owner, 2026-11-24, D52): Home keeps the mixed mosaic. Above it, one quiet centred row: "Featured cards" and "CAD portfolio" (no section label or arrow, owner's second pass the same day; the `<h2>` is screen-reader-only). "Featured cards" slides the Blueprint card stack open in a drawer that pushes the mosaic down (a grid row animated 0fr → 1fr, `inert` while shut, Esc closes; it was a popover for one round). The stack turns like a wheel (Previous / Next / ← →, loops). The CAD page gets the old Home catalog as an index of clean tiles under the carousel ("All projects"; the write-ups' heading became "Details", and "↑ All projects" goes back to the tiles); a project with 2+ pictures gets ‹ › arrows that loop, like dazprojects. Every picture tile lifts on hover or focus: 3% bigger, 4px up, a soft shadow, with a smooth ease-out (`--lift`, `--lift-scale`, `--shadow-lift`, `--ease-smooth`; first 2px, then "smoother and less subtle"). Home's own top gap is 24px (owner: "the gap between the nav bar and the featured cards"); the other pages keep 60-80px for their titles.
     - [x] **O4c** Home order (owner, 2026-11-24: "a way to easily change order … that others can't change", "randomize token or hidden randomize button"): `data/home.json` with `"mode"` listed / mixed / random and an `"order"` list of ids; unlisted tiles follow in the mixed order, unknown ids are skipped with a console warning. `index.html?shuffle` is the owner's preview: a random order, printed in the console as paste-ready JSON. Tested in Node against the real `arrange()`: all modes, typos, duplicates, 24/24 orders reachable. Tested: pop-up opens and turns, arrows loop (scratch two-picture project), 1440 / 390, validator 0 errors.
     - [ ] **O5** CAD entries: big picture, underlined title, one credits line. The carousel keeps its spin, pause and popup and loses its frame.
+      - **Owner's pick 2026-11-27: A (picture first) + daz's product page.** Fewer words; the double frame ("overlay") goes; one type voice (O3 sans, mono labels), no Cinzel. Intro: "Ideas are bulletproof" over "Idea. Line. Button. Poof. Item." Each project reads like a daz product: a big gallery on the left (arrows, "1 / 7"), the facts on the right in their own scrolling column on desktop. Stats trimmed to what daz shows and what's true (owner fills them). Re-read the references for arrangements as bold as the Code workshop.
+      - **Phones:** picking a sheet shrinks the carousel and docks it to the left with the details beside it (was 3.9, the mini-player; owner: "there is more space than expected").
     - [ ] **O6** Code, About and Contact: a light pass to match.
     - [ ] **O7 Code goes retro** (owner, 2026-11-24, after the deep research `references/reports/Retro web design for Code page.md`, git-ignored). Keep the page's layout, format and colours (featured row + catalog, cream cards, status dots); the retro comes from details. Small tasks, one look each, previews first:
       - [x] **O7a Retro flip cards** (owner's pick A "instrument panel"). Every card is a small window. A pine title bar holds the number and one control: "Flip" on the front, a 24px ✕ close box on the back (2Advanced). The status dots are lamps in a bezel ring, and the live one glows; the word always comes with the lamp (Conspiracy). Bevelled edges are real borders, light top-left and dark bottom-right (Cartoon Network); borders survive Windows High Contrast, shadows don't. A one-line readout of tools and year sits along the bottom of each front. WIP cards get a hazard-stripe trim. Fronts stay 6 whole ruled lines tall. The featured label became "Now featuring", not "Now building", because some featured projects are finished. Kept: the `No. 001` numbers, layout and colours. Tested: Day, Night, a card open with the close box focused, 390 / 320, validator 0 errors, security review clean.
@@ -290,7 +294,7 @@ Goal (owner, 2026-11-07): go through the site page by page, from Home down, refi
 | Step | Who | Branch | What |
 |---|---|---|---|
 | L1 | Claude | `chore/launch-basics` | favicon, `.nojekyll`, `noindex`, CAD description |
-| L1c | Claude | `chore/remove-lab-menu` | the hidden Lab dropdown out of all six pages |
+| L1c | Claude | `fix/plain-separators` | done 2026-11-27 |
 | L0 | owner | (GitHub settings) | rename the repo, then `git remote set-url origin <new url>` |
 | L3a | owner | (GitHub settings) | Pages on, unshared |
 | L1b | Claude | `chore/share-tags` | Open Graph, canonical, `Person` JSON-LD (they need the final address) |
@@ -308,14 +312,14 @@ Content (renders, stats, photos, texts) runs alongside and decides the launch da
   - `<meta name="robots" content="noindex">` on every page until launch, so search engines skip the staging site. **Removing it is the launch.**
   - SEO check (`searchfit-seo:seo-check`): the CAD page had no description (added, drafted as option A of three, marked `CONTENT`). Descriptions are 58–117 characters, short of the 150–160 guideline: owner's text, before launch. No canonical, Open Graph or JSON-LD yet: L1b.
 - [ ] **L1b** `chore/share-tags`, after L0 and L3a: `og:title`, `og:description`, `og:image` (1200 × 630, a full URL: social sites fetch it from their own servers, so a relative path doesn't work), `og:url`, a canonical link, Twitter card tags and a `Person` JSON-LD (`searchfit-seo:generate-schema`).
-- [ ] **L1c** `chore/remove-lab-menu` (owner, 2026-11-20): remove the hidden Lab dropdown (7 `href="#"` links per page, its toggle button, its CSS and JS). Decide what happens to `thelab.html` once nothing links to it: delete it, or keep it with `noindex` as a private experiment.
-- [ ] **L0 Repo rename** (owner; before L3a, because the Pages address is the repo name: `username.github.io/<repo>/`). GitHub redirects the old address, but update your copy: `git remote set-url origin https://github.com/OopsieLazy/<new-name>.git`. Then the Code page's MyWeb Source link (`data/code.json`) and the README.
+- [x] **L1c** done 2026-11-27 on `fix/plain-separators`: the menu, its CSS and JS, and `thelab.html` (owner: "delete lab if not using"; git history keeps it). Was (owner, 2026-11-20): remove the hidden Lab dropdown (7 `href="#"` links per page, its toggle button, its CSS and JS). Decide what happens to `thelab.html` once nothing links to it: delete it, or keep it with `noindex` as a private experiment.
+- [x] **L0 Repo rename**: not needed (2026-11-26): with the custom domain the repo name never shows in the address. Was (owner; before L3a, because the Pages address is the repo name: `username.github.io/<repo>/`). GitHub redirects the old address, but update your copy: `git remote set-url origin https://github.com/OopsieLazy/<new-name>.git`. Then the Code page's MyWeb Source link (`data/code.json`) and the README.
 - [ ] **L2** `feat/csp-404` (was 5.2). **Security audit 2026-11-26 (on `feat/code-workshop`, before going live at nottco.ca):** the CSP below is in on all six pages (strict: everything from 'self', no 'unsafe-inline'; checked in Edge at 1280 and 390 px with zero violations, and an injected script and style were blocked); `thelab.html` got `noindex`. Clean: no secrets in the files or the git history, commits use the GitHub noreply address, no EXIF/GPS in any image version ever committed, no names or paths in the PDFs, every link built from JSON is checked first and filled with textContent (the one innerHTML, in thelab, writes fixed strings), no target=_blank, no http://, no outside scripts, fonts or styles, every asset path exists with exact case, CI is read-only. Left: the 404 page, L1c (the 42 hidden Lab-menu `#` links).
   - A CSP via `<meta>`, because GitHub Pages can't set headers.
   - `rel="noopener noreferrer"` on external links.
   - An `innerHTML` audit.
   - A plain `404.html` with the site header (4.2 dresses it up later).
-- [ ] **L3a Staging** (owner, right after L0; D47): turn on GitHub Pages from `main` and don't share the address. Every merge after that is tested on a real phone at the real URL, so launch day is only "remove `noindex`, send the link".
+- [x] **L3a Staging**: done 2026-11-26 at https://nottco.ca (still `noindex`). Was (owner, right after L0; D47): turn on GitHub Pages from `main` and don't share the address. Every merge after that is tested on a real phone at the real URL, so launch day is only "remove `noindex`, send the link".
 - [ ] **L3 Go live** (owner, was 5.1):
   - Pages is already on (L3a): remove the `noindex` tag (its own small PR).
   - GitHub settings: the ruleset is done ✅. Still to do: secret scanning and push protection, Actions read-only, wiki off, "Automatically delete head branches".
@@ -325,7 +329,7 @@ Content (renders, stats, photos, texts) runs alongside and decides the launch da
   - **Lighthouse CI:** performance, accessibility, SEO and best-practice scores, with minimum scores that fail the PR.
   - Each tool's version is pinned, like `vnu-jar`. Not added: stylelint (CLAUDE.md says no linter) and screenshot diffing (too heavy for six pages).
 - [ ] **L4 Audit** (was 5.5): Lighthouse, plus a real-phone test on the live URL.
-- [ ] **L5 Custom domain** (optional, was 5.6). `.dev` requires HTTPS, which GitHub Pages provides.
+- [x] **L5 Custom domain** (was 5.6): nottco.ca, 2026-11-26 (Cloudflare DNS only, GitHub's certificate, Enforce HTTPS). `.dev` requires HTTPS, which GitHub Pages provides.
 
 ## Phase 3: Project display system (pluggable)
 
@@ -348,7 +352,7 @@ Pattern: each display is a self-contained JS file that sets itself up on any con
   - [ ] **3.7c Tick sound.** A short click from the Web Audio API (no audio file) each time a card passes the pointer. It starts only after the visitor touches the reel (browsers block autoplay), with a mute button that's remembered.
   - [ ] **3.7d Info card.** On settle, show the image above the title and description, read from the same `data-*` attributes as the carousel. Announce it with `aria-live`. Reduced motion: no spin, just step and show.
   *Inspired by the owner's memory of the Chaotic game's match-select wheel. Our own design and art, not a copy of the game's look. Sketch the camera angle before 3.7a.*
-- [ ] **3.9 Phone mini-player** (was 1.16b, D16): tapping a figure shrinks the carousel and docks it to the left, like YouTube's mini-player, while the project info slides up. On phones the carousel **keeps spinning** (desktop still stops and faces the pick). Tapping the mini carousel or Close restores it. CSS `transform: scale()` + `transition`, and JS picks the behavior with `matchMedia`. Reduced motion (1.15c) keeps it paused. *Open question: can you pick another project from the mini carousel, or only restore it?*
+- [~] **3.9 Phone mini-player** (moved into O5, 2026-11-27) (was 1.16b, D16): tapping a figure shrinks the carousel and docks it to the left, like YouTube's mini-player, while the project info slides up. On phones the carousel **keeps spinning** (desktop still stops and faces the pick). Tapping the mini carousel or Close restores it. CSS `transform: scale()` + `transition`, and JS picks the behavior with `matchMedia`. Reduced motion (1.15c) keeps it paused. *Open question: can you pick another project from the mini carousel, or only restore it?*
 - [ ] **3.10 CAD featured area** (owner, 2026-11-07): the owner's two placeholder blocks above the CAD entries (`.larger-projects` "growing style, where you see part and expands to image or project view", and `.item-image-block`) become a featured area: projects with `"featured": true` in `projects.json` shown large, each showing a detail first and growing into the full image or the project entry on click. Built as a display (3.1 pattern), so it can be reused. **R2 decides:** built during refinement, or the blocks are removed and this waits.
 - [ ] **3.8 Display switcher.** A small toolbar (Carousel · Film · Reel · Grid) above the projects. Each button swaps the `data-display` value and re-runs the loader from 3.1. The choice is remembered in `localStorage`, and the grid is the default.
 
@@ -364,47 +368,46 @@ Design doc first (art style, room ↔ section map, controls), then build in smal
 - [ ] **4.6 Day/night lighting.** The museum lighting follows the theme picker (1.13, 1.14).
 - [ ] **4.7 Accessibility.** "Skip the museum" link, `prefers-reduced-motion`, focusable doors.
 
+## Phase P: Live features (after launch; plan first, owner approves each)
+
+GitHub Pages only serves files (D1). Anything that remembers, receives or reaches the house needs a small server. The fit: **Cloudflare Workers** on `api.nottco.ca` (a Worker custom domain; the site itself stays on GitHub Pages, grey cloud), free tier 100k requests a day. Its free parts: **Turnstile** (bot check without tracking), **R2** (file storage, 10 GB, no download fees), **D1** (a small SQL database) or **KV**, **Tunnel + Access** (reach a computer at home with no open ports, and only the owner gets in). The CSP adds `https://api.nottco.ca` to `connect-src` only. Each feature's design goes in the decision log first (`engineering:architecture`).
+
+- [ ] **P1 Code Lens** (the Experiment below, the Lab's best idea kept): a brass loupe that shows the page's own live source under the cursor. Static, no server.
+- [ ] **P2 Bookshelf**: the workshop's bookshelf shows the owner's real books, from the owner's own **BKDB-Api** (FastAPI + SQLite `bookshelf.db`, books sorted by Dewey Decimal; the owner scans and enters each book). Plan: `tools/books.py` reads `bookshelf.db` read-only and writes `data/books.json` plus the cover images, the same pattern as `tools/art.py`; the site never calls the API, so the CSP stays `'self'`. Security: BKDB's `/add` and `/delete` are GET routes with no login, so the API must stay on the owner's computer, never online.
+- [ ] **P3 CL Buddy terminal**: clicking the tablet opens a command-prompt popup running CL Buddy (the terminal pet in `code.json`, ported from Python to JS) as a helper: `help`, `projects`, `open cad`. "Stays yours" by saving the pet in `localStorage` in your browser; never by IP (IPs change, they are personal data, and the site keeps no tracking).
+- [ ] **P4 Shop** (kits, R2c): first as plain links (MakerWorld, or Stripe Payment Links: a link, no script, CSP unchanged). A cart needs a third-party script and a CSP change: decide then.
+- [ ] **P5 Print queue** ("send a file to my printer"): a drop zone on the workshop printer (Code) and the CAD page. Safety rules, all of them: the owner approves every job by hand and is home while it prints; the website never reaches into the house (a small home program asks the Worker for approved jobs, a "pull"); STL or 3MF only, size and bed limits, Turnstile and a rate limit; no image uploads. **No direct link from the internet to the printer (owner, 2026-11-27): a buffer, like a NAS.** Approved files land in a folder on an always-on Raspberry Pi at home; the Pi slices them (OrcaSlicer from the command line, fixed profiles) and sends one to the printer only when the owner presses Send (or drops a file in that folder), using the printer's own local API. **Printer: Centauri Carbon** (owner, 2026-11-27). It takes files over the home Wi-Fi, not only USB: the community `pycentauri` (Python: `centauri upload model.gcode --start`), the OpenCentauri SDCP docs, and Elegoo's own Elegoo Link SDK (Apache-2.0, 2026) all upload and start prints on the LAN. So the home program (a Raspberry Pi or the PC) slices and sends over Wi-Fi. Fallback if that ever breaks: a Raspberry Pi Zero 2 W in USB gadget mode, which the printer sees as a flash drive. The owner's own remote start goes through Cloudflare Access. Terms on the page: no weapons, no others' designs, the owner can refuse anything.
+
 ## Later (planned, not scheduled)
 
-- The Laboratory: real design based on the `thelab.html` experiment.
 - Contact form: a form service (e.g. Formspree) plus a honeypot field against spam bots.
 - Filmography: lazy-loaded video embeds (`youtube-nocookie.com`).
 - Shared header injected by JS instead of copied (D3 step b).
 
 ## Experiments
 
-**🃏 Card stack** (owner, 2026-11-04; **built in 2.0c**, left here as the design note): the home page's featured project as a stack of cards, with the other projects fanned out behind it and peeking at the top-right corner. Clicking a corner brings that card to the front; clicking the front card opens the project. Prototyped in a scratch preview during 2.0.
-- **How.** Each card is a `<button>` with `data-pos` (0 = front); CSS places each position with `translate` + `rotate` and `z-index`, so JS only renumbers positions. Reduced motion: no transition. The caption is `aria-live` so screen readers hear the new title.
-- **When.** Built in 2.0c as `setupStack(container)`; Phase 3 registers it as a display (`data-display="stack"`).
-- **Look.** Trading-card style (owner's references kept in the git-ignored `references/` folder; copyrighted, never committed): name banner, art window, CAD stat column (iterations, parts, print hours, difficulty), type line, text box, version badge, year. Our own frame design, no copied symbols or art.
-- **Featured = a JSON flag** (D26): projects with `"featured": true` become cards; the rest stay in the catalog, so the stack never overflows.
+**🃏 Card stack**: built in 2.0c, Home's featured-cards drawer since O4b (D26, D52); the design notes are in `homcript.js`.
 
 **🌆 Dusk theme** (owner asked 2026-11-15, "dusk should be a middle ground"): a true middle colour can't carry today's text. On the halfway grey every text colour fails WCAG (ink 2.8, grey 1.2, links 1.7–2.8); only pure white or black pass (~4.5). A real Dusk would be a third theme with its own roles (all text white, no grey captions, underlined links), like Moss (D36). Parked: the dimmer is frozen until launch; D41 already goes as far toward the middle as contrast allows.
 
 **🪸 Coral highlights** (owner, 2026-11-20; a token option, after launch): a cream page (`--color-cardstock`) with pine text and coral for the highlight role (rings, underlines, markers). Only role tokens change, no page CSS. Check first: the palette's coral, `--color-chochin` #FF7A59, is about 2.4:1 on cream, and rings and underlines need 3:1 (WCAG 1.4.11), so it needs a deeper coral: #D9502E is 3.8:1 (passes for rings and lines, still not for small text). Preview it against today's white + jade.
 
-**🔍 Code Lens**: a magnifying-glass toggle. A circular lens follows the cursor (or a finger on touch screens) and shows the page's *own source code* "underneath" the rendered page, as if seeing through it.
+**🔍 Code Lens** (now P1): a magnifying-glass toggle. A circular lens follows the cursor (or a finger on touch screens) and shows the page's *own source code* "underneath" the rendered page, as if seeing through it.
 - **Live, not screenshots.** The page fetches its own source (`fetch(location.href)`, plus its CSS/JS files), so the lens is always up to date. Screenshots would go stale after every change.
 - **How it's drawn.** A full-page `<pre>` code layer sits on top, and a CSS `clip-path: circle()` that follows the pointer shows only the lens area. Translucency comes from `opacity` / `backdrop-filter`.
 - **Security.** The code is inserted with `textContent` (D7), so it's displayed and never run. Same-origin fetch only, which fits CSP `connect-src 'self'`.
 - **Accessibility.** Off by default, toggled by a `<button aria-pressed>`, decorative layer `aria-hidden`, respects `prefers-reduced-motion`.
 - **Ideas.** Tabs for HTML / CSS / JS. Syntax colors. Style it as a Renaissance brass loupe so it matches the museum. Possibly a museum exhibit in its own right.
-- **When.** After Phase 1, once the header has a spot for the toggle. Could live in The Laboratory first.
+- **When.** P1, after launch.
 
 **🎨 Theme Studio**: a page where you pick fonts and colors from dropdowns (or drop in a theme file) and watch the site restyle live.
 - **Step 1, easy (1–2 sessions).** `<select>` and `<input type="color">` controls call `document.documentElement.style.setProperty("--color-accent", value)`. Every page already reads the tokens, so it all updates at once. Fonts are limited to the self-hosted ones.
 - **Step 2, easy.** Remember the theme in `localStorage`, and have `script.js` re-apply it on every page (same no-flash issue as 1.14). Changes are **per visitor**, not global.
 - **Step 3, medium.** "Download my theme" (a `.css` file built with a `Blob`), and **drag and drop** a theme file back in (`dragover`/`drop` + `FileReader`). Security: never inject the dropped file as raw CSS. CSS can load outside URLs (`url()`, `@import`) and leak data. Read only `--color-*`/`--font-*` lines and check each value (`CSS.supports("color", value)`).
 - **Global for everyone, hard, not planned.** That needs a server, a database and a login, or any visitor could restyle (deface) the site for everyone. GitHub Pages is static (D1). The simple global route: export the theme, paste it into `:root`, commit.
-- **When.** After Phase 1, in The Laboratory. Pairs with the Code Lens experiment.
+- **When.** After launch. Pairs with the Code Lens (P1).
 
-**🧲 Drag it out** (owner, 2026-11-06): drag a file straight off the site, onto the desktop or into an app. Inspired by blender.org/lab/mcp-server's "Drag and Drop into Blender" button.
-- **How Blender's works.** The button is (as far as the page shows) a plain `<a href>` to the add-on's `.zip`, with extra query parameters: `?repository=https://lab.blender.org/&blender_version_min=5.1.0`. Browsers make every link draggable, and the drag carries the URL (`text/uri-list` / `text/plain`); no JS needed. Blender listens for URL drops: it reads `repository=` (first drop: "add this repository?"), then installs the `.zip` (second drop), and later checks that repository for updates. The magic is on Blender's side, not the web page's.
-- **Link onto the desktop: no, not by itself.** Dropping an ordinary link on the desktop makes a *shortcut* to the URL (`.url` on Windows, `.webloc` on Mac), not the file.
-- **The real file: `DownloadURL`** (Chrome and Edge only, non-standard). On `dragstart`: `event.dataTransfer.setData("DownloadURL", "application/pdf:resume.pdf:" + new URL(link.href, location.href))` (format `mime:filename:absolute-url`). Dropping on the desktop or a folder then downloads the actual file there. Firefox and Safari ignore it and fall back to a shortcut, so the link must still work as a normal click download (`download` attribute).
-- **Built on the contact page** (`feat/contact-drag-out`): the whole title-block card drags out (as a PNG since D30); the résumé button joins in once it points at a real PDF; a keyboard-only link saves the PDF without dragging. **Project kits:** R2c (D32).
-- **Security.** Only our own same-site files; build the URL from our JSON paths, never from visitor input; set the right MIME type; strip metadata from anything offered (D15).
-- **Testing.** The drag data is checked by script; the actual drop onto a desktop has to be tried by hand (a real mouse drag can't be automated headlessly).
+**🧲 Drag it out**: built (contact card D30, whole boxes R2, `dragOutProject()`); the `DownloadURL` notes are in `contcript.js` and `datacript.js`. Kits: R2c (D32).
 
 **🧵 MakerWorld import** (owner, 2026-11-07; a separate tool, later): copy your own models from MakerWorld (titles, descriptions, images, print counts) into `projects.json` once, instead of retyping them.
 - **Why not live on the site:** MakerWorld has no public API, refused an automated fetch (HTTP 403), and our static site can't read another site's pages anyway (cross-origin rules). So the site keeps a hand-written `makerworld` link per project.
@@ -466,6 +469,8 @@ Design doc first (art style, room ↔ section map, controls), then build in smal
 | D52 | Home = the mixed mosaic (the range: CAD + photography) with a quiet row into CAD; the flip cards live in a slide-open drawer there (a popover for one round: the owner wanted it to push the page down, not cover it). The CAD page is the complete recruiter page: carousel, an index of clean tiles, then the write-ups | Owner, 2026-11-24: recruiters get the CAD page link directly, so that page must stand on its own; the mosaic "just looks visually pleasing" mixed, and splitting it by kind made bands that didn't match. The drawer keeps the cards one click away without taking the first screen. Rejected: the stack as Home's hero again (A, pushes the mosaic down), the stack as a big mosaic tile (C, the CAD door becomes the smallest thing) |
 | D55 | Pages cross-fade into each other with a cross-document View Transition (`@view-transition { navigation: auto }` in styles.css): CSS only, no script, no library | Owner, 2026-11-26: "smooth the transition between pages, like going from Code to CAD". The browser does the work and Firefox just jumps as before, so nothing breaks. A single-page app or a JS router would fade too, but the site would stop being plain pages. A zoom "into" the clicked object was skipped: it needs the old page's click point carried to the new page |
 | D56 | Every CSS and JS link carries `?v=<date it last changed>`; the JSON is fetched with `cache: "no-cache"`; the workshop art has its own `ART_VERSION` | 2026-11-26: after going live, a browser showed the new Code page with old CSS and JS (cached while Cloudflare was still proxying, which tells browsers to keep files for hours). GitHub Pages can't change its cache headers, and the site has no build step to add file hashes, so the address itself changes when the file does. Cost: bump `?v` in each page when a file changes (a PR checklist line). Rejected: no-cache on everything (CSS and JS can't be fetched that way from HTML), a service worker (too much machinery) |
+| D57 | `thelab.html` and the hidden Lab menu are deleted (L1c); live features go to Phase P on Cloudflare Workers at `api.nottco.ca`, the site stays static on GitHub Pages | Owner, 2026-11-27: "delete lab if not using", and a list of live ideas (print queue, terminal pet, shop, bookshelf). Nothing linked to the Lab and it had no CSP. A Worker on a subdomain adds a server only where one is needed, keeps the main site grey-cloud (no proxy cache, D56) and costs nothing at this size. Rejected: moving the site to Cloudflare Pages now (a migration before launch), a home server open to the internet (the Tunnel needs no open ports) |
+| D58 | The CAD page is a hero (title, line, scrolling list beside the carousel) over one daz-style block per project; the popup slides beside the ring at every width | Owner's picks 2026-11-27 (A2 with A1's project view; phones "like the desktop version, just scaled down"). The list replaces the tile index, which repeated the carousel. Rejected: A1 (the ring, then a tile grid: the same three pictures twice), A3 (one project at a time hides the rest) |
 | D54 | The Code page is a pixel-art workshop (O8): a forge room by day (the night lab comes in O8f), every object a shelf of projects, then a viewer and one sortable table. The flip cards are retired. The art is drawn in code and credited on the page | Owner, 2026-11-25: Ash Anand's room where "all sprites lead somewhere", a fantasy workshop with their real tools (3D printers, blacksmithing, leather). Research (`references/reports/Pixel workshop scenes for Code page.md`) backed a room on top of a normal page with a text list, one light source, whole-number scaling. Free asset packs were rejected: mixed pixel sizes and palettes are the clearest sign of fake pixel art. Rejected: keeping the flip cards under the room (two ways to browse the same 28 projects) |
 | D53 | The footer is a slim pine band again (charcoal at Night), centred, with the stripe mark shrunk under the name on the © line (owner's pick E1). Pine stays the one brand colour; the golden-angle partners were tested and kept in reserve: walnut `#584738` (pine's hue −137.5°, same saturation and lightness) and indigo `#3D3858` (−275°) | Owner, 2026-11-24: "looking back to the pantone pine colour", the mark "small and under my name", a slimmer bar. A band closes the page the way the header opens it; the plain line (D51) didn't. Walnut as the band brought in a new colour on a white-pine-photos site (E3); it may come back as a second accent on the Code page (O7). The white-start option (E4) was the calmest but didn't close the page |
 | D51 | The launch freeze (D47) is lifted for an overhaul toward brittanybravo.com: a centred text header, no drum, the stripe cut down or removed, sans headings, Home as a grid of the work. The CAD carousel stays as the one signature | Owner, 2026-11-23, after the declutter pass: the reference's professionalism is the work starting right under a one-line header. Cost: launch moves later, and the drum's smooth dimmer (D35-D38) becomes a 3-step button. Content is still the other half: grey renders and dark photos can't carry colour on their own |
