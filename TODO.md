@@ -1,50 +1,48 @@
 # TODO
 
-*Rebuilt from PLAN.md on 2026-11-20. Edit PLAN.md, then ask Claude to rebuild this.*
+*Rebuilt from PLAN.md on 2026-11-27. Edit PLAN.md, then ask Claude to rebuild this.*
 
-**Launch freeze (D47):** only Phase L, X8, fixes and your content until launch. PRs stay at about 5 files.
+**Live as staging:** https://nottco.ca (`noindex` until the launch bar below is met).
 
-## Now (branch `chore/launch-prep`)
-- [ ] Read the diff of `.gitattributes`, `PLAN.md` and `TODO.md` before committing (`git diff`, then `git diff --cached`).
-- [ ] Commit, push and open PR 1; merge only after reading it on GitHub's "Files changed" tab.
+## Now (branch `fix/plain-separators`, roadmap 1.1 + 1.2 in one PR: at its size limit)
+- [ ] Look over the branch at http://localhost:8000: Home at full width, the Code credit button, About's years, the contact sheet. Then commit, push and open the PR.
+- [ ] Click **Verify** for nottco.ca again (GitHub: profile, Settings, Pages). Done when it says verified.
 
 ## Owner: content (✱ blocks launch: this is the critical path)
-- [ ] ✱ Re-export the CAD renders square, same angle, same background (`assets/images/`).
-- [ ] ✱ Give real stats for End Stop Cap and Latch Hinge in `data/projects.json`, or trim them to what's true.
-- [ ] ✱ Write the CAD page intro (2 lines) and tab title (`projects.html`).
-- [ ] ✱ Add the four About photos to `assets/images/about/`, run `python tools/art.py --clean assets/images/about`, then set `src`, `alt`, `width`, `height` in `aboutme.html` (README "Add About photos").
-- [ ] ✱ Rewrite the About text in your voice; replace the drafted "Next" paragraph (`aboutme.html`).
-- [ ] ✱ Add your art: photos into `assets/images/art/`, run `python tools/art.py`, then fix titles, details and `TODO` alt text in `data/art.json`.
-- [ ] ✱ Write the Art intro line (`art.html`).
-- [ ] ✱ Rewrite the Code intro and the drafted one-liners (`code.html`, `data/code.json`); confirm each status and `"handWritten": true`.
-- [ ] Add a portrait to the Profile card (`aboutme.html`).
-- [ ] Take CAD photos and write per-project notes; add MakerWorld links (`data/projects.json`).
-- [ ] Draw the sun and moon sprites for the dimmer (1.14c, ~22 × 22 px).
-- [ ] Write a README for AUDA (its Code card links to the repo).
+- [ ] ✱ CAD stats in `data/projects.json`, daz style: only what's true (print time, parts, filament, difficulty, what's included).
+- [ ] ✱ Re-export the CAD renders square, same angle, same background (Fusion: File, Capture Image, 1600 x 1600).
+- [ ] ✱ Pick the 3 to 6 strongest CAD projects: name, year, what it does, versions, parts, print time, MakerWorld link.
+- [ ] ✱ Add the four About photos to `assets/images/about/`, run `python tools/art.py --clean assets/images/about`.
+- [ ] ✱ Rewrite the About text in first person; one one-line description for About, Home and the footer.
+- [ ] ✱ Rewrite the Code intro and the one-liners (`data/code.json`); confirm each status.
+- [ ] ✱ Art: titles come from file names now: rename a file and run `python tools/art.py` to rename a picture (its alt text then needs writing again); one Art intro line.
+- [ ] Add GitHub to the résumé PDF (it links MakerWorld and email only); mirror it in the Google Doc master.
+- [ ] Photos of printed parts (in use, close-up, next to something for scale).
+- [ ] Write a README for AUDA (the Code page links to it).
+- [ ] Travel photos tagged `"area": "Travel"` (then the workshop globe can link to them).
 
 ## Owner: decisions and checks
-- [ ] ✱ Confirm the About tool years (6/6/5 are estimates) and "CAD since 2019" (university began 2020).
-- [ ] Confirm what you're looking for (About "Next" and Contact): internships, or design and fabrication roles?
-- [ ] Decide X4 in R6: Contact's empty space at desktop width.
-- [ ] Decide whether CL Buddy stays on the Code page (its code says it copies a leaked feature).
-- [ ] Mirror the résumé edits in the Google Doc master, so the next export matches.
-- [ ] Open the About popover on a real phone (left over from #36).
-- [ ] L3a (you, after L1 merges): turn on GitHub Pages from `main` as unshared staging.
+- [ ] ✱ Review the new CAD page (A2 + A1) at desktop and phone width; add `"makerworld"` links to `data/projects.json`.
+- [ ] Pick the motion control for Pause spin (CAD) and Pause motion (Code): M1 Words, M2 Transport keys, M3 Panel lamp, M4 Turning dial.
+- [ ] Red wings: if you have the suite's name or a plaque photo, the sculptor can be credited by name.
+- [ ] Art journals wall: rename it "Paintings and journals" now the rose is there?
+- [ ] ✱ Confirm the About start years: Fusion 2019, SolidWorks 2020, Python 2020, CNC 2021, CAD since 2019.
+- [ ] Test every page on your phone at nottco.ca (private tab after each deploy).
 
 ## Next for Claude (in PLAN order)
-- [ ] L1 `chore/launch-basics`: page titles, favicon, Open Graph tags, `.nojekyll`, `noindex` until launch.
-- [ ] L2 `feat/csp-404`: CSP `<meta>`, `rel="noopener noreferrer"`, `innerHTML` audit, a plain `404.html`.
-- [ ] L4a `ci/site-checks`: lychee, pa11y-ci and Lighthouse CI in the GitHub workflow.
-- [ ] X8 `feat/buttons`: previews, then one shared `.button` class.
-- [ ] R6 Contact audit (including X4) and R7 "How to add content" in README.
+- [ ] 1.3 O3 sans headings + X8 one button style + the picked motion control (theme switch already built).
+- [ ] 1.4 L1b share tags + L2 `404.html`.
+- [ ] 1.5 O6 light pass: About, Contact, Code text.
+- [ ] 1.6 L4a automatic checks. 1.7 R7 "How to change things" in README.
+- [ ] After launch: workshop (tower roof and observatory, scroll switch, night lab, sound, Loft), then Phase P (Code Lens, Bookshelf, CL Buddy terminal, Shop, Print queue).
 
 ## Launch bar (all true before the link goes out)
-- [ ] Phase R done: every nav link leads to a refined page, or the link is gone.
-- [ ] Real name, email, résumé and GitHub. No made-up project facts.
-- [ ] L1 and L2 merged; validator 0 errors; the L4a checks pass; a real-phone test passes on the live URL.
-- [ ] L3 (you): `noindex` removed, plus secret scanning, push protection, Actions read-only, wiki off, auto-delete head branches.
+- [ ] Phase R done: every nav link leads to a finished page, or the link is gone.
+- [ ] No made-up project facts; real name, email, résumé and GitHub (done).
+- [ ] L1b and L2 merged; validator 0 errors; a real-phone test passes on nottco.ca.
+- [ ] L3 (you): remove `noindex` (its own PR), then secret scanning, push protection, wiki off, auto-delete head branches.
 
 ## Git
-- On `chore/launch-prep`, cut from `main` (in sync with `origin/main`: 0 ahead, 0 behind).
-- Changed: `.gitattributes` (new), `PLAN.md`, `TODO.md`. Nothing committed yet.
-- Next step: the two commits in Claude's hand-off, then push and open PR 1.
+- On `fix/plain-separators`, cut from an up-to-date `main` (0 ahead, 0 behind `origin/main`).
+- Uncommitted: 25 changed files and `thelab.html` deleted (staged by `git rm`).
+- Next step: the commands in Claude's hand-off.
