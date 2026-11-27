@@ -4,8 +4,8 @@
 
 **Live as staging:** https://nottco.ca (`noindex` until the launch bar below is met).
 
-## Now (branch `fix/plain-separators`, roadmap 1.1 + 1.2 in one PR: at its size limit)
-- [ ] Look over the branch at http://localhost:8000: Home at full width, the Code credit button, About's years, the contact sheet. Then commit, push and open the PR.
+## Now (branch `feat/type-buttons`, roadmap 1.3)
+- [ ] Look over the branch at http://localhost:8000: the theme words on a phone, "Spin On Off" on CAD, "Motion On Off" and the bare scrolls on Code, the sans titles. Then commit, push and open the PR.
 - [ ] Click **Verify** for nottco.ca again (GitHub: profile, Settings, Pages). Done when it says verified.
 
 ## Owner: content (✱ blocks launch: this is the critical path)
@@ -23,14 +23,13 @@
 
 ## Owner: decisions and checks
 - [ ] ✱ Review the new CAD page (A2 + A1) at desktop and phone width; add `"makerworld"` links to `data/projects.json`.
-- [ ] Pick the motion control for Pause spin (CAD) and Pause motion (Code): M1 Words, M2 Transport keys, M3 Panel lamp, M4 Turning dial.
 - [ ] Red wings: if you have the suite's name or a plaque photo, the sculptor can be credited by name.
 - [ ] Art journals wall: rename it "Paintings and journals" now the rose is there?
 - [ ] ✱ Confirm the About start years: Fusion 2019, SolidWorks 2020, Python 2020, CNC 2021, CAD since 2019.
 - [ ] Test every page on your phone at nottco.ca (private tab after each deploy).
 
 ## Next for Claude (in PLAN order)
-- [ ] 1.3 O3 sans headings + X8 one button style + the picked motion control (theme switch already built).
+- [ ] 1.3 X8 one button style (O3, motion words and the theme row are built on `feat/type-buttons`).
 - [ ] 1.4 L1b share tags + L2 `404.html`.
 - [ ] 1.5 O6 light pass: About, Contact, Code text.
 - [ ] 1.6 L4a automatic checks. 1.7 R7 "How to change things" in README.
