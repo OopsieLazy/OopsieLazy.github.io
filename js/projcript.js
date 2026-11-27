@@ -125,19 +125,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     let userPaused = reduceMotion;
     let hovering = false;
 
-    const spinToggle = document.getElementById("spin-toggle");
+    // "Spin On Off" (owner's pick M1, 2026-11-27): two word buttons; aria-pressed marks the one
+    // in use, and the CSS underlines it. Their names never change, so a screen reader hears
+    // "Off, toggle button, pressed": one clear signal (WCAG 4.1.2)
+    const spinChoices = [...document.querySelectorAll("#ring-motion .motion-choice")];
 
-    // The label says what pressing it WILL do. Use a changing label OR aria-pressed, never
-    // both: a screen reader would read "Play spin, pressed", which contradicts itself
     function showSpinLabel() {
-        spinToggle.textContent = userPaused ? "Play spin" : "Pause spin";
+        spinChoices.forEach((button) =>
+            button.setAttribute("aria-pressed", String((button.dataset.motion === "off") === userPaused)));
     }
 
-    spinToggle.addEventListener("click", () => {
-        userPaused = !userPaused;
+    spinChoices.forEach((button) => button.addEventListener("click", () => {
+        userPaused = button.dataset.motion === "off";
         showSpinLabel();
         updateSpin();
-    });
+    }));
     showSpinLabel();
 
     // Hover pause (task 1.15b): the ring stops while the mouse is on a sheet's PICTURE (owner,
