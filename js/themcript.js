@@ -1,4 +1,6 @@
-// Theme button: Auto -> Day -> Night (O1, D51; it replaced the drum dimmer of D35-D38)
+// Theme switch: Auto, Day, Night (O1, D51; it replaced the drum dimmer of D35-D38).
+// Since 2026-11-27 (owner's pick T1) most pages show the three choices as words, and the Code page
+// has one button drawn as two scrolls that steps through them (owner: "Scrolls for Code")
 // Loaded in <head> WITHOUT defer on purpose: part 1 must run before the page is drawn,
 // or a visitor who picked Night would see a white flash first.
 // It's an external file, not inline, so a strict Content Security Policy won't need a hash for it later
@@ -46,29 +48,46 @@ function save(theme) {
 let theme = readSaved();
 apply(theme);
 
-// Part 2: the button. It doesn't exist yet (the <body> hasn't been read), so wait for it
+// Part 2: the controls. They don't exist yet (the <body> hasn't been read), so wait for them
 document.addEventListener("DOMContentLoaded", () => {
-    const button = document.querySelector(".theme-button");
-    if (!button) return;   // a page without the button (e.g. thelab.html) still gets part 1
+    const choices = [...document.querySelectorAll(".theme-choice")];   // the three words (most pages)
+    const cycler = document.querySelector(".theme-cycle");              // the scrolls (Code)
 
-    const name = button.querySelector(".theme-name");
-
-    // The icon (CSS reads data-mode), the spoken name ("Theme: Day") and the hover tip,
-    // which says what a press will do next rather than repeating the name
-    function show() {
-        button.dataset.mode = theme;
-        name.textContent = THEME_NAMES[theme];
-        button.title = `Switch to ${THEME_NAMES[NEXT[theme]]}`;
-    }
-
-    // Click, tap, Enter and Space all arrive here: that's what a <button> gives for free
-    button.addEventListener("click", () => {
-        theme = NEXT[theme];
+    function choose(next) {
+        theme = next;
         apply(theme);
         save(theme);
         show();
-    });
+    }
+
+    // aria-pressed marks the word in use (the CSS underlines it, and on phones hides the others).
+    // The scroll button: data-mode picks the picture, the word under it, and its spoken name,
+    // which also says what a press will do next
+    function show() {
+        choices.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.choice === theme)));
+        if (cycler) {
+            cycler.dataset.mode = theme;
+            cycler.querySelector(".theme-word").textContent = THEME_NAMES[theme];
+            cycler.setAttribute("aria-label", `Theme: ${THEME_NAMES[theme]}. Press for ${THEME_NAMES[NEXT[theme]]}`);
+        }
+    }
+
+    // Click, tap, Enter and Space all arrive here: that's what a <button> gives for free
+    choices.forEach((button) => button.addEventListener("click", () => {
+        // On phones only the word in use shows (the others are display: none, so offsetParent is
+        // null). Then pressing it moves on to the next, and focus follows to the word now showing,
+        // or it would be lost on a hidden button. With all three showing, a press picks that word
+        const onlyOne = choices.every((other) => other === button || other.offsetParent === null);
+        if (onlyOne && button.dataset.choice === theme) {
+            choose(NEXT[theme]);
+            choices.find((other) => other.dataset.choice === theme).focus();
+        } else {
+            choose(button.dataset.choice);
+        }
+    }));
+    cycler?.addEventListener("click", () => choose(NEXT[theme]));
 
     show();
-    button.hidden = false;   // no JS = no button, and the site simply follows the OS
+    // No JS = no controls, and the site simply follows the OS
+    document.querySelectorAll(".theme-switch, .theme-cycle").forEach((control) => { control.hidden = false; });
 });

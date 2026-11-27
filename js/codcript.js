@@ -142,7 +142,7 @@ function spotControl(spot, inList) {
     let control;
     if (spot.nav) {
         // The map: a button that unrolls the scroll with the site's pages on it
-        control = make("button", inList ? "shelf-button" : "spot", inList ? `${spot.name} · ${spot.what}` : make("span", "spot-tag", `${spot.name} · ${spot.what}`));
+        control = make("button", inList ? "shelf-button" : "spot", inList ? joinMeta([spot.name, spot.what]) : make("span", "spot-tag", joinMeta([spot.name, spot.what])));
         control.type = "button";
         control.dataset.nav = "map";
         control.setAttribute("aria-pressed", "false");
@@ -156,8 +156,8 @@ function spotControl(spot, inList) {
         control = make("a", inList ? "shelf-link" : "spot is-link", words);
         control.href = spot.href;   // fixed addresses from workcript.js, never from the JSON
     } else {
-        const tag = `${spot.name} · ${count}`;
-        control = make("button", inList ? "shelf-button" : "spot", inList ? `${spot.name} · ${SHELF_WORDS[spot.shelf]} (${count})` : make("span", "spot-tag", tag));
+        const tag = `${spot.name} (${count})`;
+        control = make("button", inList ? "shelf-button" : "spot", inList ? `${joinMeta([spot.name, SHELF_WORDS[spot.shelf]])} (${count})` : make("span", "spot-tag", tag));
         control.type = "button";
         control.dataset.shelf = spot.shelf;
         control.setAttribute("aria-pressed", "false");
@@ -259,7 +259,7 @@ function scrollRow(project) {
 function renderScroll() {
     const items = inShelf(state.shelf);
     const spot = shelfSpot(state.shelf);
-    $("#scroll-crumb").textContent = `${spot ? spot.name : "Shelf"} · ${plural(items.length, "project")}`;
+    $("#scroll-crumb").textContent = joinMeta([spot ? spot.name : "Shelf", plural(items.length, "project")]);
     $("#scroll-shelf").textContent = SHELF_WORDS[state.shelf] || "Projects";
     $("#scroll-list").replaceChildren(...items.map(scrollRow));
     $("#scroll-foot").hidden = false;
@@ -390,7 +390,7 @@ function renderTable() {
             make("th", "every-project-cell", name, make("span", "every-blurb", p.blurb || "")),
             make("td", "every-shelf", SHELF_WORDS[p.shelf] || ""),
             make("td", "", statusLamp(p.status)),
-            make("td", "every-tools", (p.tools || []).slice(0, 3).join(" · ")),
+            make("td", "every-tools", joinMeta((p.tools || []).slice(0, 3))),
             make("td", "every-year", p.year || ""));
         row.querySelector("th").scope = "row";
         row.dataset.id = p.id;

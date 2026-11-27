@@ -1,10 +1,9 @@
 // Shared script for every page. Loaded with defer, so the HTML is already parsed when it runs
 // (no DOMContentLoaded wrapper needed, unlike projcript.js which loads without defer)
 
-// Show/hide buttons in the header: the Menu button and the Lab ▸ button
-// Each button is hidden in the HTML and starts "expanded", so without JS everything stays visible.
-// JS shows the button and collapses its content; the CSS reads aria-expanded to show or hide it.
-// One function for both buttons, so a fix or change happens in one place (DRY)
+// The Menu button in the header (phones). It's hidden in the HTML and starts "expanded", so
+// without JS every link stays visible. JS shows the button and collapses the links; the CSS
+// reads aria-expanded to show or hide them. (A second button, the Lab ▸, used this too until L1c)
 function setupToggle(button) {
     button.hidden = false;
     button.setAttribute("aria-expanded", "false");
@@ -16,4 +15,17 @@ function setupToggle(button) {
     });
 }
 
-document.querySelectorAll(".menu-toggle, .submenu-toggle").forEach(setupToggle);
+document.querySelectorAll(".menu-toggle").forEach(setupToggle);
+
+// YEARS THAT COUNT THEMSELVES (owner, 2026-11-27: "minimal AI intervention"). The HTML stores the
+// year something STARTED, which never changes, and the page works out the count every visit:
+//   <span data-since="2019">7</span>   shows the years since 2019 (7 in 2026, 8 in 2027...)
+//   <span data-year>2026</span>        shows this year (the footer's ©)
+// The number typed inside is only what shows with JavaScript off, so keep it roughly right
+const thisYear = new Date().getFullYear();
+document.querySelectorAll("[data-since]").forEach((el) => {
+    el.textContent = thisYear - Number(el.dataset.since);
+});
+document.querySelectorAll("[data-year]").forEach((el) => {
+    el.textContent = thisYear;
+});

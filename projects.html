@@ -9,7 +9,7 @@
              another server simply won't load. No page uses inline code, so nothing needs 'unsafe-inline' -->
         <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>CAD Portfolio · Zach Nott</title>
+        <title>Zach Nott CAD Portfolio</title>
         <!-- CONTENT: drafted by Claude (option A of three); rewrite in your words -->
         <meta name="description" content="CAD projects by Zach Nott: what each part does, how many versions it took to get right, its parts and its print time.">
         <!-- Staging (L1, D47): search engines skip the site until launch. Removing this line IS the launch (L3) -->
@@ -19,15 +19,15 @@
         <!-- Each CSS and JS link carries ?v=<date it last changed>. A browser keeps files it has
              downloaded; a new ?v makes the address new, so it fetches the new file instead of
              mixing a new page with old styles or scripts. Change a file: bump its ?v on every page -->
-        <link rel="stylesheet" href="css/styles.css?v=20261126">
-        <script src="js/script.js?v=20261126" defer></script>
+        <link rel="stylesheet" href="css/styles.css?v=20261127">
+        <script src="js/script.js?v=20261127" defer></script>
         <!-- No defer on purpose: it sets the saved theme before the page is drawn (no white flash) -->
-        <script src="js/themcript.js?v=20261126"></script>
-        <link rel="stylesheet" href="css/projyles.css?v=20261126">
-        <script src="js/projcript.js?v=20261126"></script>
+        <script src="js/themcript.js?v=20261127"></script>
+        <link rel="stylesheet" href="css/projyles.css?v=20261127">
+        <script src="js/projcript.js?v=20261127"></script>
         <!-- CAD sections (task 2.5): datacript.js first, deferred scripts run in this order -->
-        <script src="js/datacript.js?v=20261126" defer></script>
-        <script src="js/sectcript.js?v=20261126" defer></script>
+        <script src="js/datacript.js?v=20261126-2" defer></script>
+        <script src="js/sectcript.js?v=20261127" defer></script>
     </head>
     
     <body class="theprojectspage">
@@ -75,64 +75,55 @@
                                         <a class="menu-link" href="aboutme.html">About</a></li>
                                     <li class="header-right-item" id="item-contact">
                                         <a class="menu-link" href="contact.html">Contact</a></li>
-                                    <!-- Hidden until The Laboratory is a real page (R1, owner 2026-11-07). Remove "hidden" to bring it back -->
-                                    <li class="header-right-item mega-menu-item" id="item-lab" hidden>
-                                        <a class="menu-link" href="thelab.html">The Laboratory</a>
-                                        <!-- Phone-only toggle for the Lab links: hidden until js/script.js runs, like the Menu button.
-                                             It must come before the list, because the CSS "~" only reaches later siblings -->
-                                        <button class="submenu-toggle" type="button" aria-expanded="true" aria-label="Laboratory links" hidden><span aria-hidden="true">&#9656;</span></button>
-                                        <ul class="mega-sub-menu">
-                                            <li class="mega-menu-item"><a class="menu-link" href="#">Electronics and Circuitry</a></li>
-                                            <li class="mega-menu-item"><a class="menu-link" href="#">Computer Design and Code</a></li>
-                                            <li class="mega-menu-item"><a class="menu-link" href="#">Physical Realm and CAD</a></li>
-                                            <li class="mega-menu-item"><a class="menu-link" href="#">The AI Abode</a></li>
-                                            <li class="mega-menu-item"><a class="menu-link" href="#">In Works</a></li>
-                                            <li class="mega-menu-item"><a class="menu-link" href="#">Complete Projects</a></li>
-                                            <li class="mega-menu-item"><a class="menu-link" href="#">Research Topics</a></li>
-                                        </ul>
-                                    </li>
                                 </ul>
                             </div>
                         </div>
                     </div>
                 </nav>
-                <!-- Theme button (O1, D51; it replaced the drum dimmer, D35-D38): each press goes Auto -> Day -> Night -> Auto.
-                     Hidden until js/themcript.js runs; without JS the site just follows the OS.
-                     The script sets data-mode, and the CSS shows the matching icon (THEME BUTTON in styles.css) -->
-                <button id="theme-button" class="theme-button" type="button" data-mode="auto" hidden>
-                    <svg class="theme-icon" viewBox="-12 -12 24 24" width="20" height="20" aria-hidden="true" focusable="false">
-                        <!-- Auto: a circle, half filled (half day, half night) -->
-                        <g class="icon-auto"><circle r="8"/><path d="M0 -8a8 8 0 0 1 0 16z"/></g>
-                        <!-- Day: a sun -->
-                        <g class="icon-day"><circle r="4"/><path d="M0 -10v2.5M0 7.5v2.5M-10 0h2.5M7.5 0h2.5M-7 -7l1.8 1.8M5.2 5.2l1.8 1.8M-7 7l1.8 -1.8M5.2 -5.2l1.8 -1.8"/></g>
-                        <!-- Night: a crescent moon -->
-                        <g class="icon-night"><path d="M3 -8.5a8.5 8.5 0 1 0 5.5 11a6.5 6.5 0 0 1 -5.5 -11z"/></g>
-                    </svg>
-                    <span class="screen-reader-text">Theme: <span class="theme-name">Auto</span></span>
-                </button>
+                <!-- Theme switch (O1, D51; three words since the owner's pick T1, 2026-11-27): Day, Night and
+                     Auto, the one in use underlined like the current page in the nav. Each word is a button
+                     with aria-pressed, so a screen reader hears "Night, toggle button, pressed". Phones show
+                     only the word in use, and pressing it moves on to the next (styles.css, THE THEME SWITCH).
+                     Hidden until js/themcript.js runs: without JS the site simply follows the OS -->
+                <div class="theme-switch" role="group" aria-label="Theme" hidden>
+                    <button class="theme-choice" type="button" data-choice="day">Day</button>
+                    <button class="theme-choice" type="button" data-choice="lantern">Night</button>
+                    <button class="theme-choice" type="button" data-choice="auto">Auto</button>
+                </div>
             </header>
 
             <!-- Landmarks: screen readers can jump straight to main or footer. The skip link targets #content -->
             <main id="content" class="site-main wrapper">
+                <!-- O5 (owner's pick 2026-11-27: A2 + A1). Two parts:
+                     1. THE HERO (A2): the title, one line and a list of every project on the left;
+                        the carousel on the right. Few words: the work does the talking.
+                     2. THE PROJECTS (A1, like a daz product page): one block per project, a big
+                        gallery on the left and the facts on the right in their own scrolling column.
+                     Everything is built from data/projects.json: a new project only goes in the JSON.
+                     (The old intro paragraph and the framed sheet are in git history: git log -S "CAD's Creations") -->
                 <article>
-                    <header class="content-headers"><h1>CAD's Creations</h1></header>
-                    <div class="content">
-                        <p>There is an old idiom that has had a hold of my heart for years: "Create something from nothing". 
-                            This beautifully represents why I started my journey in CAD. To create for the sake of creating, to let imagination run wild. 
-                            An idea one second could become something real in an instant. I began about 7 years ago at the start of my university adventures when 
-                            my love for CAD was small, not a passion but it steadily grew. It is a blast from start to finish, and when you're done you get
-                            to actually hold your hard work. So here are a few of the designs, parts, and projects I've made over the years! 
-                        </p>
+                    <div class="cad-hero">
+                        <div class="cad-intro">
+                            <!-- CONTENT: the owner's words (2026-11-27) -->
+                            <h1>Ideas are bulletproof</h1>
+                            <p class="cad-line">Idea. Line. Button. Poof. Item.</p>
 
-                        <hr class="item-image-seperator is-stylized">
-                        <!-- The carousel as a drawing sheet (R2d): js/projcript.js builds one sheet per project
-                             from data/projects.json, so a new project only goes in the JSON.
-                             Hidden until the script has built it: without JS there's no empty frame -->
-                        <section id="slideshow" class="cad-sheet" aria-labelledby="ring-title" hidden>
-                          <!-- Title strip: what this sheet is, plus pause/play for the spin (task 1.15c).
-                               It comes first, so keyboard users reach Pause before the sheets -->
+                            <!-- THE LIST (A2): every project as one row, a link down to its block below.
+                                 It scrolls inside itself once there are more projects than fit beside the
+                                 ring (projyles.css, THE LIST). Built by js/sectcript.js -->
+                            <nav id="cad-index" class="cad-index" aria-labelledby="cad-index-title">
+                                <h2 id="cad-index-title" class="screen-reader-text">All projects</h2>
+                                <ol id="cad-index-list" class="index-list" role="list"></ol>
+                            </nav>
+                        </div>
+
+                        <!-- The carousel (R2d, no frame since O5): js/projcript.js builds one sheet per project.
+                             Hidden until the script has built it: without JS there's no empty space -->
+                        <section id="slideshow" class="cad-ring" aria-labelledby="ring-title" hidden>
+                          <!-- Pause/play for the spin (task 1.15c). It comes first, so keyboard users reach
+                               Pause before the sheets. The heading is for screen readers only -->
                           <div class="ring-head">
-                            <h2 id="ring-title" class="cad-kicker">00 · Assembly view</h2>
+                            <h2 id="ring-title" class="screen-reader-text">Assembly view</h2>
                             <button type="button" class="sheet-button" id="spin-toggle">Pause spin</button>
                           </div>
                           <div class="entire-content">
@@ -140,8 +131,8 @@
                           </div>
 
                           <!-- The popup: a light summary of the picked project, filled by projcript.js.
-                               The picture is already on the front sheet and the stats are in the full drawing below,
-                               so it keeps to the name, the facts line, one sentence and the link (owner, 2026-11-10).
+                               It slides out beside the ring at every width; on phones both are scaled
+                               down (owner, 2026-11-27: "like the desktop version, just scaled down").
                                The title has tabindex="-1" so the script can move focus to it when it opens -->
                           <aside class="sidebar-dwg-details" id="selected-sidebar" aria-labelledby="popup-title">
                             <div class="information-popup">
@@ -149,42 +140,30 @@
                                 <p class="cad-kicker" id="popup-kicker"></p>
                                 <button type="button" class="sheet-button" id="close-sidebar">Close</button>
                               </div>
-                              <!-- The full picture, uncropped (the sheet in the ring crops it square), grown in as
-                                   the popup opens (owner, 2026-11-15). projcript.js swaps in the picked project's
-                                   picture; it starts on the placeholder because an empty src isn't valid HTML.
-                                   A link, so the picture also opens at full size -->
+                              <!-- The full picture, uncropped (the sheet in the ring crops it square).
+                                   projcript.js swaps in the picked project's picture; it starts on the
+                                   placeholder because an empty src isn't valid HTML -->
                               <a class="popup-art" id="popup-art" href="assets/images/placeholder.svg">
                                 <img id="popup-image" src="assets/images/placeholder.svg" alt="" width="1600" height="1600">
                               </a>
                               <h2 id="popup-title" class="cad-title" tabindex="-1"></h2>
                               <p class="cad-label" id="popup-meta"></p>
                               <p id="popup-desc"></p>
-                              <a class="cad-back" id="popup-link" href="#cad-sections">Full drawing ↓</a>
+                              <a class="cad-back" id="popup-link" href="#cad-sections">Full project ↓</a>
                             </div>
                           </aside>
                         </section>
-
-                        <!-- THE INDEX (owner, 2026-11-24): every project as a clean tile, like dazprojects, so a
-                             recruiter sees all the work at a glance before the write-ups. Built by js/sectcript.js from
-                             data/projects.json. A tile jumps to its write-up below; a project with more than one picture
-                             gets ‹ › arrows that loop through them -->
-                        <section id="cad-index" class="cad-index" aria-labelledby="cad-index-title">
-                            <h2 id="cad-index-title" class="cad-label">All projects</h2>
-                            <ul id="cad-index-grid" class="index-grid" role="list"></ul>
-                        </section>
-
-                        <hr class="item-image-seperator is-stylized">
-                        <!-- One entry per project (task 2.5), built by js/sectcript.js from data/projects.json.
-                             To add or edit a project, change the JSON, not this page -->
-                        <section id="cad-sections" class="cad-sections" aria-labelledby="cad-sections-title">
-                            <h2 id="cad-sections-title" class="cad-label">Details</h2>
-                            <div id="cad-entries"></div>
-                            <noscript>
-                                <p class="cad-note">The project write-ups need JavaScript to load.</p>
-                            </noscript>
-                        </section>
                     </div>
 
+                    <!-- THE PROJECTS: one block per project (A1), built by js/sectcript.js from data/projects.json.
+                         To add or edit a project, change the JSON, not this page -->
+                    <section id="cad-sections" class="cad-sections" aria-labelledby="cad-sections-title">
+                        <h2 id="cad-sections-title" class="screen-reader-text">Projects</h2>
+                        <div id="cad-entries"></div>
+                        <noscript>
+                            <p class="cad-note">The projects need JavaScript to load.</p>
+                        </noscript>
+                    </section>
                 </article>
             </main>
 
@@ -216,7 +195,7 @@
                             </ul>
                         </div>
                     </div>
-                    <p class="footer-copy">&copy; 2026 <span class="footer-name">Zach Nott</span></p>
+                    <p class="footer-copy">&copy; <span data-year>2026</span> <span class="footer-name">Zach Nott</span></p>
                 </div>
             </footer>
         </div>

@@ -1,6 +1,7 @@
 {
-  "_help": "Home mosaic order (owner only; visitors can't change it). mode: \"listed\" = the ids below in this exact order (anything new or not listed follows at the end), \"mixed\" = project, photo, project, photo (ignores the list), \"random\" = a new shuffle every visit. Ids come from data/projects.json and data/art.json. To try layouts: open index.html?shuffle, reload until you like one, then copy the order the browser console prints into this file. See README, Home order.",
+  "_help": "Home mosaic order (owner only; visitors can't change it). mode: \"listed\" = the ids below in this exact order (anything new or not listed follows at the end), \"mixed\" = project, photo, project, photo (ignores the list), \"random\" = a new shuffle every visit. big: ids shown twice as wide (any mode). Ids come from data/projects.json and data/art.json. To try layouts: open index.html?shuffle, reload until you like one, then copy the order the browser console prints into this file. See README, Home order.",
   "mode": "mixed",
+  "big": [],
   "order": [
     "bridge-guitar",
     "hairy-woodpecker-looking-up-2026",

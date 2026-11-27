@@ -18,7 +18,8 @@ const MAX_FEATURED = 3;   // the stack's CSS has a place for 3 cards (data-pos 0
 // One tile: the picture, and a caption that the CSS hides until hover or focus.
 // The caption is INSIDE the link, so it's the link's name ("Bridge Guitar, CAD · 2025"). That's why the
 // image has alt="": a screen reader would otherwise read the name twice
-function buildTile({ href, src, w, h, title, meta }, index) {
+// big = the ids data/home.json lists under "big": those tiles span two columns (homyles.css, BIG TILES)
+function buildTile({ id, href, src, w, h, title, meta }, index, big) {
     const image = makeImage(src);
     image.decoding = "async";
     if (index >= EAGER_TILES) image.loading = "lazy";
@@ -26,7 +27,7 @@ function buildTile({ href, src, w, h, title, meta }, index) {
     const link = make("a", "tile", image,
         make("span", "tile-cap", make("span", "tile-title", title), " ", make("span", "tile-meta", meta)));
     link.href = href;
-    return make("li", "", link);
+    return make("li", big.has(id) ? "is-big" : "", link);
 }
 
 // Both lists turned into the same tile shape
@@ -45,7 +46,7 @@ const fromPhoto = (photo) => /^assets\/images\/[\w./-]+$/.test(photo.src || "") 
     href: `art.html#piece-${encodeURIComponent(photo.id)}`,   // the photo on the Art page
     src: photo.src, w: photo.w, h: photo.h,
     title: photo.title || "Untitled",
-    meta: joinMeta(["Photography", photo.year])
+    meta: joinMeta([photo.kind === "journal" ? "Art" : "Photography", photo.year])
 };
 
 // Project, photo, project, photo…: the two kinds mixed evenly, like the reference's mosaic
@@ -267,19 +268,20 @@ async function initHome() {
         setupStack(drawer, opener, projects.value.filter((project) => project.featured).slice(0, MAX_FEATURED));
     }
     const photoTiles = art.status === "fulfilled"
-        ? art.value.filter((piece) => piece.kind === "photo").map(fromPhoto).filter(Boolean)
+        ? art.value.map(fromPhoto).filter(Boolean)   // every piece: photos and art journals (owner, 2026-11-27)
         : [];
 
     // No home.json (or a typo in it): the mosaic still builds, in the mixed order
-    const tiles = arrange(interleave(projectTiles, photoTiles),
-        settings.status === "fulfilled" && settings.value ? settings.value : {});
+    const homeSettings = settings.status === "fulfilled" && settings.value ? settings.value : {};
+    const tiles = arrange(interleave(projectTiles, photoTiles), homeSettings);
+    const big = new Set(Array.isArray(homeSettings.big) ? homeSettings.big : []);
     if (tiles.length === 0) {
         const link = make("a", "", "Open the CAD portfolio");
         link.href = "projects.html";
         grid.after(make("p", "mosaic-note", "The work couldn't load. ", link));
         return;
     }
-    grid.replaceChildren(...tiles.map(buildTile));
+    grid.replaceChildren(...tiles.map((tile, index) => buildTile(tile, index, big)));
     enableMasonry(grid);   // datacript.js: packs each tile into the shortest column
 }
 

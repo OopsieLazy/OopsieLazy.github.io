@@ -10,7 +10,7 @@
         <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- CONTENT: the tab title and the text search engines and link previews show -->
-        <title>About · Zach Nott</title>
+        <title>Zach Nott About</title>
         <meta name="description" content="About Zach Nott: a mechanical designer who models parts in CAD and prints them to test.">
         <!-- Staging (L1, D47): search engines skip the site until launch. Removing this line IS the launch (L3) -->
         <meta name="robots" content="noindex">
@@ -19,12 +19,12 @@
         <!-- Each CSS and JS link carries ?v=<date it last changed>. A browser keeps files it has
              downloaded; a new ?v makes the address new, so it fetches the new file instead of
              mixing a new page with old styles or scripts. Change a file: bump its ?v on every page -->
-        <link rel="stylesheet" href="css/styles.css?v=20261126">
+        <link rel="stylesheet" href="css/styles.css?v=20261127">
         <link rel="stylesheet" href="css/cardyles.css?v=20261126">
         <link rel="stylesheet" href="css/aboutyles.css?v=20261126">
-        <script src="js/script.js?v=20261126" defer></script>
+        <script src="js/script.js?v=20261127" defer></script>
         <!-- No defer on purpose: it sets the saved theme before the page is drawn (no white flash) -->
-        <script src="js/themcript.js?v=20261126"></script>
+        <script src="js/themcript.js?v=20261127"></script>
     </head>
     
     <body class="theaboutpage">
@@ -72,41 +72,21 @@
                                         <a class="menu-link" href="aboutme.html" aria-current="page">About</a></li>
                                     <li class="header-right-item" id="item-contact">
                                         <a class="menu-link" href="contact.html">Contact</a></li>
-                                    <!-- Hidden until The Laboratory is a real page (R1, owner 2026-11-07). Remove "hidden" to bring it back -->
-                                    <li class="header-right-item mega-menu-item" id="item-lab" hidden>
-                                        <a class="menu-link" href="thelab.html">The Laboratory</a>
-                                        <!-- Phone-only toggle for the Lab links: hidden until js/script.js runs, like the Menu button.
-                                             It must come before the list, because the CSS "~" only reaches later siblings -->
-                                        <button class="submenu-toggle" type="button" aria-expanded="true" aria-label="Laboratory links" hidden><span aria-hidden="true">&#9656;</span></button>
-                                        <ul class="mega-sub-menu">
-                                            <li class="mega-menu-item"><a class="menu-link" href="#">Electronics and Circuitry</a></li>
-                                            <li class="mega-menu-item"><a class="menu-link" href="#">Computer Design and Code</a></li>
-                                            <li class="mega-menu-item"><a class="menu-link" href="#">Physical Realm and CAD</a></li>
-                                            <li class="mega-menu-item"><a class="menu-link" href="#">The AI Abode</a></li>
-                                            <li class="mega-menu-item"><a class="menu-link" href="#">In Works</a></li>
-                                            <li class="mega-menu-item"><a class="menu-link" href="#">Complete Projects</a></li>
-                                            <li class="mega-menu-item"><a class="menu-link" href="#">Research Topics</a></li>
-                                        </ul>
-                                    </li>
                                 </ul>
                             </div>
                         </div>
                     </div>
                 </nav>
-                <!-- Theme button (O1, D51; it replaced the drum dimmer, D35-D38): each press goes Auto -> Day -> Night -> Auto.
-                     Hidden until js/themcript.js runs; without JS the site just follows the OS.
-                     The script sets data-mode, and the CSS shows the matching icon (THEME BUTTON in styles.css) -->
-                <button id="theme-button" class="theme-button" type="button" data-mode="auto" hidden>
-                    <svg class="theme-icon" viewBox="-12 -12 24 24" width="20" height="20" aria-hidden="true" focusable="false">
-                        <!-- Auto: a circle, half filled (half day, half night) -->
-                        <g class="icon-auto"><circle r="8"/><path d="M0 -8a8 8 0 0 1 0 16z"/></g>
-                        <!-- Day: a sun -->
-                        <g class="icon-day"><circle r="4"/><path d="M0 -10v2.5M0 7.5v2.5M-10 0h2.5M7.5 0h2.5M-7 -7l1.8 1.8M5.2 5.2l1.8 1.8M-7 7l1.8 -1.8M5.2 -5.2l1.8 -1.8"/></g>
-                        <!-- Night: a crescent moon -->
-                        <g class="icon-night"><path d="M3 -8.5a8.5 8.5 0 1 0 5.5 11a6.5 6.5 0 0 1 -5.5 -11z"/></g>
-                    </svg>
-                    <span class="screen-reader-text">Theme: <span class="theme-name">Auto</span></span>
-                </button>
+                <!-- Theme switch (O1, D51; three words since the owner's pick T1, 2026-11-27): Day, Night and
+                     Auto, the one in use underlined like the current page in the nav. Each word is a button
+                     with aria-pressed, so a screen reader hears "Night, toggle button, pressed". Phones show
+                     only the word in use, and pressing it moves on to the next (styles.css, THE THEME SWITCH).
+                     Hidden until js/themcript.js runs: without JS the site simply follows the OS -->
+                <div class="theme-switch" role="group" aria-label="Theme" hidden>
+                    <button class="theme-choice" type="button" data-choice="day">Day</button>
+                    <button class="theme-choice" type="button" data-choice="lantern">Night</button>
+                    <button class="theme-choice" type="button" data-choice="auto">Auto</button>
+                </div>
             </header>
 
             <!-- Landmarks: screen readers can jump straight to main or footer. The skip link targets #content -->
@@ -120,7 +100,7 @@
                     <header class="story-head">
                         <div>
                             <h1>Zach Nott</h1>
-                            <p class="story-sub">Mechanical design &amp; CAD · Courtice, Ontario</p>
+                            <p class="story-sub">Mechanical design &amp; CAD&ensp;Courtice, Ontario</p>
                         </div>
                         <!-- The trading card lives in a popover (owner, 2026-11-16): popovertarget opens it with
                              no JavaScript, and the browser adds Esc and click-outside to close it -->
@@ -176,17 +156,19 @@
                     </section>
 
                     <!-- The facts recruiters scan for, on hairlines. A <dl> pairs each label with its value
-                         for screen readers ("term, definition"). CONTENT: confirm the years -->
+                         for screen readers ("term, definition"). CONTENT: confirm the years.
+                         Each count is worked out from the year you STARTED (data-since, js/script.js), so
+                         it goes up by itself every January: change the data-since year, never the number -->
                     <section class="story-facts">
                         <h2>At a glance</h2>
                         <dl>
                             <div><dt>Education</dt><dd>University of Ottawa, Mechanical Engineering</dd></div>
                             <div><dt>CAD since</dt><dd>2019</dd></div>
                             <div><dt>Known for</dt><dd><a href="projects.html#bridge-guitar">Bridge Guitar</a></dd></div>
-                            <div><dt>Fusion 360</dt><dd>7 years</dd></div>
-                            <div><dt>SolidWorks</dt><dd>6 years</dd></div>
-                            <div><dt>Python, C and C++</dt><dd>6 years</dd></div>
-                            <div><dt>CNC, lathe and welding</dt><dd>5 years</dd></div>
+                            <div><dt>Fusion 360</dt><dd><span data-since="2019">7</span> years</dd></div>
+                            <div><dt>SolidWorks</dt><dd><span data-since="2020">6</span> years</dd></div>
+                            <div><dt>Python, C and C++</dt><dd><span data-since="2020">6</span> years</dd></div>
+                            <div><dt>CNC, lathe and welding</dt><dd><span data-since="2021">5</span> years</dd></div>
                         </dl>
                     </section>
                 </article>
@@ -199,27 +181,27 @@
                          role="img" turns the whole card into one picture with one description,
                          so a screen reader hears a sentence, not "7y F360 6y SW…" -->
                     <div class="card-holder">
-                        <div class="bp-card" role="img" aria-label="Trading card: Zach Nott, designer, maker, fabricator. Fusion 360 7 years, SolidWorks 6, Python 6, CNC 5. Making since 2019.">
+                        <div class="bp-card" role="img" aria-label="Trading card: Zach Nott, designer, maker, fabricator. Fusion 360 since 2019, SolidWorks since 2020, Python since 2020, CNC since 2021.">
                             <span class="card-top"><span class="card-tool">CAD</span><span class="card-name">Zach Nott</span><span class="card-number">00</span></span>
                             <!-- CONTENT: your portrait (strip EXIF/GPS first) -->
                             <span class="card-art">
                                 <img src="assets/images/placeholder.svg" alt="" width="300" height="300">
                                 <span class="card-stats">
-                                    <span class="card-stat"><span class="card-icon">◆</span><b>7y</b><small>F360</small></span>
-                                    <span class="card-stat"><span class="card-icon">◆</span><b>6y</b><small>SW</small></span>
-                                    <span class="card-stat"><span class="card-icon">◆</span><b>6y</b><small>Py</small></span>
-                                    <span class="card-stat"><span class="card-icon">◆</span><b>5y</b><small>CNC</small></span>
+                                    <span class="card-stat"><span class="card-icon">◆</span><b><span data-since="2019">7</span>y</b><small>F360</small></span>
+                                    <span class="card-stat"><span class="card-icon">◆</span><b><span data-since="2020">6</span>y</b><small>SW</small></span>
+                                    <span class="card-stat"><span class="card-icon">◆</span><b><span data-since="2020">6</span>y</b><small>Py</small></span>
+                                    <span class="card-stat"><span class="card-icon">◆</span><b><span data-since="2021">5</span>y</b><small>CNC</small></span>
                                 </span>
                             </span>
-                            <span class="card-type">Designer · Maker · Fabricator</span>
+                            <span class="card-type">Designer&ensp;Maker&ensp;Fabricator</span>
                             <span class="card-text">
                                 <span class="card-desc">Designs parts you can hold, from first sketch to printed test.</span>
                                 <span class="card-flavor">Create something from nothing.</span>
                             </span>
                             <!-- data-label names each footer cell (cardyles.css) -->
                             <span class="card-foot">
-                                <span class="card-rev" data-label="YEARS">7</span>
-                                <span class="card-difficulty" data-label="FOCUS">CAD · PRINT</span>
+                                <span class="card-rev" data-label="YEARS" data-since="2019">7</span>
+                                <span class="card-difficulty" data-label="FOCUS">CAD&ensp;PRINT</span>
                                 <span class="card-date" data-label="SINCE">2019</span>
                             </span>
                         </div>
@@ -257,7 +239,7 @@
                             </ul>
                         </div>
                     </div>
-                    <p class="footer-copy">&copy; 2026 <span class="footer-name">Zach Nott</span></p>
+                    <p class="footer-copy">&copy; <span data-year>2026</span> <span class="footer-name">Zach Nott</span></p>
                 </div>
             </footer>
         </div>

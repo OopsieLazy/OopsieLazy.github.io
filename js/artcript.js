@@ -33,7 +33,7 @@ function buildPiece(piece) {
     frame.href = piece.src;               // click = see the full picture
     frame.draggable = false;
 
-    const detail = [piece.detail, piece.year].filter(Boolean).join(" · ");
+    const detail = joinMeta([piece.detail, piece.year]);
     const item = make("li", "", make("figure", "piece", frame,
         make("figcaption", "", piece.title || "", detail ? make("span", "label-meta", detail) : "")));
     item.dataset.id = piece.id;

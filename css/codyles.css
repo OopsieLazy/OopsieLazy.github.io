@@ -302,11 +302,65 @@
 
 /* Pause sits in the frame's top-right corner, small, like a game's settings button.
    WCAG 2.2.2: anything that moves for more than 5 seconds needs a way to stop it */
-.workshop-pause {
+/* The room's two controls in its top-right corner: the theme scroll, then Pause */
+.workshop-controls {
   position: absolute;
   z-index: 3;
   top: var(--space-4);
   right: var(--space-4);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+/* THE THEME SCROLL (owner, 2026-11-27: "Scrolls for Code"). Pixel art from Idylwild's Arcanum,
+   shown at 2x with image-rendering: pixelated so the pixels stay crisp squares, never blurred.
+   data-mode (set by js/themcript.js) picks the scroll: Day = red ribbon, Night = blue, Auto = both */
+.theme-cycle {
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-items: center;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--workshop-muted);
+  border-radius: var(--radius-soft);
+  background: var(--frame-shade);      /* the same dark backing as Pause */
+  color: var(--workshop-ink);
+  cursor: pointer;
+}
+
+/* hidden (no JS) must win over display: grid above */
+.theme-cycle[hidden] {
+  display: none;
+}
+
+.theme-cycle:hover {
+  border-color: var(--workshop-ink);
+}
+
+.theme-cycle img {
+  width: var(--space-7);               /* 32px art at 1.5x = 48px */
+  height: auto;
+  image-rendering: pixelated;
+}
+
+.theme-cycle[data-mode="day"] .scroll-night,
+.theme-cycle[data-mode="lantern"] .scroll-day {
+  display: none;
+}
+
+.theme-word {
+  grid-column: 1 / -1;                 /* the word sits under the scroll(s) */
+  font-family: var(--font-pixel);
+  font-size: var(--step--2);
+  text-transform: uppercase;
+}
+
+.theme-cycle:focus-visible {
+  outline: 2px solid var(--workshop-ring);
+  outline-offset: 2px;
+}
+
+.workshop-pause {
   min-height: var(--space-6);          /* 32px: a comfortable target */
   padding: 0 var(--space-4);
   border: 1px solid var(--workshop-muted);
@@ -398,6 +452,21 @@
   color: var(--workshop-ink);
 }
 
+/* The credit is a <details>: the summary is the small button that's always showing */
+.workshop-credit summary {
+  padding-block: var(--space-1);       /* small text, but a 24px+ tap target (WCAG 2.5.8) */
+  cursor: pointer;
+}
+
+.workshop-credit summary:hover {
+  color: var(--workshop-ink);
+}
+
+.workshop-credit p {
+  margin: var(--space-1) 0 var(--space-1);
+}
+
+.workshop-credit summary:focus-visible,
 .workshop-credit a:focus-visible {
   outline: 2px solid var(--workshop-ring);
   outline-offset: 2px;
@@ -409,7 +478,7 @@
   .workshop-credit {
     top: var(--space-3);
     bottom: auto;
-    max-width: calc(100% - 9rem);
+    max-width: calc(100% - 18rem);     /* clear of the theme scroll and Pause in the top-right */
   }
 }
 

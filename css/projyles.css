@@ -8,11 +8,109 @@ html {
 }
 
 /* =========================================================
-   THE CAROUSEL AS A DRAWING SHEET (R2d). The page's one framed object
-   (see THE SHEET; the entries lost theirs in D-b), a ruled title
-   strip, and a ring of small sheets that projcript.js builds from
-   data/projects.json. Every line uses --color-accent, so it follows
-   the theme like the entries do
+   THE HERO (O5, owner's pick A2, 2026-11-27): the title, one line and the list
+   of projects on the left; the carousel on the right. Phones: one column,
+   the words and list first, then the ring
+   ========================================================= */
+.cad-hero {
+  display: grid;
+  gap: var(--space-6);
+  align-items: center;
+}
+
+@media (min-width: 56rem) {
+  .cad-hero {
+    grid-template-columns: 5fr 7fr;    /* the ring gets the bigger share */
+    gap: var(--space-7);
+  }
+
+  /* The ring's column runs on into the page's right-hand padding (owner, 2026-11-27: "can eat
+     more into the right side padding"), so the ring sits further right and has more room */
+  .cad-ring {
+    margin-right: calc(-1 * var(--gutter));
+  }
+}
+
+/* The title in the body font (O3 brings this to every page): one voice on the page, no Cinzel */
+.cad-intro h1 {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-body);
+  font-size: var(--step-4);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+}
+
+/* The owner's line: mono and spaced, like a label on a drawing */
+.cad-line {
+  margin: 0 0 var(--space-6);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: var(--tracking-caps);
+  color: var(--color-muted);
+}
+
+/* =========================================================
+   THE LIST (O5, A2): one row per project, a link down to its block.
+   It scrolls INSIDE itself once there are more rows than fit (max-height),
+   so ten projects never push the ring off the screen. Built by js/sectcript.js
+   ========================================================= */
+.index-list {
+  max-height: 22rem;                   /* about six rows; more scroll inside the list */
+  overflow-y: auto;
+  overscroll-behavior: contain;        /* reaching the list's end doesn't start scrolling the page */
+  scrollbar-gutter: stable;            /* the rows don't shift when the scroll bar appears */
+  margin: 0;
+  padding: 0;
+  list-style: none;                    /* Safari drops the "list" meaning without it: role="list" in the HTML */
+  border-top: 1px solid var(--color-line);
+}
+
+.index-row {
+  display: grid;
+  grid-template-columns: var(--space-8) 1fr auto;   /* picture, name, number */
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-2) var(--space-2) var(--space-2) 0;
+  border-bottom: 1px solid var(--color-line);
+  color: var(--color-ink);
+  text-decoration: none;
+}
+
+.index-row img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  background: var(--color-surface);
+}
+
+.index-name {
+  font-size: var(--step-0);
+}
+
+.index-number {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--color-muted);
+}
+
+.index-row:hover .index-name {
+  text-decoration: underline;
+  text-decoration-color: var(--color-highlight);
+  text-underline-offset: 0.2em;
+}
+
+/* Inside a scrolling box, an outline can be clipped at the edges: inset it */
+.index-row:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+/* =========================================================
+   THE CAROUSEL (R2d). A ring of small sheets that projcript.js builds from
+   data/projects.json, with Pause above it. No frame since O5 (owner, 2026-11-27:
+   the double frame was "too much"): the sheets themselves are the drawing.
+   Every line uses --color-accent, so it follows the theme
    ========================================================= */
 #slideshow {
   position: relative;
@@ -20,8 +118,8 @@ html {
      width INSIDE this padding, so it's real breathing room on phones too. Fixed, not vw:
      the wide layout below starts at a 62rem CONTENT width, and wider padding at 1440px
      pushed the sheet under it (the popup jumped above the ring) */
-  padding: var(--space-6) var(--space-5);
-  /* A column: title strip, then (on phones) the popup, then the ring */
+  padding: var(--space-2) 0 var(--space-5);
+  /* A column: Pause, then the ring; the popup floats beside it (POPUP below) */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -40,18 +138,11 @@ html {
   display: none;
 }
 
-/* Title strip: "DWG 00 · Assembly view" on the left, the spin button on the right,
-   ruled off underneath like the title of a drawing */
+/* The Pause button's row, at the top right of the carousel (its heading is screen-reader only) */
 .ring-head {
-  order: -2;                           /* always first, above the phone popup (order: -1) */
   align-self: stretch;
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: var(--space-3);
-  border-bottom: 1px solid var(--color-accent);
+  justify-content: flex-end;
 }
 
 /* Small square buttons in the drawing's mono lettering: Pause spin and Close */
@@ -219,61 +310,91 @@ html {
 /* =========================================================
    POPUP (task 1.16, restyled as a title block in R2e). projcript.js
    fills it from the picked project and adds .is-open to #slideshow.
-   Two layouts, chosen by the slideshow's own width (container query):
-   - narrow (phones, tablets): the popup opens ABOVE the ring
-   - wide: it slides in beside the ring, and the ring glides left
+   Since O5 (owner, 2026-11-27: phones should "pop up and slide like the
+   desktop version, just scaled down") it ALWAYS slides in beside the ring,
+   and the ring glides left and shrinks to make room. Three sizes, picked
+   by the slideshow's own width (container queries):
+     wide (62rem+):  popup 20rem, ring at 80%
+     medium:         popup 20rem, ring at 55%
+     narrow (phone): popup 58% of the width, ring at 40%, smaller text
    Closed = invisible AND unreachable (visibility: hidden), so Tab and
    screen readers skip it
    ========================================================= */
+.sidebar-dwg-details,
+.entire-content {
+  --popup-w: 20rem;                    /* the popup's width */
+  --ring-shrink: 0.8;                  /* how small the ring gets while the popup is open */
+  --ring-gap: var(--space-6);          /* the space between the shrunken ring and the popup */
+}
+
+@container (width < 62rem) {
+  .sidebar-dwg-details,
+  .entire-content {
+    --ring-shrink: 0.45;               /* small enough to keep clear of the list on its left */
+  }
+}
+
+@container (width < 34rem) {
+  .sidebar-dwg-details,
+  .entire-content {
+    --popup-w: 58cqi;                  /* cqi = 1% of the slideshow's width */
+    --ring-shrink: 0.38;               /* 58% + 38% + the gap still fits inside the width */
+    --ring-gap: var(--space-2);
+  }
+}
+
 .sidebar-dwg-details {
   --popup-speed: 350ms;
   --popup-ease: cubic-bezier(0.22, 1, 0.36, 1);   /* ease-out: quick start, soft landing */
-  order: -1;                           /* phones: above the ring, though it comes after it in the HTML */
-  align-self: stretch;
-  /* Phones: the popup pushes the ring down, so its HEIGHT has to change. Height can't
-     animate to "auto", but a grid row can go from 0fr (nothing) to 1fr (its content's height).
-     This is the one place a layout property animates: an overlay would cover the ring */
-  display: grid;
-  grid-template-rows: 0fr;
+  /* Floats beside the ring, so it never pushes anything. When it's taller than the ring,
+     projcript.js (fitSheet) gives the slideshow a min-height to hold it */
+  position: absolute;
+  right: 0;
+  top: calc(var(--space-2) + var(--space-7));     /* just under the Pause row */
+  width: var(--popup-w);
   opacity: 0;
   visibility: hidden;
-  /* Closing: fade and shrink first, THEN hide (visibility waits for the animation) */
-  transition: grid-template-rows var(--popup-speed) var(--popup-ease),
+  transform: translateX(var(--space-5));          /* starts a little to the right... */
+  /* Closing: slide and fade first, THEN hide (visibility waits for the animation) */
+  transition: transform var(--popup-speed) var(--popup-ease),
               opacity var(--popup-speed) var(--popup-ease),
               visibility 0s linear var(--popup-speed);
 }
 
-.information-popup {
-  min-height: 0;                       /* lets the 0fr row really shrink to nothing */
-  overflow: hidden;
-  /* The content drops in a little while the row opens: transform only, so it's cheap */
-  transform: translateY(-0.75rem);
-  transition: transform var(--popup-speed) var(--popup-ease);
-}
-
 #slideshow.is-open .sidebar-dwg-details {
-  grid-template-rows: 1fr;
   opacity: 1;
   visibility: visible;
-  /* Opening: become visible right away (no delay), then grow and fade in */
-  transition: grid-template-rows var(--popup-speed) var(--popup-ease),
+  transform: none;                                /* ...and slides into place */
+  /* Opening: visible right away (no delay), then slide and fade in */
+  transition: transform var(--popup-speed) var(--popup-ease),
               opacity var(--popup-speed) var(--popup-ease),
               visibility 0s;
-}
-
-#slideshow.is-open .information-popup {
-  transform: none;
 }
 
 /* The title block's own frame, inside the popup. The header strip runs edge to edge;
    everything else keeps a margin. The id makes this rule outrank .cad-title's margin */
 .information-popup {
-  margin-top: var(--space-4);
   border: 1px solid var(--color-accent);
+  background: var(--color-bg);
 }
 
 #selected-sidebar .information-popup > :not(.popup-head) {
   margin-inline: var(--space-3);
+}
+
+/* Phones: the same popup, scaled down (smaller text, tighter margins) */
+@container (width < 34rem) {
+  .information-popup {
+    font-size: var(--step--1);
+  }
+
+  #selected-sidebar .information-popup > :not(.popup-head) {
+    margin-inline: var(--space-2);
+  }
+
+  #selected-sidebar #popup-title {
+    font-size: var(--step-0);
+  }
 }
 
 .popup-head {
@@ -353,57 +474,33 @@ html {
 @media (prefers-reduced-motion: reduce) {
   .popup-art img,
   #slideshow {
-    transition: none;                  /* the picture and the frame change size at once, without easing */
+    transition: none;                  /* the picture and the slideshow change size at once, without easing */
   }
 }
 
-/* The ring glides when the layout around it changes */
+/* The ring glides when the popup opens: it shrinks and settles just left of the popup, a gap
+   of --ring-gap between them, so it stays clear of the list (owner, 2026-11-27: "not as clumped
+   to the List View"). The sum, with W = the slideshow's width (100cqi) and s = the shrink:
+     the ring's middle starts at W / 2 and should end at  W - popup - gap - s × W / 2  (gap = --ring-gap)
+     so it moves by  W × (1 - s) / 2 - popup - gap   (a negative number: to the left)
+   Down: --ring-drop, worked out by projcript.js, lines its middle up with the popup's middle.
+   transform-origin: top, so the drop is measured from the ring's top edge */
 .entire-content {
+  transform-origin: 50% 0;
   transition: transform var(--popup-speed, 350ms) var(--popup-ease, ease);
 }
 
-/* Wide slideshow: popup beside the ring, as the owner designed it.
-   62rem = the ring scaled to 0.8 + the 20rem popup + a gap */
-@container (min-width: 62rem) {
-  .sidebar-dwg-details {
-    position: absolute;
-    right: clamp(var(--space-3), 4vw, var(--space-5));
-    top: calc(var(--space-5) * 2 + 2rem);   /* just under the title strip */
-    width: 20rem;
-    /* Beside the ring nothing needs to move, so the row stays open and only
-       transform + opacity animate: the browser can do those without new layout */
-    grid-template-rows: 1fr;
-    transform: translateX(var(--space-5));
-    transition: transform var(--popup-speed) var(--popup-ease),
-                opacity var(--popup-speed) var(--popup-ease),
-                visibility 0s linear var(--popup-speed);
-  }
-
-  #slideshow.is-open .sidebar-dwg-details {
-    transform: none;
-    transition: transform var(--popup-speed) var(--popup-ease),
-                opacity var(--popup-speed) var(--popup-ease),
-                visibility 0s;
-  }
-
-  .information-popup {
-    margin-top: 0;
-    transform: none;
-    background: var(--color-bg);
-  }
-
-  /* Move the ring to the middle of the space left of the popup:
-     half the popup width plus half the gap, and shrink it a little so it fits */
-  #slideshow.is-open .entire-content {
-    transform: translateX(calc(-1 * (20rem + var(--space-4)) / 2)) scale(0.8);
-  }
+#slideshow.is-open .entire-content {
+  transform:
+    translate(calc(100cqi * (1 - var(--ring-shrink)) / 2 - var(--popup-w) - var(--ring-gap)),
+              var(--ring-drop, 0px))
+    scale(var(--ring-shrink));
 }
 
 /* Reduced motion: everything still opens and closes, just without the animation */
 @media (prefers-reduced-motion: reduce) {
   .sidebar-dwg-details,
   #slideshow.is-open .sidebar-dwg-details,
-  .information-popup,
   .entire-content,
   .ring-art img {
     transition: none;
@@ -411,25 +508,17 @@ html {
 }
 
 /* =========================================================
-   CAD SECTIONS (task 2.5; restyled in the design pass as option A,
-   "drawing sheet", owner's pick). js/sectcript.js builds the index and
-   one .cad-entry per project; this file only dresses them.
-   Each project looks like an engineering drawing: a ruled double frame
-   with zone ticks, a dashed viewport with crop marks round the render,
-   a DWG number, and the stats on one quiet line.
-   All lines use --color-accent, so the sheet follows the theme: pine
-   lines on white by day, pale blue lines at night, like a blueprint
+   THE PROJECTS (task 2.5; since O5, owner's pick A1, 2026-11-27): each
+   project reads like a daz product page. A big gallery on the left, the
+   facts on the right: number, name, one line, a ruled spec table, then
+   MakerWorld and "Next". Phones: one column, picture first.
+   js/sectcript.js builds them; this file only dresses them
    ========================================================= */
 .cad-sections {
-  margin-top: var(--space-7);
+  margin-top: var(--space-8);
 }
 
-/* "All projects" sat flush on the first sheet's frame line; the same gap as Home's catalog label */
-.cad-sections > .cad-label {
-  margin-bottom: var(--space-4);
-}
-
-/* Small mono labels, the same look as the home catalog's "All projects" (2.7 unifies them) */
+/* Small mono labels (the popup's DWG line and facts line) */
 .cad-label,
 .cad-kicker {
   margin: 0;
@@ -446,43 +535,122 @@ html {
   content: "DWG ";
 }
 
-/* =========================================================
-   THE SHEET. Border = outer frame line, outline (pulled inside with a
-   negative offset) = inner frame line. The zone ticks along the top and
-   bottom are two thin repeating gradients: a 1px line every 12.5%
-   (8 zones), only 0.6rem tall, painted in the margin between the lines
-   ========================================================= */
-/* The frame: the carousel's sheet only (.cad-sheet, R2d). Declutter (D-b, 2026-11-23): every entry
-   had this double frame too, boxes stacked inside boxes. Now the carousel is the one drawing sheet
-   and the entries are separated by space and a hairline, so the renders are what you see */
-.cad-sheet {
-  --sheet-inset: 0.6rem;               /* gap between the two frame lines */
-  border: 2px solid var(--color-accent);
-  outline: 1px solid var(--color-accent);
-  outline-offset: calc(-1 * var(--sheet-inset));
-  background:
-    repeating-linear-gradient(90deg, var(--color-accent) 0 1px, transparent 1px 12.5%)
-      top / 100% var(--sheet-inset) no-repeat,
-    repeating-linear-gradient(90deg, var(--color-accent) 0 1px, transparent 1px 12.5%)
-      bottom / 100% var(--sheet-inset) no-repeat;
-}
-
-/* One entry: a hairline on top, no side padding (it lines up with the page text) */
+/* One project: a hairline on top and plenty of air */
 .cad-entry {
   display: grid;
-  gap: var(--space-5);
-  padding-block: var(--space-6);
+  gap: var(--space-6);
+  padding-block: var(--space-7);
   border-top: 1px solid var(--color-line);
-  /* A jump to #bridge-guitar stops a little above the sheet, not flush with the screen edge */
+  /* A jump to #bridge-guitar stops a little above the block, not flush with the screen edge */
   scroll-margin-top: var(--space-5);
 }
 
-@media (min-width: 40rem) {
+@media (min-width: 56rem) {
   .cad-entry {
-    grid-template-columns: 14rem 1fr;   /* fixed viewport column, text takes the rest */
+    grid-template-columns: 7fr 5fr;    /* the picture gets the bigger share, like daz */
+    gap: var(--space-7);
     align-items: start;
   }
 }
+
+/* THE FACTS COLUMN. Wide screens: a hairline on its left, and it stays beside the picture
+   while you scroll (sticky). If it's taller than the window, it scrolls on its own
+   (max-height + overflow), like daz's product details */
+.cad-info {
+  min-width: 0;
+}
+
+@media (min-width: 56rem) {
+  .cad-info {
+    position: sticky;
+    top: var(--space-5);
+    max-height: calc(100dvh - 2 * var(--space-5));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-left: var(--space-6);
+    border-left: 1px solid var(--color-line);
+  }
+}
+
+.cad-title {
+  margin: var(--space-2) 0 var(--space-3);
+  font-family: var(--font-body);       /* one voice: no Cinzel (O5) */
+  font-size: var(--step-3);
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.cad-lead {
+  margin: 0 0 var(--space-5);
+  font-size: var(--step-1);
+  line-height: 1.5;
+}
+
+.cad-info p {
+  max-width: 40ch;
+}
+
+/* =========================================================
+   THE SPECS: a ruled table, label left, value right (daz's product facts).
+   A <dl>: each <div> holds a <dt> label and its <dd> value, and screen
+   readers read them as pairs ("Parts, 5")
+   ========================================================= */
+.cad-stats {
+  margin: 0 0 var(--space-5);
+  border-top: 1px solid var(--color-line);
+}
+
+.cad-stats div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-block: var(--space-3);
+  border-bottom: 1px solid var(--color-line);
+}
+
+.cad-stats dt {
+  color: var(--color-muted);
+}
+
+.cad-stats dd {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+}
+
+/* MakerWorld (a pill, the main action) and "Next" (a quiet link) */
+.cad-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-5);
+  margin: 0 0 var(--space-6);
+}
+
+.cad-button {
+  display: inline-block;
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  color: var(--color-bg);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.cad-button:hover {
+  background: var(--color-active);
+}
+
+.cad-button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.cad-next {
+  font-size: var(--step--1);
+}
+
+/* (THE SHEET, the carousel's double frame, was here until O5: git log -S "--sheet-inset") */
 
 /* The viewport. It has a FIXED shape (square) before the image arrives. That matters here:
    scroll anchoring is off on this page (top of file), so if images above a #link target
@@ -494,9 +662,7 @@ html {
   display: grid;
   place-items: center;
   aspect-ratio: 1;
-  max-width: 20rem;                    /* phones: don't let one image fill the whole screen */
-  outline: 1px dashed var(--color-muted);
-  outline-offset: -0.5rem;
+  background: var(--color-surface);
 }
 
 /* Crop marks on all four corners (owner, R1). Borders can only draw one L per box,
@@ -531,14 +697,8 @@ html {
   --weight: 1px;
 }
 
-/* The picture fills everything inside the dashed line (owner, 2026-11-09). The line sits
-   0.5rem in from the box's edge (outline-offset above), so 0.5rem of padding (plus 2px)
-   keeps the picture just inside it; the crop marks stay outside.
+/* The picture fills the square (O5: big, like daz; the dashed line went, the crop marks stay).
    object-fit: cover scales evenly and trims the overflow: it can crop, never stretch */
-.cad-art {
-  padding: calc(0.5rem + 2px);         /* + 2px: a hairline gap, so the picture can never cover the line */
-}
-
 .cad-art img {
   width: 100%;
   height: 100%;
@@ -551,7 +711,51 @@ html {
    ========================================================= */
 .cad-figure {
   margin: 0;                           /* browsers give <figure> a 40px side margin by default */
-  max-width: 20rem;                    /* same cap as the picture box */
+}
+
+/* ‹ › on the picture's sides and a "1 / 4" pill at the bottom, like daz (only with 2+ pictures) */
+.cad-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 2;                          /* above the crop marks */
+  translate: 0 -50%;
+  width: var(--space-7);               /* 48px: easy to tap */
+  height: var(--space-7);
+  padding: 0;
+  border: 1px solid var(--color-line);
+  border-radius: 50%;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-size: var(--step-2);
+  line-height: 1;
+  cursor: pointer;
+}
+
+.cad-arrow.is-previous { left: var(--space-4); }
+.cad-arrow.is-next { right: var(--space-4); }
+
+.cad-arrow:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.cad-count {
+  position: absolute;
+  bottom: var(--space-4);
+  left: 50%;
+  z-index: 2;
+  translate: -50% 0;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--color-sumi) 70%, transparent);
+  color: var(--color-paper);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+}
+
+/* display on the pill would beat the hidden attribute (one picture: no counter) */
+.cad-count[hidden] {
+  display: none;
 }
 
 /* The tag sits inside the dashed frame, top left, like a label stamped on the sheet */
@@ -615,59 +819,6 @@ html {
   outline-offset: 2px;
 }
 
-/* Cinzel by choice (Sleek pass): since D44 headings default to the body font */
-.cad-title {
-  margin: var(--space-1) 0 var(--space-3);
-  font-family: var(--font-display);
-}
-
-.cad-body p {
-  margin: 0 0 var(--space-3);
-}
-
-/* =========================================================
-   THE STATS: one quiet line (sleek pass, owner's pick B, 2026-11-11):
-   "8 iterations · 5 parts · 6 h print · ★★★★☆ difficulty".
-   Was a ruled 4-cell table; one line reads faster and weighs less.
-   ========================================================= */
-.cad-stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-1) var(--space-2);
-  margin: var(--space-3) 0;
-  font-family: var(--font-mono);
-  font-size: var(--step--1);
-  color: var(--color-muted);
-}
-
-/* Each stat is a <div> holding <dt> (label) then <dd> (value): a <dl> must list the label
-   first, and screen readers read it in that order ("Iterations, 8").
-   row-reverse SHOWS the value first ("8 iterations"), without changing the HTML order */
-.cad-stats div {
-  display: flex;
-  flex-direction: row-reverse;
-  align-items: baseline;
-  gap: 0.35em;
-}
-
-/* A middle dot AFTER each stat but the last, never before one: when the line wraps on a
-   phone, a dot can end a line but never start the next (same rule as joinMeta, R1b).
-   In a row-reverse row the lowest order sits furthest right, so order: -1 = the end */
-.cad-stats div:not(:last-child)::after {
-  content: "·";
-  order: -1;
-  margin-left: var(--space-1);
-}
-
-.cad-stats dt {
-  text-transform: lowercase;
-}
-
-.cad-stats dd {
-  margin: 0;
-  color: var(--color-ink);             /* the number is the part you look for */
-}
-
 .cad-back {
   font-size: var(--step--1);
 }
@@ -676,139 +827,4 @@ html {
   color: var(--color-muted);
 }
 
-/* =========================================================
-   THE INDEX (owner, 2026-11-24): every project as a clean tile above the
-   write-ups, like dazprojects: a picture on a pale square, the name, one meta
-   line, nothing around them. It's the old Home catalog (sleek pass, 2026-11-11),
-   moved here when Home became the mosaic, plus ‹ › arrows for projects with more
-   than one picture. Built by js/sectcript.js
-   ========================================================= */
-.cad-index {
-  --tile-min: 15rem;                   /* narrowest tile on a wide screen */
-  --tile-min-phone: 45%;               /* phones: 2 tiles per row */
-  margin-block: var(--space-6);
-}
-
-/* auto-FIT, not auto-fill: empty columns collapse, so 3 projects stretch across the row.
-   list-style: none makes Safari drop the "list" meaning, so the HTML adds role="list" */
-.index-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(var(--tile-min), var(--tile-min-phone)), 1fr));
-  gap: var(--space-6) var(--space-4);
-  margin: var(--space-4) 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.index-tile {
-  position: relative;                  /* the stretched link's ::after fills this box */
-}
-
-/* The picture on a pale square; overflow: hidden keeps the hover zoom inside it */
-.index-art {
-  position: relative;                  /* the arrows sit on the picture */
-  aspect-ratio: 1;
-  overflow: hidden;
-  background: var(--color-surface);
-}
-
-/* object-fit: cover fills the square evenly: it can crop, never stretch */
-.index-art img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.index-name,
-.index-meta {
-  margin: 0;
-}
-
-.index-name {
-  margin-top: var(--space-3);
-  font-family: var(--font-body);
-  font-size: var(--step-1);
-  font-weight: 600;
-}
-
-.index-name a {
-  color: var(--color-ink);
-  text-decoration: none;
-}
-
-.index-tile:hover .index-name a {
-  text-decoration: underline;
-  text-decoration-color: var(--color-highlight);
-}
-
-/* The stretched link: an empty ::after over the whole tile, so a click anywhere follows the link */
-.index-name a::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-}
-
-.index-meta {
-  margin-top: var(--space-1);
-  font-family: var(--font-mono);
-  font-size: var(--step--1);
-  color: var(--color-muted);
-  letter-spacing: var(--tracking-caps);
-  text-transform: uppercase;
-}
-
-/* Keyboard focus lands on the small name link; the ring goes round the whole tile (:has) */
-.index-tile:has(.index-name a:focus-visible) {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 3px;
-}
-
-/* ‹ › arrows, like dazprojects: small round buttons at the picture's sides.
-   z-index 1 lifts them above the stretched link, so a click on an arrow turns the picture
-   instead of following the link. They show on hover or keyboard focus; touch screens
-   (no hover) always show them, since there's no way to hover first */
-.index-arrow {
-  position: absolute;
-  top: 50%;
-  z-index: 1;
-  translate: 0 -50%;
-  width: var(--space-6);
-  height: var(--space-6);
-  padding: 0;
-  border: 1px solid var(--color-line);
-  border-radius: 50%;
-  background: var(--color-bg);
-  color: var(--color-ink);
-  font-size: var(--step-1);
-  line-height: 1;
-  cursor: pointer;
-  opacity: 0;
-}
-
-.index-arrow.is-previous { left: var(--space-2); }
-.index-arrow.is-next { right: var(--space-2); }
-
-.index-tile:hover .index-arrow,
-.index-arrow:focus-visible {
-  opacity: 1;
-}
-
-@media (hover: none) {
-  .index-arrow { opacity: 1; }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .index-arrow { transition: opacity var(--speed-fast) ease; }
-}
-
-/* The hover lift, shared with Home and Art (--lift and --shadow-lift in styles.css) */
-.index-tile:hover .index-art,
-.index-tile:has(.index-name a:focus-visible) .index-art {
-  scale: var(--lift-scale);
-  translate: 0 var(--lift);
-  box-shadow: var(--shadow-lift);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .index-art { transition: scale var(--speed) var(--ease-smooth), translate var(--speed) var(--ease-smooth), box-shadow var(--speed) var(--ease-smooth); }
-}
+/* (THE INDEX of tiles lived here from 2026-11-24 until O5 made it THE LIST, near the top) */

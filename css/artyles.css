@@ -317,7 +317,7 @@
 /* =========================================================
    THE VIEWER (R4e-3): a click opens the photo large in a <dialog>,
    on the page colour (no black box: the photo stays the only colour).
-   Three rows: count + Close, the photo, then Previous · caption · Next
+   Three rows: count + Close, the photo, then Previous, the caption, Next
    ========================================================= */
 .viewer {
   /* A dialog is a small centred box by default; this one fills the window */
