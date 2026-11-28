@@ -730,6 +730,17 @@ html {
   object-fit: cover;
 }
 
+/* A drawing is a landscape sheet, and cropping it to the square would cut off its title block
+   and border. contain shows the WHOLE sheet, letterboxed on white paper (sectcript.js sets
+   .is-drawing while a drawing is showing). Palette white, not a role: a drawing is paper in both themes */
+.cad-art.is-drawing img {
+  object-fit: contain;
+}
+
+.cad-art.is-drawing {
+  background: var(--color-paper);      /* palette white: the same in both themes */
+}
+
 /* =========================================================
    GALLERY (R2a, D33): the big picture, its CAD / Photo tag, a caption,
    and thumbnails to switch pictures (only when a project has more than one)
@@ -848,6 +859,15 @@ html {
 
 .cad-note {
   color: var(--color-muted);
+}
+
+/* The drawings' shared note, above the first project: small mono, like a general note on a sheet */
+.cad-drawing-note {
+  margin: 0 0 var(--space-5);
+  color: var(--color-muted);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: var(--tracking-caps);
 }
 
 /* (THE INDEX of tiles lived here from 2026-11-24 until O5 made it THE LIST, near the top) */

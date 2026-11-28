@@ -37,7 +37,7 @@
              mixing a new page with old styles or scripts. Change a file: bump its ?v on every page -->
         <link rel="stylesheet" href="css/styles.css?v=20261128">
         <link rel="stylesheet" href="css/cardyles.css?v=20261126">
-        <link rel="stylesheet" href="css/aboutyles.css?v=20261128">
+        <link rel="stylesheet" href="css/aboutyles.css?v=20261128-5">
         <script src="js/script.js?v=20261128" defer></script>
         <!-- No defer on purpose: it sets the saved theme before the page is drawn (no white flash) -->
         <script src="js/themcript.js?v=20261127-2"></script>
@@ -131,32 +131,64 @@
 
                     <!-- CONTENT: the hero photo (you at the bench, or a part in hand). Wide works best (about 21:9).
                          alt describes what's in it, e.g. "Zach at the workbench fitting a printed bracket" -->
-                    <img class="story-hero" src="assets/images/placeholder.svg" alt="" width="300" height="300">
+                    <!-- STAND-IN (owner, 2026-11-27): the 2019 snowboard photo, cut to 4:3 around the helmet so both the
+                         phone frame (4:3) and the wide desktop band (21:9) keep the head and shoulders. Swap in a
+                         workshop photo when there is one -->
+                    <img class="story-hero" src="assets/images/about/snowboard-2019.jpg" alt="Zach in a black snowboard helmet and mirrored goggles, standing among snow-covered spruce branches" width="2000" height="1500">
 
-                    <!-- CONTENT: the lead, in your voice (first person, owner 2026-11-16) -->
-                    <p class="story-lead">I'm a self-taught CAD designer with mechanical engineering coursework and hands-on machine-shop experience. I model parts and print them to test: printer fixes, guitar hardware and mechanisms.</p>
+                    <!-- CONTENT: the lead, in your words (owner's draft, 2026-11-28, polished as A, with B's last line: owner's pick).
+                         Two other versions to test: copy one over the paragraph below.
+                         B, ideas from everywhere:
+                           I take my ideas from the world around me. A knot from the climbing wall, a carburetor on the bench,
+                           a few lines of code: passions that have nothing to do with each other keep meeting in the same
+                           problem, and that's usually where the answer is.
+                         C, short and plain:
+                           Designer, instructor, maker, artist, athlete. One word never fits, so here's what I do instead:
+                           I design parts in CAD and print them, fix small engines, teach rock climbing, make videos and write
+                           code. Each one teaches me something another one needs. -->
+                    <p class="story-lead">It's hard to put into words what I am, let alone what I do. Designer, instructor, maker, artist, athlete: none of the words fit on their own, so I stopped picking one. There's beauty everywhere, and I only want to catch a glimpse of it. An architect sees it in buildings; a shipwright, in boats. I keep finding it in new places. So far I make simple gadgets, repair engines, film for YouTube, sell on Etsy and write code.</p>
 
                     <section>
                         <h2>Origin</h2>
                         <!-- CONTENT: how you got here (rewritten in first person from the old Background and Education) -->
                         <p>From 2021 to 2024 I led the steering design for the University of Ottawa's GNCTR concrete toboggan team: three seasons of rebuilding the system after the team's COVID pause, revising it from test results, and machining and welding the parts on CNC, lathe and shop equipment.</p>
                         <p>In the summers I worked as a junior inspector with WSP, checking installed sewer and water services against engineering drawings and standards.</p>
-                        <p>I studied Mechanical Engineering (B.A.Sc. program) at the University of Ottawa from 2020 to 2024 and plan to complete the remaining requirements. Highlights: first place at the Design Day competition with a medical VR program, and two roles in the Engineering Students Society, first-year representative and manager of sports.</p>
+                        <!-- The leave says "injuries" and stops there (owner, 2026-11-28). A diagnosis on a public page is
+                             there for good and gets searched; the public resume leaves health detail out for the same reason -->
+                        <p>I studied Mechanical Engineering (B.A.Sc. program) at the University of Ottawa from 2020 until injuries made me take a leave in 2024. I plan to finish the remaining requirements.</p>
                     </section>
 
-                    <!-- CONTENT: three photos, any shape (they're cropped to 4:3). Captions say what and when -->
+                    <!-- The photo row (owner's photos, 2026-11-28): the toboggan carried, its runners, the makerspace,
+                         the team's sign and, tall on the right, the toboggan from inside. Any shape works: each is cut square in the middle (aboutyles.css), because they came
+                         square, tall and wide. Captions say what and when. alt says what's IN the photo, for people
+                         who can't see it; the caption is read too, so alt doesn't repeat it.
+                         To add or swap one: put it in assets/images/about/, run  python tools/art.py --clean assets/images/about
+                         (strips GPS, prints width/height), then change src, alt, width and height here -->
                     <div class="story-row">
                         <figure>
-                            <img src="assets/images/placeholder.svg" alt="" width="300" height="300" loading="lazy">
-                            <figcaption>Toboggan steering, GNCTR</figcaption>
+                            <img src="assets/images/about/gnctr-toboggan-2023.jpg" alt="Six teammates in helmets carry the toboggan's red-netted steel frame across packed snow." width="1170" height="1175" loading="lazy">
+                            <figcaption>Carrying the toboggan, GNCTR 2023</figcaption>
                         </figure>
                         <figure>
-                            <img src="assets/images/placeholder.svg" alt="" width="300" height="300" loading="lazy">
-                            <figcaption>The shop</figcaption>
+                            <img src="assets/images/about/gnctr-runners-2023.jpg" alt="Two concrete toboggan runners with blue tops on a workbench, a welded aluminium mount on each, the team's trophies behind them." width="2000" height="1500" loading="lazy">
+                            <figcaption>Concrete runners and steering mounts, 2023</figcaption>
                         </figure>
                         <figure>
-                            <img src="assets/images/placeholder.svg" alt="" width="300" height="300" loading="lazy">
-                            <figcaption>A printed part in use</figcaption>
+                            <img src="assets/images/about/makerspace-2020.jpg" alt="Zach on a step stool checking a small yellow print at a wall of 3D printers, snow outside the window." width="2000" height="2000" loading="lazy">
+                            <figcaption>In the makerspace, 2020</figcaption>
+                        </figure>
+                        <figure>
+                            <img src="assets/images/about/gnctr-sign-2023.jpg" alt="The uOttawa GNCTR team sign, a black toboggan logo over a blue sky with the sponsors below, hung in a workshop among pipes and cables." width="1933" height="1895" loading="lazy">
+                            <figcaption>The team's sign in the shop, 2023</figcaption>
+                        </figure>
+                        <!-- The tall one (owner, 2026-11-28: "keep full height"): it spans both rows on the right, so the
+                             whole photo shows top to bottom and only its sides are trimmed. The frame around the img
+                             lets the photo fill whatever height the two rows get, instead of setting that height -->
+                        <figure class="story-tall">
+                            <div class="story-tall-frame">
+                                <img src="assets/images/about/in-the-toboggan-2023.jpg" alt="Zach lying back in the toboggan's padded steel frame, hands behind his head, in patched coveralls, red safety netting on both sides." width="1500" height="2000" loading="lazy">
+                            </div>
+                            <figcaption>In the toboggan, GNCTR 2023</figcaption>
                         </figure>
                     </div>
 
@@ -181,34 +213,47 @@
 
                     <section>
                         <h2>Now</h2>
-                        <p>Since January 2026 I've run a small product design business, with 13 original designs published on maker platforms and 8 products for sale: laboratory accessories, portable games, workshop tools and hobby gear. Alongside it I run a small-engine repair service in Clarington.</p>
+                        <!-- CONTENT: owner's draft, 2026-11-28, retold in time order. The owner's own order, to test instead:
+                             Since January 2026 I've taken design and code seriously, with designs published on MakerWorld and
+                             Etsy that run from a camera tripod to lab gear. Alongside them I run a YouTube channel and a
+                             small-engine repair shop, and I teach rock climbing and rope work. After two years of injuries
+                             between four walls, I realized I had never been taking steps for myself. Now it's hard not to.
+                             I'm excited, and grateful for the journey. -->
+                        <p>Two years of injuries kept me between four walls, and somewhere in there I realized I had never really taken steps for myself. Now it's hard not to.</p>
+                        <p>Since January 2026 I've taken design and code seriously. <a href="projects.html">My designs</a> are published on MakerWorld and Etsy, from a camera tripod to lab gear. Alongside them I fix small engines in my own repair shop, edit video for my YouTube channel, and teach rock climbing. I'm excited for where it goes, and grateful for every step of it.</p>
                     </section>
 
                     <section>
                         <h2>Next</h2>
-                        <!-- CONTENT: DRAFT by Claude from the Contact page's status line. Rewrite in your words:
-                             the roles you're after and what you want to build -->
-                        <p>I'm open to internships and projects in mechanical design. If you have a part that needs designing, <a href="contact.html">get in touch</a>.</p>
+                        <!-- CONTENT: owner's words, 2026-11-28. The paint buckets are real: GM's paint shop, 2023 (resume) -->
+                        <p>I'm open to opportunities of any size: jobs, internships and projects. Need a volunteer? I'll be your second photographer at a wedding or an extra pair of hands at a charity event. I'd work a fish market or fill paint buckets; I like nearly everything, and life is pretty cool. <a href="contact.html">Get in touch</a>.</p>
                     </section>
 
-                    <!-- The facts recruiters scan for, on hairlines. A <dl> pairs each label with its value
-                         for screen readers ("term, definition"). CONTENT: confirm the years.
-                         Each count is worked out from the year you STARTED (data-since, js/script.js), so
-                         it goes up by itself every January: change the data-since year, never the number.
-                         data-unit="year" writes the words too ("Under a year", "1 year", "7 years") -->
+                    <!-- AT A GLANCE (owner, 2026-11-28): two short lists, side by side when there's room. Tools with their
+                         years on the left, background on the right. Each list reads top to bottom, label left and value
+                         right, styled like the facts on the CAD page so the site has one way to show facts. (The first try,
+                         a spec sheet with links and small grey years, looked busier: owner, 2026-11-28.)
+                         A <dl> pairs each label with its value for screen readers ("term, definition").
+                         The years count themselves from the year you STARTED (data-since, js/script.js): change the
+                         year, never the number. data-unit="year" writes "Under a year", "1 year", "7 years".
+                         CONTENT: confirm the years (6/6/5 are estimates) -->
                     <section class="story-facts">
                         <h2>At a glance</h2>
-                        <dl>
-                            <div><dt>Education</dt><dd>University of Ottawa, Mechanical Engineering</dd></div>
-                            <div><dt>CAD since</dt><dd>2019</dd></div>
-                            <div><dt>Known for</dt><dd><a href="projects.html#bridge-guitar">Bridge Guitar</a></dd></div>
-                            <!-- Where a skill has work to show, its name links to it (Fusion: the CAD page, the
-                                 languages: the Code page). SolidWorks gets a link once a SolidWorks project is up -->
-                            <div><dt><a href="projects.html">Fusion 360</a></dt><dd data-since="2019" data-unit="year">7 years</dd></div>
-                            <div><dt>SolidWorks</dt><dd data-since="2020" data-unit="year">6 years</dd></div>
-                            <div><dt><a href="code.html">Python, C and C++</a></dt><dd data-since="2020" data-unit="year">6 years</dd></div>
-                            <div><dt>CNC, lathe and welding</dt><dd data-since="2026" data-unit="year">Under a year</dd></div>
-                        </dl>
+                        <div class="glance">
+                            <dl>
+                                <div><dt>Fusion 360</dt><dd data-since="2019" data-unit="year">7 years</dd></div>
+                                <div><dt>SolidWorks</dt><dd data-since="2020" data-unit="year">6 years</dd></div>
+                                <div><dt>Python, C and C++</dt><dd data-since="2020" data-unit="year">6 years</dd></div>
+                                <div><dt>Small-engine repair</dt><dd data-since="2026" data-unit="year">Under a year</dd></div>
+                                <div><dt>CNC, lathe and welding</dt><dd data-since="2026" data-unit="year">Under a year</dd></div>
+                            </dl>
+                            <dl>
+                                <div><dt>Education</dt><dd>University of Ottawa, Mechanical Engineering</dd></div>
+                                <div><dt>Teaching</dt><dd>Rock climbing, snowboarding (CASI)</dd></div>
+                                <div><dt>Volunteering</dt><dd>Since 2015</dd></div>
+                                <div><dt>Known for</dt><dd><a href="projects.html#bridge-guitar">Bridge Guitar<span aria-hidden="true"> &rarr;</span></a></dd></div>
+                            </dl>
+                        </div>
                     </section>
                 </article>
 
@@ -222,9 +267,10 @@
                     <div class="card-holder">
                         <div class="bp-card" role="img" aria-label="Trading card: Zach Nott, designer, maker, fabricator. Fusion 360 since 2019, SolidWorks since 2020, Python since 2020, CNC since 2026.">
                             <span class="card-top"><span class="card-tool">CAD</span><span class="card-name">Zach Nott</span><span class="card-number">00</span></span>
-                            <!-- CONTENT: your portrait (strip EXIF/GPS first) -->
+                            <!-- CONTENT: your portrait (owner's photo, 2019, on the slopes; cropped square around you and
+                             cleaned with tools/art.py --clean). alt="" because the card (role="img") has one description -->
                             <span class="card-art">
-                                <img src="assets/images/placeholder.svg" alt="" width="300" height="300">
+                                <img src="assets/images/about/portrait-2019.jpg" alt="" width="1200" height="1200">
                                 <span class="card-stats">
                                     <span class="card-stat"><span class="card-icon">◆</span><b><span data-since="2019">7</span>y</b><small>F360</small></span>
                                     <span class="card-stat"><span class="card-icon">◆</span><b><span data-since="2020">6</span>y</b><small>SW</small></span>

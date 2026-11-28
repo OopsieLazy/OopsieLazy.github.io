@@ -3,6 +3,7 @@
     "id": "bridge-guitar",
     "name": "Bridge Guitar",
     "image": "assets/images/bridge-guitar-v8.png",
+    "thumb": "assets/images/bridge-guitar-v8-small.png",
     "alt": "Bridge guitar, CAD render",
     "images": [
       {"src": "assets/images/bridge-guitar-v8.png", "alt": "Bridge guitar, CAD render", "kind": "cad", "caption": "Version 8, CAD render"}
@@ -19,6 +20,7 @@
     "id": "end-stop-cap",
     "name": "End Stop Cap",
     "image": "assets/images/geetech-end-stop-cap-v4.png",
+    "thumb": "assets/images/geetech-end-stop-cap-v4-small.png",
     "alt": "End stop cap for a Geetech 3D printer, CAD render",
     "images": [
       {"src": "assets/images/geetech-end-stop-cap-v4.png", "alt": "End stop cap for a Geetech 3D printer, CAD render", "kind": "cad", "caption": "Version 4, CAD render"}
@@ -35,6 +37,7 @@
     "id": "latch-hinge",
     "name": "Latch Hinge",
     "image": "assets/images/latch-hinge-v1.png",
+    "thumb": "assets/images/latch-hinge-v1-small.png",
     "alt": "Latch hinge, CAD render",
     "images": [
       {"src": "assets/images/latch-hinge-v1.png", "alt": "Latch hinge, CAD render", "kind": "cad", "caption": "Version 1, CAD render"}
@@ -46,5 +49,19 @@
     "description": "A hinge with a latch that prints as one piece, already assembled.",
     "flavor": "Printed shut, opened working.",
     "stats": { "iterations": 1, "parts": 2, "printHours": 3, "difficulty": 3 }
+  },
+  {
+    "id": "parametric-funnel",
+    "name": "Parametric Funnel",
+    "image": "assets/images/parametric-funnel/funnel-render.png",
+    "thumb": "assets/images/parametric-funnel/funnel-render-small.png",
+    "alt": "Parametric funnel, CAD render: a wide round rim over a cone that narrows into a long curved spout",
+    "images": [
+      {"src": "assets/images/parametric-funnel/funnel-render.png", "alt": "Parametric funnel, CAD render: a wide round rim over a cone that narrows into a long curved spout", "kind": "cad", "caption": "CAD render"}
+    ],
+    "type": "Part, 3D print",
+    "tool": "F360",
+    "featured": false,
+    "description": "A funnel whose size and spout angle are set by parameters, so one model makes any funnel."
   }
 ]

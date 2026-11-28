@@ -115,6 +115,7 @@ function buildGallery(project) {
         count.textContent = `${i + 1} / ${pictures.length}`;
         main.src = picture.src;
         main.alt = picture.alt || "";
+        art.classList.toggle("is-drawing", picture.kind === "drawing");   // whole sheet, not cropped (projyles.css)
         tag.textContent = KIND_LABEL[picture.kind] || "";
         tag.hidden = !KIND_LABEL[picture.kind];
         // The caption, plus a link to the drawing's PDF when it has one (the sheet at full detail)
@@ -166,7 +167,8 @@ function buildGallery(project) {
 // One row: a small picture, the name, its DWG number. The whole row is ONE link down to the
 // project's block. alt="" on the picture: the name inside the same link already says it all
 function buildIndexRow(project, index, id) {
-    const image = makeImage(projectImages(project)[0].src);
+    // The small copy when there is one (tools/render.py): this picture is only 48 px wide
+    const image = makeImage(project.thumb || projectImages(project)[0].src);
     image.loading = "lazy";
     // The " " between the two spans matters: without it a screen reader hears "Bridge Guitar01"
     const link = make("a", "index-row", image,
@@ -256,6 +258,12 @@ async function initSections() {
         entries.append(buildEntry(project, i, ids[i], next));
         list?.append(buildIndexRow(project, i, ids[i]));
     });
+
+    // The drawings' shared note (projects.html) shows once any project has a drawing
+    const hasDrawing = projects.some((project) =>
+        Array.isArray(project.images) && project.images.some((picture) => picture?.kind === "drawing"));
+    const note = document.querySelector("#drawing-note");
+    if (note) note.hidden = !hasDrawing;
 
     scrollToHash();
 }
