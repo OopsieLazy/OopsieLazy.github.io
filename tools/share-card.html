@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<title>Share picture maker</title>
+<link rel="stylesheet" href="../css/styles.css">
+<style>
+  /* The link-preview picture (og:image, L1b), 1200 x 630. Not a page of the site: open it, take a
+     1200 x 630 screenshot and save it as assets/images/share-card.png (README, "Share picture").
+     Built from the site's own fonts and the owner's real renders and photos: swap the three <img>
+     below for new ones whenever the work changes */
+  html, body { margin: 0; background: #fff; }
+  body { width: 1200px; height: 630px; overflow: hidden; display: grid; grid-template-columns: 520px 1fr; font-family: var(--font-body); color: #303030; }
+  .words { padding: 72px 0 64px 72px; display: flex; flex-direction: column; }
+  .name { font: 600 76px/1 var(--font-body); letter-spacing: -0.01em; color: #385850; margin: 0; }
+  .mark { width: 96px; height: 7px; margin: 22px 0 28px; background: linear-gradient(90deg, #3B5BA5 0 20%, #59877D 20% 40%, #909E87 40% 60%, #D0C0A0 60% 80%, #B0204C 80% 100%); }
+  .what { font-size: 30px; line-height: 1.35; margin: 0; max-width: 16ch; }
+  .url { position: absolute; left: 72px; bottom: 56px; margin: 0; font: 22px var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: #666; }
+  .pics { min-height: 0; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 12px; padding: 12px 12px 12px 0; }
+  .pics img { width: 100%; height: 100%; min-height: 0; object-fit: cover; display: block; background: #b3b3b3; }
+  .pics .render { object-fit: contain; }   /* renders shown whole on their own grey, never cut through */
+  .pics .tall { grid-row: span 2; }
+</style>
+</head>
+<body>
+  <div class="words">
+    <p class="name">Zach Nott</p>
+    <div class="mark"></div>
+    <p class="what">Mechanical design, CAD and the things I print</p>
+    <p class="url">nottco.ca</p>
+  </div>
+  <div class="pics">
+    <img class="tall render" src="../assets/images/bridge-guitar-v8.png" alt="">
+    <img src="../assets/images/art/hairy-woodpecker-looking-up-2026.jpg" alt="">
+    <img class="render" src="../assets/images/geetech-end-stop-cap-v4.png" alt="">
+  </div>
+</body>
+</html>

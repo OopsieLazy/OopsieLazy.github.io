@@ -11,23 +11,39 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- CONTENT: the tab title and the text search engines and link previews show -->
         <title>Zach Nott Code Portfolio</title>
-        <meta name="description" content="Code projects by Zach Nott: what each one does, its status and the tools behind it.">
+        <meta name="description" content="Code by Zach Nott: small tools for the workshop and everyday use, shown as a pixel-art workshop where every object holds a shelf of projects.">
         <!-- Staging (L1, D47): search engines skip the site until launch. Removing this line IS the launch (L3) -->
         <meta name="robots" content="noindex">
+        <!-- Link previews (L1b): what a shared link shows in a chat or a post. Every address here is FULL
+             (https://...): those sites fetch it from their own servers, so a relative path means nothing to them.
+             canonical names the one true address of this page. share-card.png is 1200 x 630, the size link
+             previews use (README, "Share picture"). CONTENT: og:title and og:description follow the tab title
+             and description above; change them together -->
+        <link rel="canonical" href="https://nottco.ca/code.html">
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="Zach Nott">
+        <meta property="og:title" content="Zach Nott Code Portfolio">
+        <meta property="og:description" content="Code by Zach Nott: small tools for the workshop and everyday use, shown as a pixel-art workshop where every object holds a shelf of projects.">
+        <meta property="og:url" content="https://nottco.ca/code.html">
+        <meta property="og:image" content="https://nottco.ca/assets/images/share-card.png">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:image:alt" content="Zach Nott: mechanical design, CAD and the things I print, beside two CAD renders and a photo">
+        <meta name="twitter:card" content="summary_large_image">
         <!-- The five stripes; an SVG icon stays sharp at any size and switches to greys in dark mode -->
         <link rel="icon" href="favicon.svg" type="image/svg+xml">
         <!-- Each CSS and JS link carries ?v=<date it last changed>. A browser keeps files it has
              downloaded; a new ?v makes the address new, so it fetches the new file instead of
              mixing a new page with old styles or scripts. Change a file: bump its ?v on every page -->
-        <link rel="stylesheet" href="css/styles.css?v=20261127-2">
-        <link rel="stylesheet" href="css/codyles.css?v=20261127-2">
+        <link rel="stylesheet" href="css/styles.css?v=20261128">
+        <link rel="stylesheet" href="css/codyles.css?v=20261128">
         <!-- The workshop waits for its art before it shows: start downloading it now, alongside the
              scripts, instead of after them. crossorigin on the JSON matches how fetch() asks for it -->
         <link rel="preload" href="assets/images/workshop/sprites.json?v=20261126" as="fetch" crossorigin>
         <link rel="preload" href="assets/images/workshop/sprites.png?v=20261126" as="image">
         <link rel="preload" href="assets/images/workshop/room-layer.png?v=20261126" as="image">
         <link rel="preload" href="assets/images/workshop/wall-layer.png?v=20261126" as="image">
-        <script src="js/script.js?v=20261127" defer></script>
+        <script src="js/script.js?v=20261128" defer></script>
         <!-- datacript.js holds the shared JSON helpers, so it loads before codcript.js (defer keeps this order) -->
         <script src="js/datacript.js?v=20261126-2" defer></script>
         <!-- workcript.js draws the workshop; codcript.js lays the buttons over it, so the room loads first -->
@@ -48,7 +64,7 @@
 
                 <nav id="site-nav" class="main-nav wrapper" aria-label="Main">
                     <!-- Mobile menu button: hidden until js/script.js runs, so without JS the links just stay visible -->
-                    <button id="menu-toggle" class="menu-toggle" type="button" aria-expanded="true" hidden>
+                    <button id="menu-toggle" class="button menu-toggle" type="button" aria-expanded="true" hidden>
                         <span aria-hidden="true">&#9776;</span> <span class="menu-word">Menu</span>
                     </button>
 
@@ -210,7 +226,7 @@
                     <!-- Most repos are private: an honest way in -->
                     <section class="code-ask wrapper" aria-label="Source code">
                         <p>Most of these live in private repos. If one is useful to you, ask, and I'll walk you through it or share the code.</p>
-                        <a class="code-ask-link" href="contact.html#email">Ask about a project</a>
+                        <a class="button code-ask-link" href="contact.html#email">Ask about a project</a>
                     </section>
                 </div>
 

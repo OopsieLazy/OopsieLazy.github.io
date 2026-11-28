@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <!-- Security (L2): a Content Security Policy. GitHub Pages can't send headers, so it rides in a
+             meta tag, first in <head> because it only covers what comes after it. Every script, style,
+             font, picture and fetch must come from this site: an injected <script> or a tag pointing at
+             another server simply won't load. No page uses inline code, so nothing needs 'unsafe-inline' -->
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- CONTENT: the tab title and the text search engines and link previews show -->
+        <title>Zach Nott Page not found</title>
+        <meta name="description" content="This page doesn't exist on nottco.ca.">
+        <!-- Always noindex, even after launch: a "not found" page should never show up in search results -->
+        <meta name="robots" content="noindex">
+        <!-- 404 (L2). GitHub Pages shows this file for ANY address that doesn't exist, at any depth
+             (nottco.ca/a/b/c too). From there a relative path like "css/styles.css" would point at
+             /a/b/css/styles.css and fail, so this one page links from the site's root ("/css/..."):
+             the one exception to the relative-links rule (CLAUDE.md). The pixel museum room planned
+             as 4.2 can replace it later -->
+        <!-- The five stripes; an SVG icon stays sharp at any size and switches to greys in dark mode -->
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+        <!-- Each CSS and JS link carries ?v=<date it last changed>. A browser keeps files it has
+             downloaded; a new ?v makes the address new, so it fetches the new file instead of
+             mixing a new page with old styles or scripts. Change a file: bump its ?v on every page -->
+        <link rel="stylesheet" href="/css/styles.css?v=20261128">
+        <script src="/js/script.js?v=20261128" defer></script>
+        <!-- No defer on purpose: it sets the saved theme before the page is drawn (no white flash) -->
+        <script src="/js/themcript.js?v=20261127-2"></script>
+    </head>
+    
+    <body class="thecontactpage">
+
+        <div id="page" class="site">
+            <a class="skip-link screen-reader-text" href="#content">Skip to content</a>
+            <!-- Same header in index.html, projects.html, aboutme.html, contact.html, code.html and art.html: change all six together -->
+            <header id="topbranch" class="site-header">
+                <div class="site-branding">
+                </div>
+
+                <nav id="site-nav" class="main-nav wrapper" aria-label="Main">
+                    <!-- Mobile menu button: hidden until js/script.js runs, so without JS the links just stay visible -->
+                    <button id="menu-toggle" class="button menu-toggle" type="button" aria-expanded="true" hidden>
+                        <span aria-hidden="true">&#9776;</span> <span class="menu-word">Menu</span>
+                    </button>
+
+                    <!-- Left Side Of Header -->
+                    <div class="header-column-left">
+                        <ul class="header-left-list">
+                            <li class="header-left-item" id="item-cad">
+                                <a class="menu-link" href="/projects.html">CAD</a></li>
+                            <li class="header-left-item" id="item-code">
+                                <a class="menu-link" href="/code.html">Code</a></li>
+                            <li class="header-left-item" id="item-art">
+                                <a class="menu-link" href="/art.html">Art</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Center Of Header -->
+                    <!-- Your name is the Home link (O1, D51). Typed normally here; the CSS sets it in capitals,
+                         so screen readers say "Zach Nott" instead of spelling Z-A-C-H -->
+                    <div class="header-column-center">
+                        <a href="/index.html" class="size-spacing-style-logo">
+                            <span class="header-name">Zach Nott</span>
+                        </a>
+                    </div>
+
+                    <!-- Right Side Of Header -->
+                    <div class="header-column-right">
+                        <div class="inner-menu">
+                            <div id="primary-nav" class="menu-wrap">
+                                <ul class="menu-horizontal">
+                                    <li class="header-right-item" id="item-about">
+                                        <a class="menu-link" href="/aboutme.html">About</a></li>
+                                    <li class="header-right-item" id="item-contact">
+                                        <a class="menu-link" href="/contact.html">Contact</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+                <!-- Theme switch (O1, D51; three words since the owner's pick T1, 2026-11-27): Day, Night and
+                     Auto, the one in use underlined like the current page in the nav. Each word is a button
+                     with aria-pressed, so a screen reader hears "Night, toggle button, pressed". Phones show
+                     only the word in use, and pressing it moves on to the next (styles.css, THE THEME SWITCH).
+                     Hidden until js/themcript.js runs: without JS the site simply follows the OS -->
+                <div class="theme-switch" role="group" aria-label="Theme" hidden>
+                    <button class="theme-choice" type="button" data-choice="day">Day</button>
+                    <button class="theme-choice" type="button" data-choice="lantern">Night</button>
+                    <button class="theme-choice" type="button" data-choice="auto">Auto</button>
+                </div>
+            </header>
+
+            <!-- Landmarks: screen readers can jump straight to main or footer. The skip link targets #content -->
+            <main id="content" class="site-main wrapper">
+                <h1 class="lost-title">Page not found</h1>
+                <!-- CONTENT: the owner can reword this -->
+                <p>Nothing lives at this address. It may have moved when the site was rebuilt.</p>
+                <!-- Every page, as the shared square buttons (styles.css, THE BUTTON) -->
+                <p class="lost-links">
+                    <a class="button button-solid" href="/">Home</a>
+                    <a class="button" href="/projects.html">CAD</a>
+                    <a class="button" href="/code.html">Code</a>
+                    <a class="button" href="/art.html">Art</a>
+                    <a class="button" href="/aboutme.html">About</a>
+                    <a class="button" href="/contact.html">Contact</a>
+                </p>
+            </main>
+
+            <!-- The footer: a slim pine band, centred (E1, D53); .footer-inner keeps it lined up with the page -->
+            <footer class="site-footer">
+                <div class="footer-inner wrapper">
+                    <!-- Same footer in all six pages: change them together.
+                         Declutter (D-a, 2026-11-23): only what the header doesn't already give you,
+                         the outside links and the © line. The name and the page list were the header twice.
+                         One centred row of links, then the © line with the stripe mark under the name (css/styles.css, FOOTER).
+                         Every link uses the same pattern: to fill one in, change only its href (and text) -->
+                    <!-- Two groups in one wrapper: side by side on phones, one dotted row on wider screens -->
+                    <div class="footer-extras">
+                        <!-- The owner's profiles on other sites -->
+                        <div class="footer-group">
+                            <p class="footer-label">Elsewhere</p>
+                            <ul class="footer-list">
+                                <li class="footer-item"><a class="footer-link" href="https://github.com/OopsieLazy">GitHub</a></li>
+                                <li class="footer-item"><a class="footer-link" href="https://makerworld.com/en/@Azuya_1500">MakerWorld</a></li>
+                            </ul>
+                        </div>
+                        <!-- Email and Resume go to the contact page (2.2), which keeps the address out of
+                             the HTML: a plain mailto: here would be scraped by spam bots -->
+                        <div class="footer-group">
+                            <p class="footer-label">Get in touch</p>
+                            <ul class="footer-list">
+                                <li class="footer-item"><a class="footer-link" href="/contact.html#email">Email</a></li>
+                                <li class="footer-item"><a class="footer-link" href="/contact.html#resume">Resume</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p class="footer-copy">&copy; <span data-year>2026</span> <span class="footer-name">Zach Nott</span></p>
+                </div>
+            </footer>
+        </div>
+    </body>
+
+</html>

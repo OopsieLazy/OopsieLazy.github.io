@@ -80,48 +80,6 @@
   overflow-wrap: anywhere;             /* a long address wraps instead of widening the page on phones */
 }
 
-/* Outline pill, the same look as the carousel's Pause button.
-   No display rule on purpose: it would override the hidden attribute */
-.copy-button {
-  padding: var(--space-1) var(--space-4);
-  border: 1px solid var(--color-accent);
-  border-radius: var(--radius-pill);
-  background: none;
-  color: var(--color-accent);
-  font-family: var(--font-mono);
-  font-size: var(--step--1);
-  cursor: pointer;
-}
-
-.copy-button:hover {
-  border-color: var(--color-highlight);
-}
-
-/* A link styled as a filled button (it navigates to a file, so it stays <a>).
-   Same pattern as the home page's .hero-button.is-primary */
-.tb-button {
-  display: inline-block;
-  padding: var(--space-2) var(--space-5);
-  border: 1px solid var(--color-accent);
-  border-radius: var(--radius-pill);
-  background: var(--color-accent);
-  color: var(--color-bg);              /* page colour on the accent: 7.8 by day, 11.0 at night */
-  text-decoration: none;
-}
-
-.tb-button:hover {
-  border-color: var(--color-highlight);
-}
-
-/* styles.css gives focused links a colour change instead of a ring; on a filled
-   button that would clash, so this one gets the ring back (same fix as home) */
-.tb-button:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
-  color: var(--color-bg);
-  text-shadow: none;
-}
-
 .tb-links {
   display: flex;
   flex-wrap: wrap;

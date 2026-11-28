@@ -40,22 +40,48 @@ function buildStats(stats = {}, tool) {
     add("Parts", stats.parts);
     add("Print time", stats.printHours != null ? `${stats.printHours} h` : null);
     add("Filament", stats.filament);                  // optional, e.g. "PETG, 85 g"
-    if (stats.difficulty != null) {
-        const level = Math.min(5, Math.max(0, stats.difficulty)); // keep it within 0 to 5
-        // Stars are for the eyes; a screen reader would say "black star, black star…",
-        // so it gets the plain words instead
-        add("Difficulty", make("span", "",
-            make("span", "cad-stars", "★".repeat(level) + "☆".repeat(5 - level)),
-            make("span", "screen-reader-text", `${level} out of 5`)
-        ));
-    }
+    // (Difficulty was shown here until 2026-11-27: owner, "remove difficulty". The JSON keeps it
+    // for Home's trading cards)
     add("Made in", TOOL_NAMES[tool] || tool);
     return list;
 }
 
+// THE RESULT LINES (owner, 2026-11-27, from the kylepurser.net reference: show proof).
+// "result" is free text for a placing or an outcome ("First place, school design fair").
+// "makerworldStats" is the model's numbers, copied by hand from its MakerWorld page:
+//   { "downloads": 61, "prints": 31, "checked": "2026-11" }
+// MakerWorld has no public API and sits behind a bot check, so the page can't fetch them live;
+// "checked" says how fresh they are, so a number is never passed off as today's
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+function makerworldLine(numbers) {
+    if (!numbers) return null;
+    const parts = [];
+    if (numbers.downloads != null) parts.push(`${numbers.downloads} downloads`);
+    if (numbers.prints != null) parts.push(`${numbers.prints} prints`);
+    if (!parts.length) return null;
+    // "2026-11" becomes "Nov 2026". Anything else is left off rather than shown wrong
+    const [, year, month] = /^(\d{4})-(\d{2})$/.exec(numbers.checked || "") || [];
+    const when = year && MONTHS[Number(month) - 1] ? ` (${MONTHS[Number(month) - 1]} ${year})` : "";
+    return parts.join(", ") + when;
+}
+
+function addResults(list, project) {
+    const add = (label, value) => {
+        if (!value) return;
+        list.append(make("div", "", make("dt", "", label), make("dd", "", value)));
+    };
+    add("Result", project.result);
+    add("MakerWorld", makerworldLine(project.makerworldStats));
+}
+
 /* ---------- Gallery (R2a, D33): one big picture, thumbnails to switch ---------- */
 
-const KIND_LABEL = { cad: "CAD", photo: "Photo" };   // the tag in the picture's corner
+const KIND_LABEL = { cad: "CAD", photo: "Photo", drawing: "Drawing" };   // the tag in the picture's corner
+
+// A drawing can carry its PDF: { "kind": "drawing", "src": "...png", "pdf": "assets/docs/....pdf" }.
+// SECURITY: only a PDF in our own docs folder becomes a link (no other sites, no "javascript:")
+const OWN_PDF = /^assets\/docs\/[\w./-]+\.pdf$/;
 
 // The project's pictures. "images" is a list of { src, alt, kind, caption }.
 // A project with only the older single "image" still works: it becomes a one-picture list
@@ -91,8 +117,14 @@ function buildGallery(project) {
         main.alt = picture.alt || "";
         tag.textContent = KIND_LABEL[picture.kind] || "";
         tag.hidden = !KIND_LABEL[picture.kind];
-        caption.textContent = picture.caption || "";
-        caption.hidden = !picture.caption;
+        // The caption, plus a link to the drawing's PDF when it has one (the sheet at full detail)
+        caption.replaceChildren(picture.caption || "");
+        if (OWN_PDF.test(picture.pdf || "")) {
+            const pdf = make("a", "cad-pdf", "Open the drawing (PDF)");
+            pdf.href = picture.pdf;
+            caption.append(picture.caption ? " " : "", pdf);
+        }
+        caption.hidden = !caption.textContent;
         // aria-pressed tells screen readers which thumbnail is the one showing
         buttons.forEach((button, k) => button.setAttribute("aria-pressed", String(k === i)));
     }
@@ -161,7 +193,7 @@ function buildEntry(project, index, id, next) {
     // The buttons under the specs: MakerWorld (when the JSON has a link), then the next project
     const actions = make("p", "cad-actions");
     if (MAKERWORLD.test(project.makerworld || "")) {
-        const maker = make("a", "cad-button", "MakerWorld");
+        const maker = make("a", "button button-solid", "MakerWorld");   // the shared button (styles.css, X8)
         maker.href = project.makerworld;
         actions.append(maker);
     }
@@ -171,11 +203,13 @@ function buildEntry(project, index, id, next) {
 
     // The facts column. On wide screens it stays beside the picture and scrolls on its own
     // (projyles.css, THE FACTS COLUMN), like daz
+    const stats = buildStats(project.stats, project.tool);
+    addResults(stats, project);               // the proof rows go in the same table, last
     const info = make("div", "cad-info",
         make("p", "cad-kicker", joinMeta([twoDigits(index + 1), project.type, project.year])),
         title,
         make("p", "cad-lead", project.description || ""),
-        buildStats(project.stats, project.tool),
+        stats,
         actions,
         ...writeup
     );

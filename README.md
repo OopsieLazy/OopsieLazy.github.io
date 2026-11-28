@@ -37,6 +37,16 @@ Use a local server rather than double-clicking the file, because JS modules (Pha
 
 ## Add a project
 
+**What to gather first**, one folder per project (`assets/images/<id>/`):
+
+- 1 to 4 renders, square, 1600 x 1600 PNG (Fusion: File, Capture Image), the first one is the cover
+- 1 or 2 photos of the printed part in use, square JPEG (run `python tools/art.py --clean assets/images/<id>` to strip location data)
+- the facts, true ones only: how many versions, how many parts, print time in hours
+- the MakerWorld address, if it's published there
+- optional: two or three short paragraphs on what it does and what went wrong on the way (the write-up)
+
+There's no database to set up: `data/projects.json` is the database, a plain text file the pages read. GitHub Pages only serves files, so a real database would need a server somewhere else; one JSON file is enough for dozens of projects.
+
 Add one object to `data/projects.json`: Home builds its tile, and the CAD page builds its row in the list, its sheet in the carousel and its project block:
 
 - `id`: lowercase-kebab-case, unique. It's the link anchor, `projects.html#bridge-guitar`; a bad or clashing id still shows the entry but gets no link (the console says why)
@@ -44,11 +54,17 @@ Add one object to `data/projects.json`: Home builds its tile, and the CAD page b
 - `featured`: `true` puts it in Home's "Featured cards" drawer (up to 3)
 - Optional: `tool` (`F360`, `SW`, `OS`; the names are in `TOOL_NAMES` in `js/sectcript.js`), `description` (the one line under the name), `flavor`, `stats` (`iterations` shown as Versions, `parts`, `printHours`, `filament` like `"PETG, 85 g"`, `difficulty` 1 to 5). Leave out anything that isn't true: a missing value is simply not shown.
 - Optional: `makerworld`, the model's page, e.g. `"https://makerworld.com/en/models/123456"`. It becomes the MakerWorld button; anything not starting with `https://makerworld.com/` is ignored on purpose.
+- Optional: `makerworldStats`, its numbers from that page: `{ "downloads": 61, "prints": 31, "checked": "2026-11" }`. They show in the facts as "MakerWorld 61 downloads, 31 prints (Nov 2026)". MakerWorld has no public API, so the site can't fetch them itself: see "Update MakerWorld numbers" below.
+- Optional: `result`, one line of proof: `"First place, school design fair"`.
 - Optional: `writeup`, the longer story on the CAD page, as a list of paragraphs: `"writeup": ["First paragraph.", "Second paragraph."]`
-- Optional: `images`, the pictures in the CAD page's gallery (D33). Each one is `{ "src", "alt", "kind", "caption" }`, where `kind` is `"cad"` or `"photo"` (it sets the tag in the corner). The first one shows first; thumbnails appear once there are two or more. `image` stays the single cover used on Home and the cards. New photos go in a folder per project: `assets/images/<id>/`.
+- Optional: `images`, the pictures in the CAD page's gallery (D33). Each one is `{ "src", "alt", "kind", "caption" }`, where `kind` is `"cad"`, `"photo"` or `"drawing"` (it sets the tag in the corner). A drawing can add `"pdf": "assets/docs/<file>.pdf"` for an "Open the drawing (PDF)" link under it (only PDFs in `assets/docs/` become links). Export each drawing sheet twice from Fusion: a PNG for the page (square, like the renders) and the PDF. The first one shows first; thumbnails appear once there are two or more. `image` stays the single cover used on Home and the cards. New photos go in a folder per project: `assets/images/<id>/`.
 - Picture sizes: the frames are 4:3 (Home rows) and square (Home grid, CAD page, thumbnails), and pictures fill them with `object-fit: cover`, which crops evenly and never stretches. So export every render and photo **square, 1600 × 1600 px**, with the part centred inside the middle 75% (a 4:3 crop trims 12.5% off the top and bottom). Renders as PNG, ideally with a transparent background; photos as JPEG at about 80% quality, with location data stripped.
 
 JSON is strict: double quotes only, a comma between items but **not after the last one**, and no comments. If the catalog goes blank, the browser console (F12) says why.
+
+## Update MakerWorld numbers
+
+About once a month: open each model's MakerWorld page, copy its downloads and prints into that project's `makerworldStats` in `data/projects.json`, and set `"checked"` to the year and month (`"2026-12"`). Commit with `chore: MakerWorld numbers, Dec 2026`. The month shows beside the numbers, so an old count is never passed off as today's.
 
 ## Add art
 
@@ -77,7 +93,8 @@ Ids are the `"id"` values in `data/projects.json` and `data/art.json`. A typo is
 
 Anything that grows with time stores the year it **started**, and the page works out the rest (`js/script.js`):
 
-- `<span data-since="2019">7</span>` shows the years since 2019: 7 in 2026, 8 in 2027.
+- `<span data-since="2019">7</span>` shows the years since 2019: 7 in 2026, 8 in 2027 (a start this year shows "<1").
+- `<dd data-since="2026" data-unit="year">` writes the words: "Under a year", "1 year", "7 years".
 - `<span data-year>2026</span>` shows the current year (the footer's ©).
 
 The number inside is only what shows with JavaScript off. To change a count, change the `data-since` year (About's tool years), never the number.
@@ -91,6 +108,14 @@ The number inside is only what shows with JavaScript off. To change a count, cha
 1. Put the photos in `assets/images/about/` (the hero is shown wide, about 21:9; the row photos at 4:3).
 2. Run `python tools/art.py --clean assets/images/about`. It strips EXIF/GPS, turns them upright, shrinks and renames them like the art photos, and prints each file's `width="…" height="…"`.
 3. In `aboutme.html`, replace each `assets/images/placeholder.svg` with your file, paste its width and height, and write the `alt` text (the `CONTENT` comments say which photo goes where).
+
+## Share picture
+
+When a link to the site is pasted into a chat or a post, it shows `assets/images/share-card.png` (1200 x 630) with the page's title and description. To change the picture:
+
+1. Edit `tools/share-card.html` (swap the three `<img>` for newer renders or photos), serve the site and open `http://localhost:8000/tools/share-card.html` in Edge.
+2. Press F12, then Ctrl+Shift+M. Set the size to **1200 x 630**, then in the toolbar's ⋮ menu choose **Capture screenshot**.
+3. Save it over `assets/images/share-card.png`. Chat apps cache previews for days, so an old one can linger.
 
 ## Contact sheet files
 

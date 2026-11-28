@@ -11,18 +11,34 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- CONTENT: the tab title and the text search engines and link previews show -->
         <title>Zach Nott About</title>
-        <meta name="description" content="About Zach Nott: a mechanical designer who models parts in CAD and prints them to test.">
+        <meta name="description" content="About Zach Nott, a mechanical designer in Courtice, Ontario: uOttawa engineering, a concrete toboggan&#x27;s steering and a small product design business.">
         <!-- Staging (L1, D47): search engines skip the site until launch. Removing this line IS the launch (L3) -->
         <meta name="robots" content="noindex">
+        <!-- Link previews (L1b): what a shared link shows in a chat or a post. Every address here is FULL
+             (https://...): those sites fetch it from their own servers, so a relative path means nothing to them.
+             canonical names the one true address of this page. share-card.png is 1200 x 630, the size link
+             previews use (README, "Share picture"). CONTENT: og:title and og:description follow the tab title
+             and description above; change them together -->
+        <link rel="canonical" href="https://nottco.ca/aboutme.html">
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="Zach Nott">
+        <meta property="og:title" content="Zach Nott About">
+        <meta property="og:description" content="About Zach Nott, a mechanical designer in Courtice, Ontario: uOttawa engineering, a concrete toboggan&#x27;s steering and a small product design business.">
+        <meta property="og:url" content="https://nottco.ca/aboutme.html">
+        <meta property="og:image" content="https://nottco.ca/assets/images/share-card.png">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:image:alt" content="Zach Nott: mechanical design, CAD and the things I print, beside two CAD renders and a photo">
+        <meta name="twitter:card" content="summary_large_image">
         <!-- The five stripes; an SVG icon stays sharp at any size and switches to greys in dark mode -->
         <link rel="icon" href="favicon.svg" type="image/svg+xml">
         <!-- Each CSS and JS link carries ?v=<date it last changed>. A browser keeps files it has
              downloaded; a new ?v makes the address new, so it fetches the new file instead of
              mixing a new page with old styles or scripts. Change a file: bump its ?v on every page -->
-        <link rel="stylesheet" href="css/styles.css?v=20261127-2">
+        <link rel="stylesheet" href="css/styles.css?v=20261128">
         <link rel="stylesheet" href="css/cardyles.css?v=20261126">
-        <link rel="stylesheet" href="css/aboutyles.css?v=20261127-2">
-        <script src="js/script.js?v=20261127" defer></script>
+        <link rel="stylesheet" href="css/aboutyles.css?v=20261128">
+        <script src="js/script.js?v=20261128" defer></script>
         <!-- No defer on purpose: it sets the saved theme before the page is drawn (no white flash) -->
         <script src="js/themcript.js?v=20261127-2"></script>
     </head>
@@ -38,7 +54,7 @@
 
                 <nav id="site-nav" class="main-nav wrapper" aria-label="Main">
                     <!-- Mobile menu button: hidden until js/script.js runs, so without JS the links just stay visible -->
-                    <button id="menu-toggle" class="menu-toggle" type="button" aria-expanded="true" hidden>
+                    <button id="menu-toggle" class="button menu-toggle" type="button" aria-expanded="true" hidden>
                         <span aria-hidden="true">&#9776;</span> <span class="menu-word">Menu</span>
                     </button>
 
@@ -102,9 +118,15 @@
                             <h1>Zach Nott</h1>
                             <p class="story-sub">Mechanical design &amp; CAD&ensp;Courtice, Ontario</p>
                         </div>
-                        <!-- The trading card lives in a popover (owner, 2026-11-16): popovertarget opens it with
+                        <!-- The resume, one click from the bio (owner, 2026-11-27: "About can link directly to" it;
+                             the kylepurser.net lesson, every claim one step from its proof). It's the page's main
+                             action, so it's the solid button. The same PDF as Contact's Download.
+                             The trading card lives in a popover (owner, 2026-11-16): popovertarget opens it with
                              no JavaScript, and the browser adds Esc and click-outside to close it -->
-                        <button class="card-open" type="button" popovertarget="profile-card">Profile card</button>
+                        <div class="story-actions">
+                            <a class="button button-solid" href="assets/docs/zachery-nott-resume.pdf">Resume (PDF)</a>
+                            <button class="button card-open" type="button" popovertarget="profile-card">Profile card</button>
+                        </div>
                     </header>
 
                     <!-- CONTENT: the hero photo (you at the bench, or a part in hand). Wide works best (about 21:9).
@@ -138,10 +160,24 @@
                         </figure>
                     </div>
 
-                    <!-- The one pull quote: the idiom from the CAD page intro -->
-                    <blockquote class="story-quote">
-                        <p>Create something from nothing.</p>
-                    </blockquote>
+                    <!-- The one pull quote: stratagem 7 of the Thirty-Six Stratagems, 無中生有 (wú zhōng shēng yǒu),
+                         a Chinese collection of war tactics (owner, 2026-11-27: credit it). In the book it means a
+                         bluff, making the other side believe in something that isn't there; here it means making
+                         a part from an empty sketch. <figure> + <figcaption> tie the quote to its source.
+                         The second line is its name in Chinese and in pinyin, copied exactly from Wikipedia's
+                         "Thirty-Six Stratagems" article (owner, 2026-11-27): simplified characters, a semicolon,
+                         the pinyin in italics. The English matches Wikipedia's word for word; other translations
+                         say "out of nothing" or "From nothing born something", the same meaning.
+                         lang tells screen readers to read each part in its own language: zh-Hans is simplified
+                         Chinese, zh-Latn-pinyin is Chinese written in Latin letters. <i> is the HTML element for a
+                         phrase in another language, which is why it's italic -->
+                    <figure class="story-quote">
+                        <blockquote>
+                            <p>Create something from nothing.</p>
+                            <p class="story-quote-rest"><span lang="zh-Hans">无中生有</span>; <i lang="zh-Latn-pinyin">Wú zhōng shēng yǒu</i></p>
+                        </blockquote>
+                        <figcaption>The Thirty-Six Stratagems, no. 7</figcaption>
+                    </figure>
 
                     <section>
                         <h2>Now</h2>
@@ -158,17 +194,20 @@
                     <!-- The facts recruiters scan for, on hairlines. A <dl> pairs each label with its value
                          for screen readers ("term, definition"). CONTENT: confirm the years.
                          Each count is worked out from the year you STARTED (data-since, js/script.js), so
-                         it goes up by itself every January: change the data-since year, never the number -->
+                         it goes up by itself every January: change the data-since year, never the number.
+                         data-unit="year" writes the words too ("Under a year", "1 year", "7 years") -->
                     <section class="story-facts">
                         <h2>At a glance</h2>
                         <dl>
                             <div><dt>Education</dt><dd>University of Ottawa, Mechanical Engineering</dd></div>
                             <div><dt>CAD since</dt><dd>2019</dd></div>
                             <div><dt>Known for</dt><dd><a href="projects.html#bridge-guitar">Bridge Guitar</a></dd></div>
-                            <div><dt>Fusion 360</dt><dd><span data-since="2019">7</span> years</dd></div>
-                            <div><dt>SolidWorks</dt><dd><span data-since="2020">6</span> years</dd></div>
-                            <div><dt>Python, C and C++</dt><dd><span data-since="2020">6</span> years</dd></div>
-                            <div><dt>CNC, lathe and welding</dt><dd><span data-since="2021">5</span> years</dd></div>
+                            <!-- Where a skill has work to show, its name links to it (Fusion: the CAD page, the
+                                 languages: the Code page). SolidWorks gets a link once a SolidWorks project is up -->
+                            <div><dt><a href="projects.html">Fusion 360</a></dt><dd data-since="2019" data-unit="year">7 years</dd></div>
+                            <div><dt>SolidWorks</dt><dd data-since="2020" data-unit="year">6 years</dd></div>
+                            <div><dt><a href="code.html">Python, C and C++</a></dt><dd data-since="2020" data-unit="year">6 years</dd></div>
+                            <div><dt>CNC, lathe and welding</dt><dd data-since="2026" data-unit="year">Under a year</dd></div>
                         </dl>
                     </section>
                 </article>
@@ -181,7 +220,7 @@
                          role="img" turns the whole card into one picture with one description,
                          so a screen reader hears a sentence, not "7y F360 6y SW…" -->
                     <div class="card-holder">
-                        <div class="bp-card" role="img" aria-label="Trading card: Zach Nott, designer, maker, fabricator. Fusion 360 since 2019, SolidWorks since 2020, Python since 2020, CNC since 2021.">
+                        <div class="bp-card" role="img" aria-label="Trading card: Zach Nott, designer, maker, fabricator. Fusion 360 since 2019, SolidWorks since 2020, Python since 2020, CNC since 2026.">
                             <span class="card-top"><span class="card-tool">CAD</span><span class="card-name">Zach Nott</span><span class="card-number">00</span></span>
                             <!-- CONTENT: your portrait (strip EXIF/GPS first) -->
                             <span class="card-art">
@@ -190,7 +229,7 @@
                                     <span class="card-stat"><span class="card-icon">◆</span><b><span data-since="2019">7</span>y</b><small>F360</small></span>
                                     <span class="card-stat"><span class="card-icon">◆</span><b><span data-since="2020">6</span>y</b><small>SW</small></span>
                                     <span class="card-stat"><span class="card-icon">◆</span><b><span data-since="2020">6</span>y</b><small>Py</small></span>
-                                    <span class="card-stat"><span class="card-icon">◆</span><b><span data-since="2021">5</span>y</b><small>CNC</small></span>
+                                    <span class="card-stat"><span class="card-icon">◆</span><b><span data-since="2026">&lt;1</span>y</b><small>CNC</small></span>
                                 </span>
                             </span>
                             <span class="card-type">Designer&ensp;Maker&ensp;Fabricator</span>
@@ -207,7 +246,7 @@
                         </div>
                     </div>
                     <!-- popovertargetaction="hide": this button only closes, never reopens -->
-                    <button class="card-close" type="button" popovertarget="profile-card" popovertargetaction="hide">Close</button>
+                    <button class="button card-close" type="button" popovertarget="profile-card" popovertargetaction="hide">Close</button>
                 </div>
             </main>
 

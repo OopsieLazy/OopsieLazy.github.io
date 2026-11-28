@@ -23,7 +23,15 @@ function buildFigure(project, number, isCopy) {
     button.setAttribute("aria-expanded", "false");
     button.setAttribute("aria-controls", "selected-sidebar");
 
-    const figure = make("figure", "ring-figure", button);
+    // The back of the sheet (owner, 2026-11-27: the pictures behind show through the gaps and
+    // can be clicked). The CSS turns it 180°, so when the sheet faces away this side faces you
+    // and the picture reads the right way round, not mirrored. It's only for the eyes and the
+    // mouse: aria-hidden, and not a button, because the front of the same sheet already is one.
+    // A click on it reaches the figure's click handler below, which turns the sheet to the front
+    const back = make("span", "ring-back", makeImage(project.image));
+    back.setAttribute("aria-hidden", "true");
+
+    const figure = make("figure", "ring-figure", button, back);
     if (isCopy) {
         figure.setAttribute("aria-hidden", "true");   // a screen reader hears each project once
         button.tabIndex = -1;                          // and Tab skips the copy
@@ -147,7 +155,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     // picture arrives under the mouse, then holds it there.
     // Mouse only: touch has no hover, and a finger that starts a scroll on the ring shouldn't
     // stop it. (pointerType is "mouse", "pen" or "touch")
-    carousel.querySelectorAll(".ring-art").forEach((picture) => {
+    // The backs count too: a picture behind holds still under the mouse, so it's easy to click
+    carousel.querySelectorAll(".ring-art, .ring-back").forEach((picture) => {
         picture.addEventListener("pointerenter", (event) => {
             if (event.pointerType !== "mouse") return;
             hovering = true;

@@ -18,6 +18,28 @@
   margin: 0;
 }
 
+/* The owner's line, then the quote it answers: the quote quieter, its author in mono like a label */
+.art-line {
+  font-size: var(--step-1);
+}
+
+.art-quote {
+  margin: var(--space-2) 0 0;
+  color: var(--color-muted);
+}
+
+.art-quote blockquote {
+  margin: 0;
+}
+
+.art-quote figcaption {
+  margin-top: var(--space-1);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
 .art-room {
   margin-bottom: var(--space-8);
 }
@@ -265,28 +287,6 @@
 /* display: flex above would beat the hidden attribute's display: none, so hidden needs its own rule */
 .art-tools[hidden] {
   display: none;
-}
-
-/* Same outline pill as Home's "Next card" button (X8 will make one shared button class).
-   The viewer's buttons share it, so the page has one button look, not two */
-.art-tools button,
-.viewer button {
-  padding: var(--space-1) var(--space-4);
-  border: 1px solid var(--color-accent);
-  border-radius: var(--radius-pill);
-  background: none;
-  color: var(--color-accent);
-  font: inherit;
-  cursor: pointer;
-}
-
-.art-tools button:hover,
-.art-tools button:focus-visible,
-.viewer button:hover,
-.viewer button:focus-visible {
-  border-color: var(--color-highlight);
-  outline: none;
-  text-shadow: var(--faux-bold);
 }
 
 .salon > li {

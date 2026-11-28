@@ -19,12 +19,20 @@ document.querySelectorAll(".menu-toggle").forEach(setupToggle);
 
 // YEARS THAT COUNT THEMSELVES (owner, 2026-11-27: "minimal AI intervention"). The HTML stores the
 // year something STARTED, which never changes, and the page works out the count every visit:
-//   <span data-since="2019">7</span>   shows the years since 2019 (7 in 2026, 8 in 2027...)
+//   <span data-since="2019">7</span>   shows the years since 2019 (7 in 2026, 8 in 2027...);
+//                                      a start THIS year shows "<1", never "0"
+//   <dd data-since="2019" data-unit="year">  writes the words: "Under a year", "1 year", "7 years"
 //   <span data-year>2026</span>        shows this year (the footer's ©)
-// The number typed inside is only what shows with JavaScript off, so keep it roughly right
+// What's typed inside is only what shows with JavaScript off, so keep it roughly right
 const thisYear = new Date().getFullYear();
+function yearsSince(start, unit) {
+    const years = thisYear - Number(start);
+    if (!unit) return years < 1 ? "<1" : String(years);
+    if (years < 1) return `Under a ${unit}`;
+    return years === 1 ? `1 ${unit}` : `${years} ${unit}s`;
+}
 document.querySelectorAll("[data-since]").forEach((el) => {
-    el.textContent = thisYear - Number(el.dataset.since);
+    el.textContent = yearsSince(el.dataset.since, el.dataset.unit);
 });
 document.querySelectorAll("[data-year]").forEach((el) => {
     el.textContent = thisYear;

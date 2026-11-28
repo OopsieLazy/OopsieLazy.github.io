@@ -270,28 +270,11 @@
   }
 }
 
-/* The drawer's buttons: small outline pills (X8 will make one shared button) */
+/* The drawer's Previous and Next: the shared .button (styles.css), side by side */
 .stack-buttons {
   display: flex;
   justify-content: center;
   gap: var(--space-3);
-}
-
-.stack-prev,
-.stack-next {
-  padding: var(--space-1) var(--space-4);
-  border: 1px solid var(--color-accent);
-  border-radius: var(--radius-pill);
-  background: none;
-  color: var(--color-accent);
-  font-family: var(--font-mono);
-  font-size: var(--step--1);
-  cursor: pointer;
-}
-
-.stack-prev:hover,
-.stack-next:hover {
-  border-color: var(--color-highlight);
 }
 
 /* =========================================================

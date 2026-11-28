@@ -11,19 +11,51 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- CONTENT: the tab title and the text search engines and link previews show -->
         <title>Zach Nott Mechanical Design &amp; CAD</title>
-        <meta name="description" content="Portfolio of Zach Nott: CAD models, 3D-printed parts and mechanisms, from first sketch to printed part.">
+        <meta name="description" content="Zach Nott designs mechanical parts in Fusion 360 and prints them to test: a guitar bridge, printer fixes and print-in-place hinges, plus photography and code.">
         <!-- Staging (L1, D47): search engines skip the site until launch. Removing this line IS the launch (L3) -->
         <meta name="robots" content="noindex">
+        <!-- Link previews (L1b): what a shared link shows in a chat or a post. Every address here is FULL
+             (https://...): those sites fetch it from their own servers, so a relative path means nothing to them.
+             canonical names the one true address of this page. share-card.png is 1200 x 630, the size link
+             previews use (README, "Share picture"). CONTENT: og:title and og:description follow the tab title
+             and description above; change them together -->
+        <link rel="canonical" href="https://nottco.ca/">
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="Zach Nott">
+        <meta property="og:title" content="Zach Nott Mechanical Design &amp; CAD">
+        <meta property="og:description" content="Zach Nott designs mechanical parts in Fusion 360 and prints them to test: a guitar bridge, printer fixes and print-in-place hinges, plus photography and code.">
+        <meta property="og:url" content="https://nottco.ca/">
+        <meta property="og:image" content="https://nottco.ca/assets/images/share-card.png">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:image:alt" content="Zach Nott: mechanical design, CAD and the things I print, beside two CAD renders and a photo">
+        <meta name="twitter:card" content="summary_large_image">
+        <!-- Who this site is about, in the shared vocabulary search engines read (schema.org "Person"). It's data,
+             not code: browsers never run a script of this type, so the Content Security Policy doesn't apply.
+             sameAs lists the profiles that are the same person. No email or street address: those stay private -->
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Person",
+            "name": "Zach Nott",
+            "url": "https://nottco.ca/",
+            "image": "https://nottco.ca/assets/images/share-card.png",
+            "jobTitle": "Mechanical designer",
+            "address": { "@type": "PostalAddress", "addressLocality": "Courtice", "addressRegion": "ON", "addressCountry": "CA" },
+            "knowsAbout": ["Mechanical design", "CAD", "Fusion 360", "SolidWorks", "3D printing", "Python"],
+            "sameAs": ["https://github.com/OopsieLazy", "https://makerworld.com/en/@Azuya_1500"]
+        }
+        </script>
         <!-- The five stripes; an SVG icon stays sharp at any size and switches to greys in dark mode -->
         <link rel="icon" href="favicon.svg" type="image/svg+xml">
         <!-- Each CSS and JS link carries ?v=<date it last changed>. A browser keeps files it has
              downloaded; a new ?v makes the address new, so it fetches the new file instead of
              mixing a new page with old styles or scripts. Change a file: bump its ?v on every page -->
-        <link rel="stylesheet" href="css/styles.css?v=20261127-2">
+        <link rel="stylesheet" href="css/styles.css?v=20261128">
         <!-- cardyles.css: the Blueprint cards in the "Featured cards" drawer -->
         <link rel="stylesheet" href="css/cardyles.css?v=20261126">
-        <link rel="stylesheet" href="css/homyles.css?v=20261127">
-        <script src="js/script.js?v=20261127" defer></script>
+        <link rel="stylesheet" href="css/homyles.css?v=20261128">
+        <script src="js/script.js?v=20261128" defer></script>
         <!-- datacript.js before homcript.js: deferred scripts run in this order -->
         <script src="js/datacript.js?v=20261126-2" defer></script>
         <script src="js/homcript.js?v=20261127" defer></script>
@@ -42,7 +74,7 @@
 
                 <nav id="site-nav" class="main-nav wrapper" aria-label="Main">
                     <!-- Mobile menu button: hidden until js/script.js runs, so without JS the links just stay visible -->
-                    <button id="menu-toggle" class="menu-toggle" type="button" aria-expanded="true" hidden>
+                    <button id="menu-toggle" class="button menu-toggle" type="button" aria-expanded="true" hidden>
                         <span aria-hidden="true">&#9776;</span> <span class="menu-word">Menu</span>
                     </button>
 
@@ -126,8 +158,8 @@
                                      aria-live is added by the script AFTER the first fill, so building it stays quiet -->
                                 <p class="featured-caption" aria-atomic="true">Featured: <b class="featured-name"></b></p>
                                 <div class="stack-buttons">
-                                    <button class="stack-prev" type="button" hidden>Previous</button>
-                                    <button class="stack-next" type="button" hidden>Next</button>
+                                    <button class="button stack-prev" type="button" hidden>Previous</button>
+                                    <button class="button stack-next" type="button" hidden>Next</button>
                                 </div>
                             </div>
                         </div>

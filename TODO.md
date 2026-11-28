@@ -4,44 +4,38 @@
 
 **Live as staging:** https://nottco.ca (`noindex` until the launch bar below is met).
 
-## Now (branch `feat/type-buttons`, roadmap 1.3)
-- [ ] Look over the branch at http://localhost:8000: the theme words on a phone, "Spin On Off" on CAD, "Motion On Off" and the bare scrolls on Code, the sans titles. Then commit, push and open the PR.
-- [ ] Click **Verify** for nottco.ca again (GitHub: profile, Settings, Pages). Done when it says verified.
+## Now (branch `feat/buttons`, roadmap 1.3 X8 + 1.4)
+- [ ] Look over the branch at http://localhost:8000: square buttons everywhere, `404.html`, the share picture. Then commit, push, open the PR, merge.
+- [ ] After merging, paste https://nottco.ca into a chat app to see the link preview.
+- [ ] Click **Verify** for nottco.ca again (GitHub: profile, Settings, Pages).
 
-## Owner: content (✱ blocks launch: this is the critical path)
-- [ ] ✱ CAD stats in `data/projects.json`, daz style: only what's true (print time, parts, filament, difficulty, what's included).
-- [ ] ✱ Re-export the CAD renders square, same angle, same background (Fusion: File, Capture Image, 1600 x 1600).
-- [ ] ✱ Pick the 3 to 6 strongest CAD projects: name, year, what it does, versions, parts, print time, MakerWorld link.
-- [ ] ✱ Add the four About photos to `assets/images/about/`, run `python tools/art.py --clean assets/images/about`.
-- [ ] ✱ Rewrite the About text in first person; one one-line description for About, Home and the footer.
-- [ ] ✱ Rewrite the Code intro and the one-liners (`data/code.json`); confirm each status.
-- [ ] ✱ Art: titles come from file names now: rename a file and run `python tools/art.py` to rename a picture (its alt text then needs writing again); one Art intro line.
-- [ ] Add GitHub to the résumé PDF (it links MakerWorld and email only); mirror it in the Google Doc master.
-- [ ] Photos of printed parts (in use, close-up, next to something for scale).
-- [ ] Write a README for AUDA (the Code page links to it).
-- [ ] Travel photos tagged `"area": "Travel"` (then the workshop globe can link to them).
-
-## Owner: decisions and checks
-- [ ] ✱ Review the new CAD page (A2 + A1) at desktop and phone width; add `"makerworld"` links to `data/projects.json`.
-- [ ] Red wings: if you have the suite's name or a plaque photo, the sculptor can be credited by name.
-- [ ] Art journals wall: rename it "Paintings and journals" now the rose is there?
-- [ ] ✱ Confirm the About start years: Fusion 2019, SolidWorks 2020, Python 2020, CNC 2021, CAD since 2019.
-- [ ] Test every page on your phone at nottco.ca (private tab after each deploy).
+## Owner: ingredients (✱ blocks launch: send these and Claude fits them in)
+- [ ] ✱ CAD: for each project, the true facts only: versions, parts, print time (filament is left out for now).
+- [ ] ✱ CAD: the MakerWorld page address of each project that has one.
+- [ ] ✱ CAD: square renders, 1600 x 1600, same angle and background (Fusion: File, Capture Image), plus a photo of each part in use. Drop them in `assets/images/<id>/`.
+- [ ] CAD: a drawing sheet per project (PNG + PDF, README "Add a project"), and MakerWorld numbers for the ones that are published (README "Update MakerWorld numbers").
+- [ ] About: certifications once you hold them (issuer, title, date, verification link).
+- [ ] ✱ CAD: say which MakerWorld models join the CAD page (shortlist: Parametric Funnel, LEGO brick, Magnetic Backgammon v2, Mini Parallettes, Camera "Tripod", UV Curing Station, Geoboard), then gather each one's files (README, "What to gather first").
+- [ ] Home cards: keep difficulty on them, or drop it as on the CAD page?
+- [ ] ✱ About: four photos of you or your work, and the About text rewritten in your own words (or approve the draft as is).
+- [ ] Art: more photos if you have them (straight from the phone).
+- [ ] Read the six page descriptions Claude wrote (in each page's `<head>`); change any you'd say differently.
+- [ ] Résumé: add GitHub to the PDF (it links MakerWorld and email only).
+- [ ] Optional: printed parts in use, travel photos (`"area": "Travel"`), the Red Wings sculptor's name, an AUDA README.
 
 ## Next for Claude (in PLAN order)
-- [ ] 1.3 X8 one button style (O3, motion words and the theme row are built on `feat/type-buttons`).
-- [ ] 1.4 L1b share tags + L2 `404.html`.
-- [ ] 1.5 O6 light pass: About, Contact, Code text.
-- [ ] 1.6 L4a automatic checks. 1.7 R7 "How to change things" in README.
-- [ ] After launch: workshop (tower roof and observatory, scroll switch, night lab, sound, Loft), then Phase P (Code Lens, Bookshelf, CL Buddy terminal, Shop, Print queue).
+- [ ] 1.5 O6 text pass on About, Contact and Code (with the owner's words above).
+- [ ] 1.6 L4a automatic checks (links, accessibility, Lighthouse) on every PR.
+- [ ] 1.7 R7 "How to change things" in README.
+- [ ] After launch: workshop (tower roof and observatory, night lab, sound, Loft), then Phase P (Code Lens, Bookshelf, CL Buddy terminal, Shop, Print queue).
 
 ## Launch bar (all true before the link goes out)
-- [ ] Phase R done: every nav link leads to a finished page, or the link is gone.
-- [ ] No made-up project facts; real name, email, résumé and GitHub (done).
-- [ ] L1b and L2 merged; validator 0 errors; a real-phone test passes on nottco.ca.
+- [ ] Every nav link leads to a finished page (done), no placeholder pictures left (About photos).
+- [ ] No made-up project facts (CAD stats).
+- [x] L1b and L2 built; validator 0 errors.
+- [ ] A real-phone test passes on nottco.ca.
 - [ ] L3 (you): remove `noindex` (its own PR), then secret scanning, push protection, wiki off, auto-delete head branches.
 
 ## Git
-- On `fix/plain-separators`, cut from an up-to-date `main` (0 ahead, 0 behind `origin/main`).
-- Uncommitted: 25 changed files and `thelab.html` deleted (staged by `git rm`).
+- On `feat/buttons`, cut from an up-to-date `main` after #50.
 - Next step: the commands in Claude's hand-off.
