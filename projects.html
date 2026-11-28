@@ -39,11 +39,11 @@
         <script src="js/script.js?v=20261128" defer></script>
         <!-- No defer on purpose: it sets the saved theme before the page is drawn (no white flash) -->
         <script src="js/themcript.js?v=20261127-2"></script>
-        <link rel="stylesheet" href="css/projyles.css?v=20261128">
-        <script src="js/projcript.js?v=20261128"></script>
+        <link rel="stylesheet" href="css/projyles.css?v=20261128-2">
+        <script src="js/projcript.js?v=20261128-2"></script>
         <!-- CAD sections (task 2.5): datacript.js first, deferred scripts run in this order -->
         <script src="js/datacript.js?v=20261126-2" defer></script>
-        <script src="js/sectcript.js?v=20261128" defer></script>
+        <script src="js/sectcript.js?v=20261128-2" defer></script>
     </head>
     
     <body class="theprojectspage">
@@ -181,6 +181,11 @@
                          To add or edit a project, change the JSON, not this page -->
                     <section id="cad-sections" class="cad-sections" aria-labelledby="cad-sections-title">
                         <h2 id="cad-sections-title" class="screen-reader-text">Projects</h2>
+                        <!-- CONTENT: the one note that covers every drawing (owner, 2026-11-27: "all drawings will be
+                             the same"), so it isn't repeated under each sheet. Hidden until a project in
+                             data/projects.json has a "drawing" picture (sectcript.js). Change the words here if the
+                             standard changes -->
+                        <p class="cad-drawing-note" id="drawing-note" hidden>All drawings follow ASME Y14.5, in millimetres, on ANSI&nbsp;B sheets (17&nbsp;x&nbsp;11&nbsp;in). For reference, not for manufacture.</p>
                         <div id="cad-entries"></div>
                         <noscript>
                             <p class="cad-note">The projects need JavaScript to load.</p>

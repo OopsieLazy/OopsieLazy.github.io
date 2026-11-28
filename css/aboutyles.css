@@ -68,10 +68,16 @@
   }
 }
 
-/* auto-fit + minmax: three across when there's room, then two, then one. No media query */
+/* Two columns on a phone, three from 40rem. Four square photos and one tall one that
+   takes the last column for two rows (.story-tall below):
+     desktop  [carry ][runners][ tall ]      phone  [carry ][ tall ]
+              [maker ][ sign  ][ tall ]             [runner][ tall ]
+                                                    [maker ][ sign ]
+   grid-auto-flow: dense lets the squares fill the gaps the tall one leaves, in HTML order */
 .story-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-flow: dense;
   gap: var(--space-4);
   margin-top: var(--space-7);
 }
@@ -80,8 +86,42 @@
   margin: 0;
 }
 
+/* Square: the photos came square, tall and wide, and a square crops each one the least
+   (a 4:3 box cut the tall bike photo through the middle) */
 .story-row img {
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 1;
+}
+
+@media (min-width: 40rem) {
+  .story-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* The tall photo: the last column (-2 / -1 counts lines from the right), rows 1 and 2.
+   It's a flex column: the frame takes all the height left above the caption */
+.story-tall {
+  grid-column: -2 / -1;
+  grid-row: 1 / span 2;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The frame is what sizes; the img is pinned inside it (position: absolute), so the photo's
+   own 1500 x 2000 size can't make the rows taller. object-fit: cover fills the frame and
+   trims the sides, keeping the photo's full height (owner: "keep full height") */
+.story-tall-frame {
+  position: relative;
+  flex: 1;
+  min-height: 12rem;
+  background: var(--color-surface);
+}
+
+.story-row .story-tall img {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  aspect-ratio: auto;
 }
 
 .story-row figcaption {
@@ -148,23 +188,38 @@
 }
 
 /* =========================================================
-   AT A GLANCE: label left, value right, a hairline under each pair.
-   Two columns when there's room (auto-fit again)
+   AT A GLANCE (owner, 2026-11-28): two short lists, tools and background.
+   Each one is styled like the facts on the CAD page (.cad-stats): muted label left,
+   value right in semibold, a hairline under each row that runs a little past the value.
+   One way to show facts across the site reads as one design.
+   The OLD version was one list flowing into two columns (auto-fit), so it read in a
+   zigzag; two separate lists each read straight down
    ========================================================= */
-.story-facts dl {
+/* auto-fit + minmax: side by side when both fit at 16rem, stacked on a phone. No media query */
+.glance {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
-  column-gap: var(--space-6);
+  gap: 0 var(--space-6);
+  align-items: start;                  /* the shorter list doesn't stretch to the taller one's height */
+}
+
+.story-facts dl {
   margin: 0;
   border-top: 1px solid var(--color-line);
-  font-size: var(--step--1);
+}
+
+/* Stacked on a phone, the second list's top line would double up with the first list's
+   last line: only the first list keeps its top border then. The 2-column case has both */
+.glance dl + dl {
+  margin-top: -1px;                    /* stacked: tuck it under the line above (side by side, -1px is invisible) */
 }
 
 .story-facts dl div {
   display: flex;
   justify-content: space-between;
+  align-items: baseline;               /* a wrapped value lines up with its label's first line */
   gap: var(--space-4);
-  padding: var(--space-2) 0;
+  padding-block: var(--space-3);
   border-bottom: 1px solid var(--color-line);
 }
 
@@ -172,9 +227,27 @@
   color: var(--color-muted);
 }
 
+/* The value stops short of the line's end, so each hairline runs past it (same as the CAD facts) */
 .story-facts dd {
   margin: 0;
+  padding-right: var(--space-3);
+  font-weight: 600;
   text-align: right;
+  font-variant-numeric: tabular-nums;  /* every digit the same width, so "6 years" and "7 years" line up */
+}
+
+/* The one link (the proof) has no underline here: it stands alone in its row, not inside a
+   sentence. The arrow marks it as a link (at Night the accent is nearly the text colour, so
+   colour alone can't); aria-hidden keeps screen readers from saying "right arrow".
+   The underline comes back on hover and keyboard focus */
+.story-facts dd a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.story-facts dd a:hover,
+.story-facts dd a:focus-visible {
+  text-decoration: underline;
 }
 
 /* =========================================================

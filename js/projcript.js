@@ -10,11 +10,15 @@ const MIN_RING = 6;
 
 // One sheet: a button (keyboard and screen readers for free, task 1.15d) holding the
 // render in a dashed viewport and a "DWG 01 Bridge Guitar" label.
-// The image's alt is "": the label inside the same button already names it
+// The image's alt is "": the label inside the same button already names it.
+// The sheets use the small copy ("thumb", made by tools/render.py) when there is one: a 1600 px
+// picture shrunk to a 200 px sheet while it spins looks jagged on thin parts (owner, 2026-11-27:
+// "when rotating the funnel is pixelly"); a picture near its shown size stays smooth
 function buildFigure(project, number, isCopy) {
+    const picture = project.thumb || project.image;
     const button = make("button", "figure-button",
         // ring-window clips the picture INSIDE the dashed line, so the hover zoom can't spill over it
-        make("span", "ring-art", make("span", "ring-window", makeImage(project.image))),
+        make("span", "ring-art", make("span", "ring-window", makeImage(picture))),
         make("span", "ring-label",
             make("span", "ring-num", number), " ",
             make("span", "ring-name", project.name)));
@@ -28,7 +32,7 @@ function buildFigure(project, number, isCopy) {
     // and the picture reads the right way round, not mirrored. It's only for the eyes and the
     // mouse: aria-hidden, and not a button, because the front of the same sheet already is one.
     // A click on it reaches the figure's click handler below, which turns the sheet to the front
-    const back = make("span", "ring-back", makeImage(project.image));
+    const back = make("span", "ring-back", makeImage(picture));
     back.setAttribute("aria-hidden", "true");
 
     const figure = make("figure", "ring-figure", button, back);
