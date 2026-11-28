@@ -55,6 +55,28 @@ Rule: take **principles**, never a site's look, art, layout or copy.
 professional" for the catalogs. Use Spelunkr's flavour in small, contained places (404, the Lab,
 Filmography), never across the catalog pages. And never copy its art, layout or wording.
 
+## kylepurser.net: the evidence benchmark (CAD portfolio, 2026-11-27)
+
+A Google Sites portfolio; the owner's capture is `references/portfolio-reference-pack.zip`
+(git-ignored: it holds another person's pages). Its look is stock Sites blocks; its strength is
+**proof**: every claim has something to look at.
+
+**What we take** (structure, never his text, images or branding):
+- **Render beside the real build**, one pair per assembly, with the part count in the title.
+  Our gallery already has `"kind": "cad"` / `"photo"`; the pairing is the habit to copy.
+- **2D drawings** with a one-line caption each (what it is, any result). The biggest gap here:
+  a mechanical designer with no drawings on show. Self-hosted PNG previews + the PDF in
+  `assets/docs/`, no Drive iframes (our CSP allows nothing from other sites, L2).
+- **A result line** where there is one (a placing, MakerWorld prints by others).
+- **Certifications on About**, only real ones: issuer, title, date, one line on what it shows,
+  a verification link. The pack's `certifications.md` lists options and costs.
+- **Every claim links to its proof**: About's tool years to the CAD page, the bio to the résumé.
+
+**What doesn't fit:** dark title bands on every page, Georgia serif and justified body text
+(uneven gaps, harder for dyslexic readers), 4px rounded buttons (D59), software logo collages
+(other brands' trademarks as filler), a "best viewed on desktop" banner, YouTube/Drive/Form
+iframes, a third-person bio, and splitting three projects into a hub of category pages.
+
 ## Earlier references (from CLAUDE.md)
 
 - **ashanand.dev**: a pixel-art room drawn on a scaled `<canvas>`; the model for the museum (Phase 4).
