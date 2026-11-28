@@ -23,7 +23,6 @@
 
   /* Touch targets: 44px is the size a fingertip hits reliably (WCAG 2.5.5, Apple's guide).
      styles.css has no token for it, so it's named here once instead of typed in three rules */
-  --target-touch: 2.75rem;             /* 44px */
   --target-small: 2.25rem;             /* 36px: the table's filter buttons, a mouse-sized target */
 
   /* Page layout */
@@ -359,7 +358,6 @@
   min-height: var(--space-6);          /* 32px: a comfortable target */
   padding: 0 var(--space-3);
   background: var(--frame-shade);
-  border-radius: var(--radius-soft);
 }
 
 .workshop-pause .motion-label,
@@ -514,8 +512,8 @@
   position: relative;
   height: var(--scroll-rod-size);
   margin-inline: calc(var(--space-2) * -1);
-  border-radius: var(--radius-pill);
   background: linear-gradient(var(--scroll-rod), var(--scroll-rod-dark));
+  border-radius: 999px;                /* a wooden rod: round ends (an object, so it keeps its curve after X8) */
 }
 
 .scroll-rod::before,
@@ -969,24 +967,6 @@
 .code-ask p {
   max-width: 52ch;
   margin: 0;
-}
-
-.code-ask-link {
-  display: inline-flex;
-  align-items: center;
-  min-height: var(--target-touch);
-  padding: 0 var(--space-5);
-  border: 1px solid currentColor;
-  border-radius: var(--radius-pill);
-  color: var(--color-accent);
-  font-family: var(--font-mono);
-  font-size: var(--step--1);
-  text-decoration: none;
-}
-
-.code-ask-link:hover {
-  background-color: var(--color-accent);
-  color: var(--color-bg);
 }
 
 /* Reduced motion: the tags appear without a fade (the room itself is paused by workcript.js) */

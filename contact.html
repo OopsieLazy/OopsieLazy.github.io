@@ -11,17 +11,33 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- CONTENT: the tab title and the text search engines and link previews show -->
         <title>Zach Nott Contact and Resume</title>
-        <meta name="description" content="Contact Zach Nott by email, and download the resume (PDF).">
+        <meta name="description" content="Contact Zach Nott, a mechanical designer in Courtice, Ontario: email, the resume as a PDF, and the GitHub and MakerWorld pages.">
         <!-- Staging (L1, D47): search engines skip the site until launch. Removing this line IS the launch (L3) -->
         <meta name="robots" content="noindex">
+        <!-- Link previews (L1b): what a shared link shows in a chat or a post. Every address here is FULL
+             (https://...): those sites fetch it from their own servers, so a relative path means nothing to them.
+             canonical names the one true address of this page. share-card.png is 1200 x 630, the size link
+             previews use (README, "Share picture"). CONTENT: og:title and og:description follow the tab title
+             and description above; change them together -->
+        <link rel="canonical" href="https://nottco.ca/contact.html">
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="Zach Nott">
+        <meta property="og:title" content="Zach Nott Contact and Resume">
+        <meta property="og:description" content="Contact Zach Nott, a mechanical designer in Courtice, Ontario: email, the resume as a PDF, and the GitHub and MakerWorld pages.">
+        <meta property="og:url" content="https://nottco.ca/contact.html">
+        <meta property="og:image" content="https://nottco.ca/assets/images/share-card.png">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:image:alt" content="Zach Nott: mechanical design, CAD and the things I print, beside two CAD renders and a photo">
+        <meta name="twitter:card" content="summary_large_image">
         <!-- The five stripes; an SVG icon stays sharp at any size and switches to greys in dark mode -->
         <link rel="icon" href="favicon.svg" type="image/svg+xml">
         <!-- Each CSS and JS link carries ?v=<date it last changed>. A browser keeps files it has
              downloaded; a new ?v makes the address new, so it fetches the new file instead of
              mixing a new page with old styles or scripts. Change a file: bump its ?v on every page -->
-        <link rel="stylesheet" href="css/styles.css?v=20261127-2">
-        <link rel="stylesheet" href="css/contyles.css?v=20261127">
-        <script src="js/script.js?v=20261127" defer></script>
+        <link rel="stylesheet" href="css/styles.css?v=20261128">
+        <link rel="stylesheet" href="css/contyles.css?v=20261128">
+        <script src="js/script.js?v=20261128" defer></script>
         <!-- No defer on purpose: it sets the saved theme before the page is drawn (no white flash) -->
         <script src="js/themcript.js?v=20261127-2"></script>
         <script src="js/contcript.js?v=20261126" defer></script>
@@ -38,7 +54,7 @@
 
                 <nav id="site-nav" class="main-nav wrapper" aria-label="Main">
                     <!-- Mobile menu button: hidden until js/script.js runs, so without JS the links just stay visible -->
-                    <button id="menu-toggle" class="menu-toggle" type="button" aria-expanded="true" hidden>
+                    <button id="menu-toggle" class="button menu-toggle" type="button" aria-expanded="true" hidden>
                         <span aria-hidden="true">&#9776;</span> <span class="menu-word">Menu</span>
                     </button>
 
@@ -116,7 +132,7 @@
                              js/contcript.js joins the parts into a real link and shows the Copy button -->
                         <p class="tb-email">
                             <span id="email-address" data-user="znott" data-domain="live" data-tld="com">znott [at] live [dot] com</span>
-                            <button id="copy-email" class="copy-button" type="button" hidden>Copy</button>
+                            <button id="copy-email" class="button copy-button" type="button" hidden>Copy</button>
                         </p>
                         <!-- aria-live: screen readers announce text that appears here ("Copied") -->
                         <p id="copy-status" class="tb-note" aria-live="polite"></p>
@@ -129,7 +145,7 @@
                              The file is named after you, so it's easy to find again in a recruiter's Downloads.
                              download = save the file instead of opening it; js/contcript.js also lets it drag out.
                              CONTENT: when you replace the file, update the date and page count below -->
-                        <a class="tb-button" href="assets/docs/zachery-nott-resume.pdf" download>Download PDF</a>
+                        <a class="button button-solid tb-button" href="assets/docs/zachery-nott-resume.pdf" download>Download PDF</a>
                         <p class="tb-note">Updated November 2026&ensp;2 pages</p>
                     </div>
 

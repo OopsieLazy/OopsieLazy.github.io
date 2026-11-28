@@ -28,6 +28,9 @@ html {
      more into the right side padding"), so the ring sits further right and has more room */
   .cad-ring {
     margin-right: calc(-1 * var(--gutter));
+    /* ...but the popup keeps the page's margin, so the open popup never touches the window's
+       edge (it did at 1000px: 48px of margin on the left, none on the right). POPUP reads it */
+    --popup-inset: var(--gutter);
   }
 }
 
@@ -57,6 +60,8 @@ html {
   overflow-y: auto;
   overscroll-behavior: contain;        /* reaching the list's end doesn't start scrolling the page */
   scrollbar-gutter: stable;            /* the rows don't shift when the scroll bar appears */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line) transparent;
   margin: 0;
   padding: 0;
   list-style: none;                    /* Safari drops the "list" meaning without it: role="list" in the HTML */
@@ -111,6 +116,9 @@ html {
    ========================================================= */
 #slideshow {
   position: relative;
+  /* Wide screens: at rest the ring sits further into the right-hand margin (owner, 2026-11-27),
+     up to 6rem, and only where the window is wider than the page (0px on smaller screens) */
+  --ring-rest: clamp(0px, (100vw - 72rem) / 3, 6rem);
   /* Room between the frame lines and what's inside. projcript.js fits the ring to the
      width INSIDE this padding, so it's real breathing room on phones too. Fixed, not vw:
      the wide layout below starts at a 62rem CONTENT width, and wider padding at 1440px
@@ -135,29 +143,13 @@ html {
   display: none;
 }
 
-/* "Spin On Off", at the top right of the carousel (its heading is screen-reader only) */
+/* "Spin On Off", centred under the ring (owner, 2026-11-27); --ring-rest keeps it under the
+   ring when that sits further right on wide screens (THE RING GLIDES, below) */
 .ring-head {
-  align-self: stretch;
   display: flex;
-  justify-content: flex-end;
-}
-
-/* Small square buttons in the drawing's mono lettering: Pause spin and Close */
-.sheet-button {
-  padding: var(--space-1) var(--space-3);
-  border: 1px solid var(--color-accent);
-  border-radius: 0;
-  background: var(--color-bg);
-  color: var(--color-accent);
-  font-family: var(--font-mono);
-  font-size: var(--step--1);
-  letter-spacing: var(--tracking-caps);
-  text-transform: uppercase;
-  cursor: pointer;
-}
-
-.sheet-button:hover {
-  background: var(--color-surface);
+  justify-content: center;
+  margin-top: var(--space-3);
+  translate: var(--ring-rest, 0px) 0;
 }
 
 /* The ring's box. The figures inside are absolutely positioned (so this box would be
@@ -221,9 +213,36 @@ html {
   height: calc(var(--figure-size, 190px) * 1.15);
   margin: 0;                           /* browsers give <figure> a 40px side margin */
   transform-style: preserve-3d;
-  background: var(--color-bg);
-  border: 1px solid var(--color-accent);
-  box-sizing: border-box;
+  /* No paper and no frame since 2026-11-27 (owner: "remove framing around carousel images"):
+     each picture floats with its name centred under it. A sheet facing away shows its back
+     (.ring-back below), so the pictures behind show through the gaps */
+}
+
+/* The back of a sheet: the same picture, turned 180° so it reads the right way round when the
+   sheet faces away, and faded so the front row stays in front. backface-visibility: hidden
+   on both sides means only one of the two ever shows. In 3D (preserve-3d) the browser sorts by
+   depth for clicks too, so a front picture always wins a click; a back one is clickable only
+   where it shows through a gap. Square, like the front picture (the label strip stays empty) */
+.ring-back {
+  position: absolute;
+  inset: 0 0 auto;
+  aspect-ratio: 1;
+  opacity: 0.45;
+  cursor: pointer;
+  backface-visibility: hidden;
+  transform: rotateY(180deg) translateZ(1px);
+  transition: opacity var(--speed) ease;
+}
+
+.ring-back:hover {
+  opacity: 0.8;                        /* the mouse is on it: it can be picked */
+}
+
+.ring-back img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* The printed side: the render and its label. backface-visibility: hidden makes it vanish
@@ -232,10 +251,10 @@ html {
 .figure-button {
   display: flex;
   flex-direction: column;
-  gap: 4%;
+  gap: 5%;
   width: 100%;
   height: 100%;
-  padding: 6%;
+  padding: 0;
   border: 0;
   background: none;
   color: var(--color-accent);
@@ -249,15 +268,11 @@ html {
   outline-offset: -4px;
 }
 
-/* The viewport: a dashed frame with crop marks, like the entries (.cad-art; the crop
-   marks are shared in CAD SECTIONS). The picture fills it, cropped evenly, never stretched */
+/* The picture, square, with no frame (2026-11-27). It fills its box, cropped evenly, never stretched */
 .ring-art {
   position: relative;
   flex: 1;
   min-height: 0;                       /* lets the flex item shrink below the picture's own size */
-  padding: 3px;                        /* a hairline gap, so the picture never covers the dashes */
-  outline: 1px dashed var(--color-muted);
-  outline-offset: -1px;
 }
 
 /* The window the picture shows through: inside the 3px gap, so inside the dashed line.
@@ -283,24 +298,20 @@ html {
   transform: scale(1.05);
 }
 
-/* "DWG 01 Bridge Guitar" under the picture, in the drawing's lettering */
+/* The name, centred under the picture (2026-11-27: the "DWG 01" number went, names only) */
 .ring-label {
   overflow: hidden;
   font-family: var(--font-mono);
   font-size: max(0.6rem, calc(var(--figure-size, 190px) * 0.06));
   letter-spacing: 0.06em;
-  text-align: left;
+  text-align: center;
   text-overflow: ellipsis;
   text-transform: uppercase;
   white-space: nowrap;
 }
 
-.ring-num::before {
-  content: "DWG ";
-}
-
-/* Small sheets (phones): only the number fits. projcript.js sets .is-compact */
-.is-compact .ring-name {
+/* The number stays in the HTML (projcript.js builds it) but isn't shown: names only */
+.ring-num {
   display: none;
 }
 
@@ -346,12 +357,18 @@ html {
   /* Floats beside the ring, so it never pushes anything. When it's taller than the ring,
      projcript.js (fitSheet) gives the slideshow a min-height to hold it */
   position: absolute;
-  right: 0;
-  top: calc(var(--space-2) + var(--space-7));     /* just under the Pause row */
-  width: var(--popup-w);
+  /* --popup-w is the popup's SLOT (the ring's open position counts on it); the popup itself is
+     narrower by --popup-inset and keeps that much clear on its right (set with .cad-ring above) */
+  right: var(--popup-inset, 0px);
+  top: var(--space-2);
+  width: calc(var(--popup-w) - var(--popup-inset, 0px));
   opacity: 0;
   visibility: hidden;
-  transform: translateX(var(--space-5));          /* starts a little to the right... */
+  /* Starts a little to the LEFT and slides right into place. It used to start to the right, but
+     on wide screens the ring's column runs to the window's edge, so the hidden popup stuck out
+     past it: the page got wider than the window (sideways scroll) and the header's right side
+     no longer matched its left (owner, 2026-11-27) */
+  transform: translateX(calc(-1 * var(--space-5)));
   /* Closing: slide and fade first, THEN hide (visibility waits for the animation) */
   transition: transform var(--popup-speed) var(--popup-ease),
               opacity var(--popup-speed) var(--popup-ease),
@@ -483,8 +500,21 @@ html {
    Down: --ring-drop, worked out by projcript.js, lines its middle up with the popup's middle.
    transform-origin: top, so the drop is measured from the ring's top edge */
 .entire-content {
+  /* At rest: further right on wide screens (--ring-rest, #slideshow). Written in the same form as
+     the open state below, translate() then scale(), so the browser blends the two numbers straight
+     across instead of converting both to matrices (which can wobble partway) */
+  transform: translate(var(--ring-rest), 0px) scale(1);
   transform-origin: 50% 0;
-  transition: transform var(--popup-speed, 350ms) var(--popup-ease, ease);
+  /* Slower and smoother than the popup (owner: "as it gets small it clunks"): 700ms with a gentle
+     start and end. will-change keeps the ring one ready-drawn layer for the whole glide, so the
+     browser doesn't redraw it partway through the shrink (the redraw was the clunk) */
+  transition: transform var(--ring-speed) var(--ring-ease);
+  will-change: transform;
+}
+
+.entire-content {
+  --ring-speed: 700ms;
+  --ring-ease: cubic-bezier(0.45, 0, 0.2, 1);
 }
 
 #slideshow.is-open .entire-content {
@@ -494,11 +524,25 @@ html {
     scale(var(--ring-shrink));
 }
 
+/* Picking a sheet already stops the spin, so while the popup is open "Spin On Off" has nothing
+   to do: it fades out, and back in when the popup closes. visibility: hidden also takes it out of
+   the Tab order meanwhile (the delay lets the fade finish first) */
+.ring-head {
+  transition: opacity var(--popup-speed, 350ms) ease, visibility 0s;
+}
+
+#slideshow.is-open .ring-head {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--popup-speed, 350ms) ease, visibility 0s linear var(--popup-speed, 350ms);
+}
+
 /* Reduced motion: everything still opens and closes, just without the animation */
 @media (prefers-reduced-motion: reduce) {
   .sidebar-dwg-details,
   #slideshow.is-open .sidebar-dwg-details,
   .entire-content,
+  .ring-head,
   .ring-art img {
     transition: none;
   }
@@ -565,6 +609,12 @@ html {
     overflow-y: auto;
     overscroll-behavior: contain;
     padding-left: var(--space-6);
+    padding-right: var(--space-4);     /* room for its own scroll bar, so values and stars aren't cut off */
+    scrollbar-gutter: stable;
+    /* A thin scroll bar in the line colour: the browser's own is a wide light-grey strip,
+       which stood beside the numbers like a wall (owner, 2026-11-27). Same for the list above */
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line) transparent;
     border-left: 1px solid var(--color-line);
   }
 }
@@ -609,38 +659,22 @@ html {
   color: var(--color-muted);
 }
 
+/* The values stop a little short of the line's end, so each hairline runs past its number
+   instead of ending flush against it (owner, 2026-11-27: "extend the lines slightly past") */
 .cad-stats dd {
   margin: 0;
+  padding-right: var(--space-3);
   font-weight: 600;
   text-align: right;
 }
 
-/* MakerWorld (a pill, the main action) and "Next" (a quiet link) */
+/* MakerWorld (the shared solid .button, the main action) and "Next" (a quiet link) */
 .cad-actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-3) var(--space-5);
   margin: 0 0 var(--space-6);
-}
-
-.cad-button {
-  display: inline-block;
-  padding: var(--space-3) var(--space-6);
-  border-radius: var(--radius-pill);
-  background: var(--color-accent);
-  color: var(--color-bg);
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.cad-button:hover {
-  background: var(--color-active);
-}
-
-.cad-button:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 3px;
 }
 
 .cad-next {
@@ -667,8 +701,7 @@ html {
    block of color, and each one is placed (top left…) and sized (--mark × --weight).
    Each corner is two bars: one lying flat, one standing up.
    The carousel's small sheets (.ring-art) share them, with shorter arms (below) */
-.cad-art::before,
-.ring-art::before {
+.cad-art::before {
   --mark: 1rem;                         /* arm length */
   --weight: 2px;                        /* line thickness */
   --ink: linear-gradient(var(--color-accent) 0 0);
@@ -689,11 +722,6 @@ html {
   z-index: 1;                           /* above the picture */
 }
 
-.ring-art::before {
-  --mark: 0.5rem;
-  --weight: 1px;
-}
-
 /* The picture fills the square (O5: big, like daz; the dashed line went, the crop marks stay).
    object-fit: cover scales evenly and trims the overflow: it can crop, never stretch */
 .cad-art img {
@@ -710,7 +738,7 @@ html {
   margin: 0;                           /* browsers give <figure> a 40px side margin by default */
 }
 
-/* ‹ › on the picture's sides and a "1 / 4" pill at the bottom, like daz (only with 2+ pictures) */
+/* ‹ › on the picture's sides and a "1 / 4" count at the bottom, like daz (only with 2+ pictures) */
 .cad-arrow {
   position: absolute;
   top: 50%;
@@ -719,8 +747,7 @@ html {
   width: var(--space-7);               /* 48px: easy to tap */
   height: var(--space-7);
   padding: 0;
-  border: 1px solid var(--color-line);
-  border-radius: 50%;
+  border: 1px solid var(--color-line);   /* square, like every button since X8 */
   background: var(--color-bg);
   color: var(--color-ink);
   font-size: var(--step-2);
@@ -743,7 +770,6 @@ html {
   z-index: 2;
   translate: -50% 0;
   padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-pill);
   background: color-mix(in srgb, var(--color-sumi) 70%, transparent);
   color: var(--color-paper);
   font-family: var(--font-mono);

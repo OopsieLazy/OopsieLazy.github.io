@@ -11,17 +11,33 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- CONTENT: the tab title and the text search engines and link previews show -->
         <title>Zach Nott Art</title>
-        <meta name="description" content="Art journals and photography by Zach Nott.">
+        <meta name="description" content="Art journals, paintings and photography by Zach Nott: woodpeckers at last light, a streetlight in fog, a rose in acrylic and quick ink drawings.">
         <!-- Staging (L1, D47): search engines skip the site until launch. Removing this line IS the launch (L3) -->
         <meta name="robots" content="noindex">
+        <!-- Link previews (L1b): what a shared link shows in a chat or a post. Every address here is FULL
+             (https://...): those sites fetch it from their own servers, so a relative path means nothing to them.
+             canonical names the one true address of this page. share-card.png is 1200 x 630, the size link
+             previews use (README, "Share picture"). CONTENT: og:title and og:description follow the tab title
+             and description above; change them together -->
+        <link rel="canonical" href="https://nottco.ca/art.html">
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="Zach Nott">
+        <meta property="og:title" content="Zach Nott Art">
+        <meta property="og:description" content="Art journals, paintings and photography by Zach Nott: woodpeckers at last light, a streetlight in fog, a rose in acrylic and quick ink drawings.">
+        <meta property="og:url" content="https://nottco.ca/art.html">
+        <meta property="og:image" content="https://nottco.ca/assets/images/share-card.png">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:image:alt" content="Zach Nott: mechanical design, CAD and the things I print, beside two CAD renders and a photo">
+        <meta name="twitter:card" content="summary_large_image">
         <!-- The five stripes; an SVG icon stays sharp at any size and switches to greys in dark mode -->
         <link rel="icon" href="favicon.svg" type="image/svg+xml">
         <!-- Each CSS and JS link carries ?v=<date it last changed>. A browser keeps files it has
              downloaded; a new ?v makes the address new, so it fetches the new file instead of
              mixing a new page with old styles or scripts. Change a file: bump its ?v on every page -->
-        <link rel="stylesheet" href="css/styles.css?v=20261127-2">
-        <link rel="stylesheet" href="css/artyles.css?v=20261126">
-        <script src="js/script.js?v=20261127" defer></script>
+        <link rel="stylesheet" href="css/styles.css?v=20261128">
+        <link rel="stylesheet" href="css/artyles.css?v=20261128">
+        <script src="js/script.js?v=20261128" defer></script>
         <!-- datacript.js holds the shared JSON helpers, so it loads before artcript.js (defer keeps this order) -->
         <script src="js/datacript.js?v=20261126-2" defer></script>
         <script src="js/artcript.js?v=20261126-2" defer></script>
@@ -40,7 +56,7 @@
 
                 <nav id="site-nav" class="main-nav wrapper" aria-label="Main">
                     <!-- Mobile menu button: hidden until js/script.js runs, so without JS the links just stay visible -->
-                    <button id="menu-toggle" class="menu-toggle" type="button" aria-expanded="true" hidden>
+                    <button id="menu-toggle" class="button menu-toggle" type="button" aria-expanded="true" hidden>
                         <span aria-hidden="true">&#9776;</span> <span class="menu-word">Menu</span>
                     </button>
 
@@ -101,8 +117,15 @@
                      piece's title, detail and alt text in data/art.json. See README -->
                 <header class="art-head">
                     <h1>Browse Art</h1>
-                    <!-- CONTENT: one line about your art journals and photography -->
-                    <p>One line about your art journals and photography.</p>
+                    <!-- CONTENT: the owner's line, then the quote it answers (owner, 2026-11-27).
+                         The quote is often credited to Pablo Picasso online, but every traced source gives
+                         Elbert Hubbard (Little Journeys to the Homes of Great Teachers, 1908).
+                         <figure> + <figcaption> ties the quote to who said it, for screen readers too -->
+                    <p class="art-line">The act of doing is the becoming of.</p>
+                    <figure class="art-quote">
+                        <blockquote><p>Art is not a thing; it is a way.</p></blockquote>
+                        <figcaption>Elbert Hubbard</figcaption>
+                    </figure>
                     <!-- Jump list (R4e-2): plain links to each area ("Nature 3 · Architecture 2"). js/artcript.js
                          fills it and shows it only from 2 areas up: with one area there's nowhere to jump -->
                     <nav class="area-jump" id="art-jump" aria-label="Art areas" hidden>
@@ -130,8 +153,8 @@
                 <!-- Below the photos (owner, 2026-11-22): nothing stands between the intro and the work, like the reference.
                      Hidden until js/artcript.js has built the walls: without JS these buttons would do nothing -->
                 <div class="art-tools" id="art-tools" hidden>
-                    <button type="button" id="art-shuffle">Shuffle</button>
-                    <button type="button" id="art-reset">Reset</button>
+                    <button class="button" type="button" id="art-shuffle">Shuffle</button>
+                    <button class="button" type="button" id="art-reset">Reset</button>
                     <!-- One hint per kind of device (artyles.css, "hover" media feature) -->
                     <span class="hint-pointer">Drag a photo to rearrange, or use Alt + arrow keys</span>
                     <span class="hint-touch">Press and hold a photo, then drag it</span>
@@ -145,14 +168,14 @@
                     <div class="viewer-bar">
                         <p class="viewer-count"></p>
                         <!-- autofocus: the dialog puts focus here when it opens, so Enter or Space closes it -->
-                        <button type="button" class="viewer-close" autofocus>Close</button>
+                        <button type="button" class="button viewer-close" autofocus>Close</button>
                     </div>
                     <div class="viewer-stage"></div>
                     <div class="viewer-bar viewer-foot">
-                        <button type="button" class="viewer-prev">Previous</button>
+                        <button type="button" class="button viewer-prev">Previous</button>
                         <!-- aria-live: when Previous/Next swaps the photo, screen readers read the new caption -->
                         <p class="viewer-caption" aria-live="polite"></p>
-                        <button type="button" class="viewer-next">Next</button>
+                        <button type="button" class="button viewer-next">Next</button>
                     </div>
                 </dialog>
                 <noscript>

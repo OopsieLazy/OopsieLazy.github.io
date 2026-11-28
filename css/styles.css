@@ -169,9 +169,10 @@
   --measure: 65ch;         /* comfortable reading width for paragraphs */
   --content-max: 72rem;    /* widest the page content gets (~1152px) */
   --gutter: clamp(var(--space-4), 5vw, var(--space-7));  /* side padding of .wrapper: 16px on phones, up to 48px */
-  --radius: 4px;           /* small, crisp corners to keep it minimal */
-  --radius-soft: 6px;      /* photos and floating panels: About's pictures, the profile card popover */
-  --radius-pill: 999px;    /* fully round ends (the outline buttons): any value over half the height works */
+  /* No corner tokens since X8 (owner, 2026-11-27: "remove the rounded AI UI"): every button,
+     photo and panel has square corners, like a drawing sheet. Round things left on purpose are
+     objects, not UI: the trading card's corners, the scroll's wooden rods, the status lamps */
+  --target-touch: 2.75rem; /* 44px: the height of a button a finger hits easily */
   --golden: 1.618;         /* φ, the golden ratio: used for spacing that should feel "just right" */
   --header-row: var(--space-7);   /* the header's top row on phones: the Menu button's 48px height */
 
@@ -360,7 +361,6 @@ hr {
   clip-path: none;
   background-color: var(--color-surface);
   color: var(--color-ink);
-  border-radius: var(--radius);
 }
 
 /* =========================================================
@@ -512,6 +512,106 @@ hr {
 }
 
 /* =========================================================
+   THE BUTTON (X8, owner 2026-11-27: one button style, square, no rounded "AI" pills).
+   The look is the owner's pick A, "Sticker" (2026-11-27, after the cartoon-retro references:
+   Cartoon Network 2003, Space Jam): a 2px outline and a HARD drop shadow, a copy of the
+   outline's colour moved down-right with no blur. It looks like a sticker standing off the page.
+   Hover lifts it a pixel; pressed, it slides down into its own shadow and lies flat.
+   Put class="button" on any <button> or link that should look like one; add "button-solid"
+   for the ONE main action on a page (Download PDF, MakerWorld). Where a button sits
+   (margins, position) stays in each page's own CSS. Leave a little room right and below
+   for the shadow (--lift), or a neighbour can cover it
+   ========================================================= */
+.button {
+  --lift: 3px;                         /* how far the shadow stands out: the "thickness" of the sticker */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  min-height: calc(var(--space-5) + var(--space-1));   /* 28px: above the WCAG 2.5.8 minimum of 24px */
+  padding: 0 var(--space-3);
+  border: 2px solid var(--color-accent);
+  background: var(--color-surface);
+  /* box-shadow: x y blur colour. Blur 0 is what makes it hard-edged, a cartoon shadow, not a glow */
+  box-shadow: var(--lift) var(--lift) 0 var(--color-accent);
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: var(--tracking-caps);
+  line-height: 1;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* The press slides; with reduced motion it just jumps (the end state is the same) */
+@media (prefers-reduced-motion: no-preference) {
+  .button {
+    transition: translate var(--speed-fast) ease, box-shadow var(--speed-fast) ease;
+  }
+}
+
+/* display: inline-flex above would beat the hidden attribute (some buttons wait for JS) */
+.button[hidden] {
+  display: none;
+}
+
+/* Hover: up and left by a pixel while the shadow grows by one, so the shadow's corner stays put */
+.button:hover {
+  translate: -1px -1px;
+  box-shadow: calc(var(--lift) + 1px) calc(var(--lift) + 1px) 0 var(--color-accent);
+}
+
+/* Pressed: moves down-right by the shadow's size and the shadow shrinks to nothing: pushed flat */
+.button:active {
+  translate: var(--lift) var(--lift);
+  box-shadow: 0 0 0 var(--color-accent);
+}
+
+/* A ring, not the colour change links get: on a filled button that would clash.
+   The offset clears the shadow */
+.button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: calc(var(--lift) + 2px);
+  color: var(--color-accent);
+  text-shadow: none;
+}
+
+/* The main action: filled pine (white by night), page-coloured text: 7.8 by day, 17.2 at night.
+   Its shadow is the fill mixed with black: in the fill's own colour the sticker's edge vanished
+   into it and the button just looked bigger */
+.button-solid,
+.button-solid:focus-visible {
+  --sticker: color-mix(in oklab, var(--color-accent), black 45%);
+  background: var(--color-accent);
+  box-shadow: var(--lift) var(--lift) 0 var(--sticker);
+  color: var(--color-bg);
+}
+
+.button-solid:hover {
+  border-color: var(--color-active);
+  background: var(--color-active);
+  box-shadow: calc(var(--lift) + 1px) calc(var(--lift) + 1px) 0 var(--sticker);
+}
+
+.button-solid:active {
+  box-shadow: 0 0 0 var(--sticker);
+}
+
+/* The 404 page (404.html, L2): air under the title, then a row of page buttons */
+.lost-title {
+  margin-bottom: var(--space-4);
+}
+
+.lost-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  max-width: none;
+  margin-top: var(--space-6);
+}
+
+/* =========================================================
    HEADER: the same markup is copied into every page.
    Order: frame, links, Menu button, then one phone block
    and one desktop block at the end, so every screen-size change for the
@@ -536,6 +636,9 @@ hr {
 .main-nav {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
+  /* The top row is always --header-row tall: the theme words are placed at its middle
+     (THE THEME SWITCH), so the name and Menu, centred in it, share that line */
+  grid-template-rows: var(--header-row) auto auto;
   grid-template-areas:
     ".     logo  toggle"
     "left  left  left"
@@ -578,7 +681,7 @@ hr {
   top: calc(100% + var(--space-1));
   left: 50%;
   translate: -50% 0;
-  width: var(--space-7);
+  width: calc(100% / 2.618);          /* the name's width ÷ φ² (1.618 × 1.618): about 48px, but it grows with the name */
   height: var(--space-1);
   background-image: var(--stripe-mark);   /* the five stripes (STRIPE COLOURS); the footer's mark uses it too */
 }
@@ -637,41 +740,44 @@ hr {
 /* ---------- Menu button (phones) ----------
    The button starts with the hidden attribute (see js/script.js).
    Never set display on them outside the desktop block, or hidden stops
-   working and a dead button shows when JS is off */
+   working and a dead button shows when JS is off.
+   Its look is the shared sticker button (class="button menu-toggle", owner's pick A,
+   2026-11-27): only what's different is here. While the menu is open it stays pressed flat,
+   like a key that's held down, so the button itself shows the menu's state */
 .menu-toggle {
-  min-height: var(--space-7);          /* 48px: a comfortable finger-sized target */
-  padding-inline: var(--space-4);
-  border: 1px solid var(--color-line);  /* the same hairline as the theme button beside it (O1) */
-  border-radius: var(--radius);
-  background: none;
-  color: var(--color-ink);
-  font-size: var(--step--1);
-  cursor: pointer;
+  position: relative;                  /* anchors the bigger tap area below */
+  align-self: center;
+  /* The sticker's shadow hangs 3px below the key, so the key alone sits 1.5px under the
+     middle of what you see. Lifting it by half the shadow centres the whole sticker on the
+     same line as the name and the theme words (owner: "need to be inline vertically") */
+  margin-bottom: var(--lift);
 }
 
-/* The narrowest phones can't fit the centered logo AND "☰ Menu" on both sides of it,
-   so the button keeps only the ☰ icon (a 48px square) and the word is hidden the
-   screen-reader-text way: still read aloud, so the button's name stays "Menu" */
-@media (width < 24rem) {
-  .menu-toggle {
-    min-width: var(--space-7);
-    padding-inline: 0;
-  }
+/* The key is 28px tall, but a finger needs about 44px: an invisible layer 8px past the top and
+   bottom catches taps around it (WCAG 2.5.5). ::after belongs to the button, so a tap there is
+   a tap on the button */
+.menu-toggle::after {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--space-2)) calc(-1 * var(--space-1));
+}
 
-  .menu-word {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
+.menu-toggle[aria-expanded="true"] {
+  translate: var(--lift) var(--lift);
+  box-shadow: 0 0 0 var(--color-accent);
 }
 
 /* ---------- Phones only: closed states ----------
    "~" means "any later sibling", so the button must come before what it hides.
    (width < 64rem) ends exactly where the desktop block begins */
 @media (width < 64rem) {
+  /* THE GOLDEN RATIO (owner, 2026-11-27): the name is 1.618 times the words beside it
+     (Day Night Auto, Menu), about 19px against 12px. Close sizes looked like three things
+     competing; at φ the name clearly leads and the two sides read as its frame */
+  .header-name {
+    font-size: calc(var(--step--2) * 1.618);
+  }
+
   .menu-toggle[aria-expanded="false"] ~ .header-column-left,
   .menu-toggle[aria-expanded="false"] ~ .header-column-right {
     display: none;
@@ -684,6 +790,7 @@ hr {
      split the rest equally, so the logo stays truly centered */
   .main-nav {
     grid-template-columns: 1fr auto 1fr;
+    grid-template-rows: auto;          /* one row, as tall as its links (the phone rows don't apply) */
     grid-template-areas: "left logo right";
     gap: var(--space-5);
   }
@@ -786,16 +893,36 @@ hr {
    The group starts with the hidden attribute (no JS = no switch, the site follows the OS),
    so display is only set once it's shown (:not([hidden])).
    All three words always show, side by side (owner, 2026-11-27).
-   Phones and tablets: a centred row under the name (the left cell beside the name is too
-   narrow for three words). Desktop: at the right end of the header row */
+   Phones and tablets (the burger-menu screens): top left, at the page's edge, level with Menu,
+   which sits at the right edge in the same letters: a mirror, with the name between.
+   (Until 2026-11-27 the words floated at the golden point of their cell while Menu sat at the
+   edge in a box; the two sides didn't match. φ now sets the sizes instead, see .header-name)
+   Desktop: at the right end of the header row */
 .theme-switch {
-  justify-content: center;
-  margin-top: var(--space-2);
+  position: absolute;
+  top: calc(var(--space-4) + var(--header-row) / 2);   /* the middle of the top row */
+  left: var(--gutter);
+  translate: 0 -50%;
 }
 
 .theme-switch:not([hidden]) {
   display: flex;
-  gap: var(--space-4);
+  gap: var(--space-2);
+}
+
+/* Phones (under 480px): side by side the words would run into the name, so they stack, one under
+   another, still top left, like an index (tablets keep them side by side at the golden point) */
+@media (width < 30rem) {
+  .theme-switch:not([hidden]) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+
+  .theme-switch .theme-choice {
+    padding-block: 0;
+    line-height: 1.3;
+  }
 }
 
 .theme-choice {
@@ -821,13 +948,23 @@ hr {
   text-underline-offset: 0.4em;
 }
 
+/* On the burger-menu screens the words are a little smaller, to fit beside the name */
+@media (width < 64rem) {
+  .theme-choice {
+    font-size: var(--step--2);
+    letter-spacing: 0.04em;
+  }
+}
+
 @media (min-width: 64rem) {
   .theme-switch {
-    position: absolute;
     top: 50%;
+    left: auto;
     right: var(--gutter);
-    translate: 0 -50%;
-    margin-top: 0;
+  }
+
+  .theme-switch:not([hidden]) {
+    gap: var(--space-4);
   }
 }
 
